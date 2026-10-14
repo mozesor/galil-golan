@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<meta name="robots" content="noindex" />
+<title>ניהול | גליל עליון דרום</title>
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#f3f5f3;--surface:#fff;--surface-2:#f6f8f6;--line:rgba(16,32,22,.09);--line-strong:rgba(16,32,22,.18);
+  --text:#121a15;--text-2:#55635a;--text-3:#8a968e;--accent:#1b7a44;--accent-ink:#fff;--accent-soft:rgba(27,122,68,.10);
+  --loss:#c2413a;--loss-soft:rgba(194,65,58,.12);--r:18px;--r-s:12px;--ease:cubic-bezier(.16,1,.3,1);color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0f1512;--surface:#18211c;--surface-2:#1e2924;--line:rgba(255,255,255,.07);--line-strong:rgba(255,255,255,.16);
+  --text:#edf2ee;--text-2:#a7b3ab;--text-3:#6f7b74;--accent:#4fcf7f;--accent-ink:#0b1a11;--accent-soft:rgba(79,207,127,.12);
+  --loss:#ef6b63;--loss-soft:rgba(239,107,99,.14);color-scheme:dark;}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Heebo",system-ui,sans-serif;font-size:16px;line-height:1.5;min-height:100dvh}
+.app{max-width:680px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom))}
+h1{font-size:20px;margin:6px 0 2px;font-weight:800}
+h2{font-size:15px;margin:0 0 10px;font-weight:800}
+.sub{color:var(--text-2);font-size:13.5px;margin:0 0 16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+label{display:block;font-size:13px;font-weight:700;color:var(--text-2);margin:10px 0 4px}
+label:first-child{margin-top:0}
+input,textarea{width:100%;font:inherit;font-size:16px;color:var(--text);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-s);padding:10px 12px;outline:0}
+input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea{min-height:64px;resize:vertical}
+.help{font-size:12.5px;color:var(--text-3);margin-top:4px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{font:inherit;font-weight:700;font-size:14.5px;height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s var(--ease)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn:disabled{opacity:.5;cursor:default}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.game{border-top:1px solid var(--line);padding:14px 0 4px;margin-top:10px}
+.game:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.game .t{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.game .t b{font-size:15px}
+.game .t span{font-size:12.5px;color:var(--text-2)}
+.chip{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--accent-soft);color:var(--accent);margin-inline-start:6px}
+.chip.away{background:var(--surface-2);color:var(--text-2)}
+.chip.done{background:var(--surface-2);color:var(--text-3)}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));inset-inline:16px;max-width:640px;margin:0 auto;padding:12px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-weight:600;font-size:14px;transform:translateY(120%);opacity:0;transition:all .35s var(--ease);z-index:9}
+.toast.on{transform:none;opacity:1}
+.toast.err{background:var(--loss);color:#fff}
+.savebar{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px;padding:10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);box-shadow:0 10px 30px -10px rgba(0,0,0,.35);margin-top:16px}
+.savebar .btn{flex:1}
+.hidden{display:none}
+.status{font-size:13px;color:var(--text-2)}
+details summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--text-2)}
+code{background:var(--surface-2);padding:1px 6px;border-radius:6px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>ניהול לוח המשחקים</h1>
+  <p class="sub">כאן ממלאים את מה שההתאחדות לא מפרסמת: שעת שריקה, מגרש, ניווט והערות להורים. השמירה נכנסת לאתר תוך כדקה.</p>
+
+  <div class="card" id="setup">
+    <h2>חיבור ל-GitHub</h2>
+    <label for="repo">מאגר (owner/repo)</label>
+    <input id="repo" placeholder="username/GalilDarom" autocomplete="off" />
+    <label for="branch">ענף</label>
+    <input id="branch" value="main" autocomplete="off" />
+    <label for="token">טוקן גישה אישי</label>
+    <input id="token" type="password" placeholder="github_pat_..." autocomplete="off" />
+    <div class="help">הטוקן נשמר רק בדפדפן הזה. צרו טוקן מסוג Fine-grained עם הרשאת Contents: Read and write (ו-Actions: Read and write כדי להפעיל עדכון ידני) למאגר הזה בלבד.</div>
+    <div class="actions"><button class="btn primary" id="connect">התחברות וטעינה</button><button class="btn" id="forget">מחיקת הטוקן מהדפדפן</button></div>
+    <div class="status" id="setupStatus" style="margin-top:10px"></div>
+  </div>
+
+  <div id="editor" class="hidden">
+    <div class="card">
+      <h2>שם הקבוצה באתר</h2>
+      <div class="row">
+        <div><label for="displayName">שם מלא</label><input id="displayName" /></div>
+        <div><label for="shortName">אות לסמל</label><input id="shortName" maxlength="2" /></div>
+      </div>
+      <label for="siteTitle">כותרת האתר (בלשונית ובמסך הבית)</label>
+      <input id="siteTitle" />
+    </div>
+
+    <div class="card">
+      <h2>מגרש הבית (ברירת מחדל לכל משחקי הבית)</h2>
+      <label for="homeVenue">שם המגרש</label><input id="homeVenue" placeholder="לדוגמה: מגרש קצרין" />
+      <label for="homeWaze">קישור ניווט (Waze או Google Maps)</label><input id="homeWaze" inputmode="url" placeholder="https://waze.com/ul?q=..." />
+      <label for="homeNote">הערה קבועה למשחקי בית</label><input id="homeNote" placeholder="להגיע 30 דקות לפני" />
+    </div>
+
+    <div class="card">
+      <h2>המשחקים שלנו</h2>
+      <p class="sub" style="margin-bottom:4px">שדה ריק = לא לשנות. שעה בפורמט 10:30.</p>
+      <div id="games"></div>
+    </div>
+
+    <div class="card">
+      <details>
+        <summary>כלים</summary>
+        <div class="actions">
+          <button class="btn" id="runFetch">למשוך תוצאות עכשיו מ-ONE</button>
+          <a class="btn" id="openSite" href="./" target="_blank" rel="noopener">לפתוח את האתר</a>
+        </div>
+        <div class="help" style="margin-top:8px">העדכון האוטומטי רץ כל 30 דקות בכל מקרה.</div>
+      </details>
+    </div>
+
+    <div class="savebar">
+      <button class="btn primary" id="save">שמירה לאתר</button>
+      <button class="btn" id="reload">טעינה מחדש</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+"use strict";
+const $=(s)=>document.querySelector(s);
+const TZ="Asia/Jerusalem";
+const LS={repo:"gd-admin-repo",branch:"gd-admin-branch",token:"gd-admin-token"};
+let DATA=null, CFG=null, OVR=null, SHA={};
+let MATCH="";
+
+const toastEl=$("#toast"); let toastT;
+function toast(msg,err){ toastEl.textContent=msg; toastEl.classList.toggle("err",!!err); toastEl.classList.add("on"); clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove("on"),3200); }
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const heDate=(d,o)=>new Intl.DateTimeFormat("he-IL",{timeZone:TZ,...o}).format(d);
+function apiTime(iso){ const f=new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit"}).format(new Date(iso)); return (f==="00:00"||f==="01:00")?"":f; }
+
+try{ $("#repo").value=localStorage.getItem(LS.repo)||""; $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=localStorage.getItem(LS.token)||""; }catch{}
+
+function gh(){ return {repo:$("#repo").value.trim(), branch:$("#branch").value.trim()||"main", token:$("#token").value.trim()}; }
+async function ghGet(path){
+  const {repo,branch,token}=gh();
+  const r=await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,{headers:{authorization:"Bearer "+token,accept:"application/vnd.github+json"},cache:"no-store"});
+  if(r.status===404) return {json:null,sha:null};
+  if(!r.ok) throw new Error(`GitHub ${r.status} בקריאת ${path}`);
+  const j=await r.json();
+  const text=new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),c=>c.charCodeAt(0)));
+  return {json:JSON.parse(text),sha:j.sha};
+}
+async function ghPut(path,obj,message){
+  const {repo,branch,token}=gh();
+  const text=JSON.stringify(obj,null,2)+"\n";
+  const b64=btoa(String.fromCharCode(...new TextEncoder().encode(text)));
+  const body={message,content:b64,branch}; if(SHA[path]) body.sha=SHA[path];
+  const r=await fetch(`https://api.github.com/repos/${repo}/contents/${path}`,{method:"PUT",headers:{authorization:"Bearer "+token,accept:"application/vnd.github+json","content-type":"application/json"},body:JSON.stringify(body)});
+  if(!r.ok){ const t=await r.text(); throw new Error(`GitHub ${r.status} בשמירת ${path}: ${t.slice(0,120)}`); }
+  const j=await r.json(); SHA[path]=j.content.sha;
+}
+
+async function load(){
+  const {repo,token}=gh();
+  if(!repo||!token){ toast("צריך למלא מאגר וטוקן",true); return; }
+  $("#connect").disabled=true; $("#setupStatus").textContent="טוען...";
+  try{
+    const [d,c,o]=await Promise.all([ghGet("data.json"),ghGet("config.json"),ghGet("overrides.json")]);
+    if(!d.json||!c.json) throw new Error("לא נמצאו data.json או config.json במאגר");
+    DATA=d.json; CFG=c.json; OVR=o.json||{games:{},venues:{home:{}}}; SHA={"data.json":d.sha,"config.json":c.sha,"overrides.json":o.sha};
+    OVR.games=OVR.games||{}; OVR.venues=OVR.venues||{}; OVR.venues.home=OVR.venues.home||{};
+    delete OVR.games.EXAMPLE_GAME_ID;
+    try{ localStorage.setItem(LS.repo,repo); localStorage.setItem(LS.branch,gh().branch); localStorage.setItem(LS.token,token); }catch{}
+    MATCH=CFG.team.match;
+    render();
+    $("#editor").classList.remove("hidden"); $("#setupStatus").textContent=`מחובר. ${DATA.games.length} משחקים בליגה.`;
+    toast("נטען בהצלחה");
+  }catch(e){ $("#setupStatus").textContent=""; toast(e.message,true); }
+  finally{ $("#connect").disabled=false; }
+}
+
+function render(){
+  $("#displayName").value=CFG.team.displayName||""; $("#shortName").value=CFG.team.short||""; $("#siteTitle").value=CFG.site?.title||"";
+  $("#homeVenue").value=OVR.venues.home.name||""; $("#homeWaze").value=OVR.venues.home.waze||""; $("#homeNote").value=OVR.venues.home.note||"";
+  const my=DATA.games.filter(g=>g.home.name.includes(MATCH)||g.away.name.includes(MATCH)).sort((a,b)=>a.date.localeCompare(b.date));
+  $("#games").innerHTML=my.map(g=>{
+    const home=g.home.name.includes(MATCH); const opp=home?g.away.name:g.home.name; const ov=OVR.games[g.id]||{};
+    const done=g.home.goals!==null&&g.away.goals!==null;
+    const d=new Date(g.date);
+    return `<div class="game" data-id="${g.id}">
+      <div class="t"><b>${esc(opp)}<span class="chip ${home?"":"away"}">${home?"בית":"חוץ"}</span>${done?`<span class="chip done">${g.home.goals}:${g.away.goals}</span>`:""}</b><span>${esc(heDate(d,{weekday:"short",day:"numeric",month:"short"}))} · מחזור ${g.round}</span></div>
+      <div class="row">
+        <div><label>שעה</label><input data-f="time" inputmode="numeric" placeholder="${apiTime(g.date)||"לא פורסמה"}" value="${esc(ov.time||"")}" /></div>
+        <div><label>מגרש</label><input data-f="venue" placeholder="${home?esc(OVR.venues.home.name||"מגרש הבית"):"מגרש היריבה"}" value="${esc(ov.venue||"")}" /></div>
+      </div>
+      <label>קישור ניווט</label><input data-f="waze" inputmode="url" value="${esc(ov.waze||"")}" placeholder="https://..." />
+      <label>הערה להורים</label><input data-f="note" value="${esc(ov.note||"")}" placeholder="${home?esc(OVR.venues.home.note||""):""}" />
+    </div>`;
+  }).join("");
+}
+
+function collect(){
+  CFG.team.displayName=$("#displayName").value.trim()||CFG.team.displayName;
+  CFG.team.short=$("#shortName").value.trim()||CFG.team.short;
+  CFG.site=CFG.site||{}; CFG.site.title=$("#siteTitle").value.trim()||CFG.site.title;
+  OVR.venues.home={name:$("#homeVenue").value.trim(),waze:$("#homeWaze").value.trim(),note:$("#homeNote").value.trim()};
+  const games={};
+  document.querySelectorAll("#games .game").forEach(el=>{
+    const o={}; el.querySelectorAll("[data-f]").forEach(i=>{ const v=i.value.trim(); if(v) o[i.dataset.f]=v; });
+    if(o.time && !/^\d{1,2}:\d{2}$/.test(o.time)) throw new Error("שעה לא תקינה: "+o.time);
+    if(Object.keys(o).length) games[el.dataset.id]=o;
+  });
+  OVR.games=games;
+  OVR._help="מידע ידני שההתאחדות לא מפרסמת. נערך מתוך admin.html";
+}
+
+$("#connect").addEventListener("click",load);
+$("#reload").addEventListener("click",load);
+$("#forget").addEventListener("click",()=>{ try{localStorage.removeItem(LS.token);}catch{} $("#token").value=""; toast("הטוקן נמחק מהדפדפן"); });
+$("#save").addEventListener("click",async()=>{
+  try{ collect(); }catch(e){ toast(e.message,true); return; }
+  $("#save").disabled=true; $("#save").textContent="שומר...";
+  try{
+    await ghPut("overrides.json",OVR,"עדכון פרטי משחקים מממשק הניהול");
+    await ghPut("config.json",CFG,"עדכון הגדרות אתר מממשק הניהול");
+    toast("נשמר. האתר יתעדכן תוך כדקה.");
+  }catch(e){ toast(e.message,true); }
+  finally{ $("#save").disabled=false; $("#save").textContent="שמירה לאתר"; }
+});
+$("#runFetch").addEventListener("click",async()=>{
+  const {repo,branch,token}=gh();
+  try{
+    const r=await fetch(`https://api.github.com/repos/${repo}/actions/workflows/update-data.yml/dispatches`,{method:"POST",headers:{authorization:"Bearer "+token,accept:"application/vnd.github+json","content-type":"application/json"},body:JSON.stringify({ref:branch})});
+    if(!r.ok) throw new Error("GitHub "+r.status+" (צריך הרשאת Actions בטוקן)");
+    toast("העדכון הופעל. תוך כ-2 דקות התוצאות באתר.");
+  }catch(e){ toast(e.message,true); }
+});
+if($("#repo").value && $("#token").value) load();
+})();
+</script>
+</body>
+</html>

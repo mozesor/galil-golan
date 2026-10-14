@@ -1,0 +1,17 @@
+{
+  "name": "גליל עליון דרום | ילדים ב'",
+  "short_name": "גליל דרום",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1512",
+  "theme_color": "#1b7a44",
+  "description": "לוח משחקים, תוצאות וטבלה של הקבוצה, מתעדכן אוטומטית.",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

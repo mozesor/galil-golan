@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<meta name="theme-color" content="#f5f7f5" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0f1512" media="(prefers-color-scheme: dark)" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="description" content="לוח משחקים, תוצאות וטבלה של גליל עליון דרום, ילדים ב'. מתעדכן אוטומטית." />
+<title>גליל עליון דרום | ילדים ב'</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --bg:#f3f5f3;
+  --bg-2:#e9ede9;
+  --surface:#ffffff;
+  --surface-2:#f6f8f6;
+  --line:rgba(16,32,22,.09);
+  --line-strong:rgba(16,32,22,.16);
+  --text:#121a15;
+  --text-2:#55635a;
+  --text-3:#8a968e;
+  --accent:#1b7a44;
+  --accent-ink:#ffffff;
+  --accent-soft:rgba(27,122,68,.10);
+  --accent-soft-2:rgba(27,122,68,.18);
+  --win:#1b7a44;
+  --draw:#8a968e;
+  --loss:#c2413a;
+  --loss-soft:rgba(194,65,58,.12);
+  --shadow:0 1px 2px rgba(16,32,22,.05),0 10px 30px -12px rgba(16,32,22,.18);
+  --shadow-sheet:0 -12px 40px -8px rgba(16,32,22,.28);
+  --r:20px;
+  --r-s:14px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --nav-h:64px;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0f1512;
+  --bg-2:#131b17;
+  --surface:#18211c;
+  --surface-2:#1e2924;
+  --line:rgba(255,255,255,.07);
+  --line-strong:rgba(255,255,255,.14);
+  --text:#edf2ee;
+  --text-2:#a7b3ab;
+  --text-3:#6f7b74;
+  --accent:#4fcf7f;
+  --accent-ink:#0b1a11;
+  --accent-soft:rgba(79,207,127,.12);
+  --accent-soft-2:rgba(79,207,127,.22);
+  --win:#4fcf7f;
+  --draw:#8a968e;
+  --loss:#ef6b63;
+  --loss-soft:rgba(239,107,99,.14);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6);
+  --shadow-sheet:0 -12px 40px -8px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1512;--bg-2:#131b17;--surface:#18211c;--surface-2:#1e2924;
+    --line:rgba(255,255,255,.07);--line-strong:rgba(255,255,255,.14);
+    --text:#edf2ee;--text-2:#a7b3ab;--text-3:#6f7b74;
+    --accent:#4fcf7f;--accent-ink:#0b1a11;--accent-soft:rgba(79,207,127,.12);--accent-soft-2:rgba(79,207,127,.22);
+    --win:#4fcf7f;--draw:#8a968e;--loss:#ef6b63;--loss-soft:rgba(239,107,99,.14);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6);
+    --shadow-sheet:0 -12px 40px -8px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100dvh;background:var(--bg);color:var(--text);
+  font-family:"Heebo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  font-size:16px;line-height:1.5;
+  overscroll-behavior-y:contain;
+  font-feature-settings:"tnum" 1;
+}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+a{color:inherit}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.01em}
+.num{font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+svg{display:block}
+
+.app{max-width:640px;margin:0 auto;padding:0 16px calc(var(--nav-h) + env(safe-area-inset-bottom) + 24px)}
+@media (min-width:900px){
+  .app{max-width:1040px;padding-top:12px}
+}
+
+/* ---------- header ---------- */
+.top{
+  position:sticky;top:0;z-index:20;
+  padding:calc(10px + env(safe-area-inset-top)) 0 10px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:color-mix(in srgb,var(--bg) 82%,transparent);
+  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.crest{
+  width:40px;height:40px;border-radius:12px;flex:none;
+  background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;font-weight:900;font-size:18px;
+}
+.brand h1{font-size:17px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{display:block;color:var(--text-2);font-weight:500;font-size:12.5px;margin-top:2px}
+.top-actions{display:flex;gap:8px;flex:none}
+.icon-btn{
+  width:40px;height:40px;border-radius:999px;display:grid;place-items:center;
+  background:var(--surface);border:1px solid var(--line);color:var(--text-2);
+  transition:transform .15s var(--ease),background .2s;
+}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn svg{width:20px;height:20px}
+
+/* ---------- views ---------- */
+.view{display:none}
+.view.on{display:block;animation:viewIn .32s var(--ease) both}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.section{margin-top:22px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;margin:0 4px 10px}
+.section-h h2{font-size:17px}
+.section-h .more{font-size:13.5px;color:var(--accent);font-weight:600}
+
+/* ---------- cards ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.rise{animation:rise .5s var(--ease) both;animation-delay:calc(var(--i,0) * 55ms)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* hero */
+.hero{padding:20px 20px 18px;position:relative;overflow:hidden}
+.hero::before{
+  content:"";position:absolute;inset:auto -40px -80px auto;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(closest-side,var(--accent-soft-2),transparent 70%);pointer-events:none;
+}
+.hero-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12.5px;font-weight:600;background:var(--surface-2);border:1px solid var(--line);color:var(--text-2);white-space:nowrap}
+.chip.accent{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.chip.loss{background:var(--loss-soft);color:var(--loss);border-color:transparent}
+.hero-date{font-size:13.5px;color:var(--text-2);font-weight:500}
+.matchup{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:18px 0 6px}
+.team{text-align:center;min-width:0}
+.team .badge{width:56px;height:56px;border-radius:18px;margin:0 auto 8px;display:grid;place-items:center;font-weight:900;font-size:20px;background:var(--surface-2);border:1px solid var(--line);color:var(--text-2)}
+.team.mine .badge{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.team .name{font-weight:700;font-size:15px;line-height:1.2;overflow-wrap:anywhere}
+.team .sub{font-size:12px;color:var(--text-3);margin-top:3px}
+.vs{font-weight:900;font-size:13px;color:var(--text-3);letter-spacing:.08em}
+.score{font-size:40px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap}
+.score .sep{color:var(--text-3);margin:0 4px}
+.kick{text-align:center;margin-top:4px}
+.kick .time{font-size:34px;font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.kick .time.tbd{font-size:20px;color:var(--text-2);font-weight:700}
+.kick .venue{font-size:13.5px;color:var(--text-2);margin-top:4px}
+.countdown{display:flex;justify-content:center;gap:10px;margin:16px 0 4px}
+.cd{min-width:66px;padding:10px 8px;border-radius:var(--r-s);background:var(--surface-2);border:1px solid var(--line);text-align:center}
+.cd b{display:block;font-size:24px;font-weight:900;line-height:1;transition:transform .25s var(--ease)}
+.cd b.tick{animation:tick .35s var(--ease)}
+@keyframes tick{0%{transform:translateY(-6px);opacity:.3}100%{transform:none;opacity:1}}
+.cd span{display:block;font-size:11.5px;color:var(--text-2);margin-top:5px;font-weight:600}
+.note{margin-top:14px;padding:11px 13px;border-radius:var(--r-s);background:var(--accent-soft);color:var(--text);font-size:14px;line-height:1.45;display:flex;gap:9px}
+.note svg{width:18px;height:18px;flex:none;color:var(--accent);margin-top:2px}
+.actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.btn{
+  flex:1;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  height:44px;padding:0 14px;border-radius:999px;font-weight:700;font-size:14.5px;white-space:nowrap;
+  background:var(--surface-2);border:1px solid var(--line-strong);color:var(--text);
+  transition:transform .15s var(--ease),background .2s;
+}
+.btn svg{width:18px;height:18px;flex:none}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.hero .actions .btn.primary{flex-basis:100%}
+
+/* form strip */
+.form{display:inline-flex;gap:5px;align-items:center}
+.pip{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff;animation:pop .4s var(--ease) both;animation-delay:calc(var(--i,0) * 60ms)}
+.pip.W{background:var(--win);color:var(--accent-ink)}
+.pip.D{background:var(--draw)}
+.pip.L{background:var(--loss)}
+.pip.E{background:transparent;border:1.5px dashed var(--line-strong)}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:none;opacity:1}}
+
+/* stats row */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{padding:12px 8px;text-align:center;border-radius:var(--r-s);background:var(--surface);border:1px solid var(--line)}
+.stat b{display:block;font-size:22px;font-weight:900;line-height:1.1}
+.stat span{font-size:11.5px;color:var(--text-2);font-weight:600}
+
+/* list of games */
+.list{display:flex;flex-direction:column;gap:8px}
+.g{
+  display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:var(--r-s);background:var(--surface);border:1px solid var(--line);
+  text-align:start;width:100%;transition:transform .15s var(--ease),background .2s;
+}
+.g:active{transform:scale(.985)}
+.g.next{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.g .d{text-align:center;line-height:1.1}
+.g .d b{display:block;font-size:19px;font-weight:900}
+.g .d span{font-size:11.5px;color:var(--text-2);font-weight:600}
+.g .who{min-width:0}
+.g .who .n{font-weight:700;font-size:15px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g .who .n.me{color:var(--accent)}
+.g .who .m{font-size:12.5px;color:var(--text-2);margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.g .res{text-align:center;min-width:54px}
+.g .res .sc{font-size:19px;font-weight:900;letter-spacing:-.01em;padding:4px 8px;border-radius:9px;display:inline-block}
+.g .res .sc.W{background:var(--accent-soft);color:var(--accent)}
+.g .res .sc.L{background:var(--loss-soft);color:var(--loss)}
+.g .res .sc.D{background:var(--surface-2);color:var(--text-2)}
+.g .res .t{font-size:15px;font-weight:800;color:var(--text)}
+.g .res .t.tbd{font-size:12.5px;color:var(--text-3);font-weight:600}
+.g .res .tag{font-size:11px;color:var(--text-3);font-weight:600;display:block;margin-top:2px}
+.month{font-size:13px;font-weight:700;color:var(--text-2);margin:18px 4px 8px}
+.month:first-child{margin-top:0}
+
+/* segmented + chips */
+.seg{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);position:relative;margin-bottom:14px}
+.seg button{position:relative;z-index:1;height:38px;border-radius:999px;font-weight:700;font-size:14px;color:var(--text-2);transition:color .2s}
+.seg button[aria-selected="true"]{color:var(--accent-ink)}
+.seg .thumb{position:absolute;top:4px;bottom:4px;inset-inline-start:4px;width:calc(50% - 4px);border-radius:999px;background:var(--accent);transition:transform .35s var(--ease)}
+.seg[data-i="1"] .thumb{transform:translateX(-100%)}
+.rounds{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 10px;margin:0 -16px 6px;padding-inline:16px;scroll-snap-type:x proximity;scrollbar-width:none}
+.rounds::-webkit-scrollbar{display:none}
+.rounds button{flex:none;height:34px;padding:0 13px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:700;font-size:13px;color:var(--text-2);scroll-snap-align:center;transition:background .2s,color .2s,transform .15s}
+.rounds button:active{transform:scale(.95)}
+.rounds button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{font-size:11.5px;font-weight:700;color:var(--text-3);text-align:center;padding:10px 4px;border-bottom:1px solid var(--line)}
+.tbl th.l{text-align:start}
+.tbl td{padding:10px 4px;text-align:center;border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td.l{text-align:start;font-weight:600;max-width:0;width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl td.rk{font-weight:800;color:var(--text-2);width:36px}
+.tbl td.pt{font-weight:900;font-size:15px}
+.tbl tr{cursor:pointer}
+.tbl tr.rise{animation-delay:calc(var(--i,0) * 35ms)}
+.tbl tr.me td{background:var(--accent-soft)}
+.tbl tr.me td:first-child{border-start-start-radius:10px;border-end-start-radius:10px}
+.tbl tr.me td:last-child{border-start-end-radius:10px;border-end-end-radius:10px}
+.tbl tr.me td.l{color:var(--accent);font-weight:800}
+.mv{display:inline-block;font-size:10px;margin-inline-start:4px;vertical-align:middle}
+.mv.up{color:var(--win)}
+.mv.down{color:var(--loss)}
+.tbl .form{gap:3px}
+.tbl .pip{width:16px;height:16px;border-radius:5px;font-size:0}
+.legend{font-size:12px;color:var(--text-3);margin:10px 6px 0;line-height:1.6}
+
+/* bottom nav */
+.nav{
+  position:fixed;inset-inline:0;bottom:0;z-index:30;
+  padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+  background:color-mix(in srgb,var(--surface) 86%,transparent);
+  backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);
+  border-top:1px solid var(--line);
+}
+.nav-in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.nav button{height:48px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;font-weight:700;color:var(--text-3);transition:color .2s,transform .15s var(--ease)}
+.nav button svg{width:22px;height:22px;transition:transform .3s var(--ease)}
+.nav button:active{transform:scale(.94)}
+.nav button[aria-current="page"]{color:var(--accent)}
+.nav button[aria-current="page"] svg{transform:translateY(-1px)}
+@media (min-width:900px){
+  .nav{position:sticky;top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);padding:8px 0}
+  .nav-in{max-width:1040px;grid-template-columns:repeat(4,160px);justify-content:start;padding:0 16px}
+  .app{padding-bottom:40px}
+  .top{position:static;background:none;backdrop-filter:none}
+  .grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start}
+}
+
+/* sheet */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(5,10,7,.5);opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;inset-inline:0;bottom:0;z-index:41;max-width:640px;margin:0 auto;
+  max-height:88dvh;overflow:auto;overscroll-behavior:contain;
+  background:var(--surface);border-radius:24px 24px 0 0;box-shadow:var(--shadow-sheet);
+  padding:10px 18px calc(22px + env(safe-area-inset-bottom));
+  transform:translateY(105%);transition:transform .45s var(--ease);
+}
+.sheet.on{transform:none}
+.grab{width:40px;height:5px;border-radius:999px;background:var(--line-strong);margin:0 auto 14px}
+.sheet-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.sheet-h .badge{width:48px;height:48px;border-radius:15px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;font-weight:900;font-size:18px;color:var(--text-2);flex:none}
+.sheet-h h3{font-size:18px;line-height:1.2}
+.sheet-h .sub{font-size:13px;color:var(--text-2);margin-top:2px}
+.sheet .list{margin-top:8px}
+.sheet .stats{margin:4px 0 16px}
+.sheet .g{background:var(--surface-2)}
+.h3{font-size:14.5px;font-weight:800;margin:16px 4px 8px;color:var(--text-2)}
+
+/* skeleton, empty, error */
+.sk{border-radius:var(--r);background:linear-gradient(90deg,var(--surface) 0%,var(--surface-2) 50%,var(--surface) 100%);background-size:200% 100%;animation:sh 1.3s linear infinite;border:1px solid var(--line)}
+@keyframes sh{from{background-position:200% 0}to{background-position:-200% 0}}
+.empty{padding:26px 18px;text-align:center;color:var(--text-2);font-size:14.5px}
+.empty b{display:block;color:var(--text);font-size:16px;margin-bottom:4px}
+.err{padding:16px;border-radius:var(--r-s);background:var(--loss-soft);color:var(--loss);font-weight:600;font-size:14px;margin-top:14px}
+.updated{font-size:12px;color:var(--text-3);text-align:center;margin-top:26px}
+.updated a{color:var(--text-3)}
+
+/* confetti */
+#confetti{position:fixed;inset:0;z-index:50;pointer-events:none}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="crest" id="crest">ג</div>
+      <div>
+        <h1 id="teamTitle">גליל עליון דרום</h1>
+        <small id="leagueTitle">ליגת ילדים ב'</small>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeBtn" aria-label="מצב כהה או בהיר">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HOME -->
+    <section class="view on" id="v-home" aria-label="בית">
+      <div id="homeBody">
+        <div class="sk" style="height:300px"></div>
+        <div class="sk" style="height:90px;margin-top:16px"></div>
+        <div class="sk" style="height:200px;margin-top:16px"></div>
+      </div>
+    </section>
+
+    <!-- GAMES -->
+    <section class="view" id="v-games" aria-label="משחקים">
+      <div class="seg" id="gamesSeg" data-i="0">
+        <div class="thumb"></div>
+        <button aria-selected="true" data-i="0">המשחקים שלנו</button>
+        <button aria-selected="false" data-i="1">כל הליגה</button>
+      </div>
+      <div id="roundsBar" class="rounds" hidden></div>
+      <div id="gamesBody" class="list"></div>
+    </section>
+
+    <!-- TABLE -->
+    <section class="view" id="v-table" aria-label="טבלה">
+      <div class="card" style="padding:4px 10px 8px;overflow:hidden">
+        <table class="tbl" id="tbl">
+          <thead><tr><th>#</th><th class="l">קבוצה</th><th>מש'</th><th>נ'</th><th>ת'</th><th>ה'</th><th>הפ'</th><th>נק'</th></tr></thead>
+          <tbody id="tblBody"></tbody>
+        </table>
+      </div>
+      <div class="legend" id="tblLegend"></div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="view" id="v-cal" aria-label="יומן">
+      <div class="actions" style="margin:0 0 14px">
+        <button class="btn primary" id="icsAll">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          כל העונה ליומן
+        </button>
+        <button class="btn" id="shareSeason">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>
+          שיתוף הלוח
+        </button>
+      </div>
+      <div id="calBody" class="list"></div>
+    </section>
+
+    <div class="updated" id="updated"></div>
+  </main>
+</div>
+
+<nav class="nav" aria-label="ניווט">
+  <div class="nav-in">
+    <button data-view="home" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg>
+      בית
+    </button>
+    <button data-view="games">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7l4.5 3.3-1.7 5.4H9.2L7.5 10.3z"/><path d="M12 3v4M7.5 10.3L4 9M16.5 10.3L20 9M9.2 15.7L7 19M14.8 15.7L17 19"/></svg>
+      משחקים
+    </button>
+    <button data-view="table">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>
+      טבלה
+    </button>
+    <button data-view="cal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      יומן
+    </button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="פרטי קבוצה">
+  <div class="grab"></div>
+  <div id="sheetBody"></div>
+</div>
+<canvas id="confetti" hidden></canvas>
+
+<script>
+(() => {
+"use strict";
+const $ = (s, r=document) => r.querySelector(s);
+const TZ = "Asia/Jerusalem";
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let DATA=null, CFG=null, OVR=null, ME=null; // ME = {id,name}
+let state = { view:"home", gamesMode:0, round:null };
+
+/* ---------- theme ---------- */
+const themeKey="gd-theme";
+function applyTheme(t){ if(t) document.documentElement.dataset.theme=t; else delete document.documentElement.dataset.theme; }
+try{ applyTheme(localStorage.getItem(themeKey)||""); }catch{}
+$("#themeBtn").addEventListener("click",()=>{
+  const dark = getComputedStyle(document.documentElement).colorScheme.includes("dark");
+  const next = dark ? "light" : "dark";
+  applyTheme(next); try{localStorage.setItem(themeKey,next);}catch{}
+});
+
+/* ---------- helpers ---------- */
+const esc = s => String(s??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const parts = (d) => {
+  const f = new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hour12:false,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",weekday:"short"});
+  const o={}; for(const p of f.formatToParts(d)) o[p.type]=p.value; return o;
+};
+function gameTime(g){
+  // returns {date:Date, tbd:bool, timeStr}
+  const d = new Date(g.date);
+  const ov = OVR?.games?.[g.id];
+  if (ov?.time && /^\d{1,2}:\d{2}$/.test(ov.time)) {
+    const p = parts(d);
+    const [h,m] = ov.time.split(":").map(Number);
+    // build local Israel time: use the date part and apply offset from the API date
+    const isoDate = `${p.year}-${p.month}-${p.day}`;
+    const dt = israelDate(isoDate,h,m);
+    return {date:dt, tbd:false, timeStr:ov.time};
+  }
+  const p = parts(d);
+  const h = Number(p.hour), m = Number(p.minute);
+  const tbd = (h===0 || h===1) && m===0; // ONE stores "date only" as midnight
+  return {date:d, tbd, timeStr: tbd ? "" : `${p.hour}:${p.minute}`};
+}
+function israelDate(isoDate,h,m){
+  // find UTC instant whose Israel wall time is isoDate h:m
+  const guess = new Date(`${isoDate}T${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:00Z`);
+  const p = parts(guess);
+  const wall = Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute);
+  const off = wall - guess.getTime();
+  return new Date(guess.getTime() - off);
+}
+const heDate = (d, opts) => new Intl.DateTimeFormat("he-IL",{timeZone:TZ,...opts}).format(d);
+const dayNum = d => heDate(d,{day:"numeric"});
+const monShort = d => heDate(d,{month:"short"});
+const weekday = d => heDate(d,{weekday:"long"});
+const longDate = d => heDate(d,{weekday:"long", day:"numeric", month:"long"});
+const monthYear = d => heDate(d,{month:"long", year:"numeric"});
+
+function shortName(n){
+  let s = n.replace(/^(מ\.כ\.?|מ\.ס\.?|ה\.|מועדון הכדורגל|מרכז קהילתי|איחוד)\s*/,"")
+           .replace(/\s*צו פיוס\s*$/,"").trim();
+  return s || n;
+}
+const initial = n => shortName(n).replace(/^(הפועל|הפ'|מכבי|בית"ר|ביתר|בני)\s+/,"").trim().charAt(0) || "?";
+const isMe = t => t && (t.id===ME.id || t.name.includes(CFG.team.match));
+const mine = g => isMe(g.home) || isMe(g.away);
+const played = g => g.home.goals!==null && g.away.goals!==null;
+function outcome(g, teamId){
+  if(!played(g)) return null;
+  const home = g.home.id===teamId;
+  const my = home? g.home.goals : g.away.goals, op = home? g.away.goals : g.home.goals;
+  return my>op ? "W" : my<op ? "L" : "D";
+}
+const outcomeHe = {W:"ניצחון",D:"תיקו",L:"הפסד"};
+function teamGames(id){ return DATA.games.filter(g=>g.home.id===id||g.away.id===id); }
+function formOf(id, n=5){
+  return teamGames(id).filter(played).slice(-n).map(g=>outcome(g,id));
+}
+function computeTable(maxRound=Infinity){
+  const t = new Map();
+  for (const tm of DATA.teams) t.set(tm.id,{id:tm.id,name:tm.name,games:0,wins:0,draws:0,losses:0,gf:0,ga:0,points:0});
+  for (const g of DATA.games){
+    if(!played(g) || g.round>maxRound) continue;
+    const h=t.get(g.home.id), a=t.get(g.away.id); if(!h||!a) continue;
+    h.games++; a.games++; h.gf+=g.home.goals; h.ga+=g.away.goals; a.gf+=g.away.goals; a.ga+=g.home.goals;
+    if(g.home.goals>g.away.goals){h.wins++;a.losses++;h.points+=3;}
+    else if(g.home.goals<g.away.goals){a.wins++;h.losses++;a.points+=3;}
+    else {h.draws++;a.draws++;h.points++;a.points++;}
+  }
+  const arr=[...t.values()].map(x=>({...x,gd:x.gf-x.ga}));
+  arr.sort((a,b)=> b.points-a.points || b.gd-a.gd || b.gf-a.gf || a.name.localeCompare(b.name,"he"));
+  arr.forEach((x,i)=>x.rank=i+1);
+  return arr;
+}
+function lastPlayedRound(){ return Math.max(0,...DATA.games.filter(played).map(g=>g.round)); }
+
+/* ---------- ICS ---------- */
+function icsEvent(g){
+  const t = gameTime(g);
+  const me = isMe(g.home) ? "home" : "away";
+  const opp = me==="home" ? g.away.name : g.home.name;
+  const ov = OVR?.games?.[g.id] || {};
+  const where = ov.venue || (me==="home" ? (OVR?.venues?.home?.name||"") : "");
+  const fmt = d => d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+  const title = `${CFG.team.displayName} נגד ${shortName(opp)} (${me==="home"?"בית":"חוץ"})`;
+  let lines = ["BEGIN:VEVENT",`UID:${g.id}@galil-darom`,`DTSTAMP:${fmt(new Date())}`,`SUMMARY:${title}`];
+  if (t.tbd){
+    const p=parts(t.date); const ymd=`${p.year}${p.month}${p.day}`;
+    const next = new Date(t.date.getTime()+86400000); const q=parts(next);
+    lines.push(`DTSTART;VALUE=DATE:${ymd}`,`DTEND;VALUE=DATE:${q.year}${q.month}${q.day}`);
+  } else {
+    lines.push(`DTSTART:${fmt(t.date)}`,`DTEND:${fmt(new Date(t.date.getTime()+90*60000))}`);
+  }
+  if (where) lines.push(`LOCATION:${where.replace(/,/g,"\\,")}`);
+  const desc = [`מחזור ${g.round}`, ov.note||"", t.tbd?"השעה טרם נקבעה":""].filter(Boolean).join("\\n");
+  lines.push(`DESCRIPTION:${desc}`,"END:VEVENT");
+  return lines.join("\r\n");
+}
+function downloadIcs(games, name){
+  const body = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//galil-darom//he","CALSCALE:GREGORIAN",...games.map(icsEvent),"END:VCALENDAR"].join("\r\n");
+  const blob = new Blob([body],{type:"text/calendar;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);
+}
+
+/* ---------- share ---------- */
+function gameText(g){
+  const t=gameTime(g); const home=isMe(g.home); const opp=home?g.away.name:g.home.name;
+  const ov=OVR?.games?.[g.id]||{};
+  const where = ov.venue || (home ? (OVR?.venues?.home?.name||"") : "");
+  const lines=[`⚽ ${CFG.team.displayName} נגד ${shortName(opp)}`,
+    `${longDate(t.date)}${t.tbd?"":" בשעה "+t.timeStr}${t.tbd?" (השעה תתעדכן)":""}`,
+    `${home?"משחק בית":"משחק חוץ"} | מחזור ${g.round}`];
+  if(where) lines.push(`📍 ${where}`);
+  if(ov.waze) lines.push(ov.waze);
+  if(ov.note) lines.push(ov.note);
+  lines.push("", location.href.split("#")[0]);
+  return lines.join("\n");
+}
+async function share(text){
+  if (navigator.share){ try{ await navigator.share({text}); return; }catch(e){ if(e.name==="AbortError") return; } }
+  window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank","noopener");
+}
+
+/* ---------- render: home ---------- */
+function teamBlock(t, extra=""){
+  const me=isMe(t);
+  return `<div class="team ${me?"mine":""}"><div class="badge">${esc(initial(t.name))}</div><div class="name">${esc(me?CFG.team.displayName:shortName(t.name))}</div><div class="sub">${extra}</div></div>`;
+}
+let cdTimer=null;
+function renderHome(){
+  const my = teamGames(ME.id).sort((a,b)=>a.date.localeCompare(b.date));
+  const now = Date.now();
+  const next = my.find(g=>!played(g) && gameTime(g).date.getTime() > now-3*3600000);
+  const last = [...my].reverse().find(played);
+  const tbl = computeTable(); const meRow = tbl.find(r=>r.id===ME.id);
+  const form = formOf(ME.id);
+  let html="";
+
+  if (next){
+    const t=gameTime(next); const home=isMe(next.home); const opp=home?next.away:next.home;
+    const ov=OVR?.games?.[next.id]||{}; const where = ov.venue || (home ? (OVR?.venues?.home?.name||"") : "");
+    const waze = ov.waze || (home ? (OVR?.venues?.home?.waze||"") : "");
+    const note = ov.note || (home ? (OVR?.venues?.home?.note||"") : "");
+    const oppRow = tbl.find(r=>r.id===opp.id);
+    html += `<div class="card hero rise" style="--i:0">
+      <div class="hero-top"><span class="chip accent">המשחק הבא</span><span class="hero-date">${esc(longDate(t.date))}</span></div>
+      <div class="matchup">
+        ${teamBlock(next.home, isMe(next.home)?"":`מקום ${oppRow?.rank??"?"}`)}
+        <div class="vs">נגד</div>
+        ${teamBlock(next.away, isMe(next.away)?"":`מקום ${oppRow?.rank??"?"}`)}
+      </div>
+      <div class="kick">
+        <div class="time ${t.tbd?"tbd":""} num">${t.tbd?"השעה תתעדכן":esc(t.timeStr)}</div>
+        <div class="venue">${home?"משחק בית":"משחק חוץ"}${where?" · "+esc(where):""} · מחזור ${next.round}</div>
+      </div>
+      <div class="countdown" id="cd"></div>
+      ${note?`<div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div>${esc(note)}</div></div>`:""}
+      <div class="actions">
+        <button class="btn primary" data-act="share" data-id="${next.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>שיתוף להורים</button>
+        <button class="btn" data-act="ics" data-id="${next.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>ליומן</button>
+        ${waze?`<a class="btn" href="${esc(waze)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>ניווט</a>`:""}
+        <button class="btn" data-act="opp" data-id="${opp.id}">על היריבה</button>
+      </div>
+    </div>`;
+  } else {
+    html += `<div class="card empty rise" style="--i:0"><b>אין משחק קרוב בלוח</b>העונה הסתיימה או שהלוח טרם פורסם.</div>`;
+  }
+
+  // last result
+  if (last){
+    const o=outcome(last,ME.id); const home=isMe(last.home);
+    const my=home?last.home.goals:last.away.goals, op=home?last.away.goals:last.home.goals;
+    const opp=home?last.away:last.home;
+    html += `<div class="section"><div class="section-h"><h2>התוצאה האחרונה</h2><span class="hero-date">${esc(heDate(gameTime(last).date,{day:"numeric",month:"long"}))}</span></div>
+      <div class="card hero rise" style="--i:1;padding-top:16px">
+        <div class="matchup" style="margin-top:4px">
+          ${teamBlock(last.home)}
+          <div class="score num"><span data-count="${last.home.goals}">${last.home.goals}</span><span class="sep">:</span><span data-count="${last.away.goals}">${last.away.goals}</span></div>
+          ${teamBlock(last.away)}
+        </div>
+        <div style="text-align:center;margin-top:6px"><span class="chip ${o==="W"?"accent":o==="L"?"loss":""}">${outcomeHe[o]} ${my}:${op} · ${home?"בית":"חוץ"} · מחזור ${last.round}</span></div>
+      </div></div>`;
+    maybeConfetti(last,o);
+  }
+
+  // season at a glance
+  const pos = meRow ? meRow.rank : "-";
+  html += `<div class="section"><div class="section-h"><h2>העונה שלנו</h2><button class="more" data-view="table">לטבלה המלאה</button></div>
+    <div class="stats rise" style="--i:2">
+      <div class="stat"><b class="num">${pos}</b><span>מקום בטבלה</span></div>
+      <div class="stat"><b class="num">${meRow?.points??0}</b><span>נקודות</span></div>
+      <div class="stat"><b class="num">${meRow?.games??0}</b><span>משחקים</span></div>
+      <div class="stat"><b class="num">${meRow?`${meRow.gf}:${meRow.ga}`:"0:0"}</b><span>שערים</span></div>
+    </div>
+    <div class="card rise" style="--i:3;margin-top:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:700;font-size:14px">5 משחקים אחרונים</span>
+      ${form.length ? `<span class="form">${form.map((o,i)=>`<span class="pip ${o}" style="--i:${i}">${o==="W"?"נ":o==="D"?"ת":"ה"}</span>`).join("")}</span>` : `<span style="font-size:13px;color:var(--text-3)">עוד לא שיחקנו</span>`}
+    </div></div>`;
+
+  // upcoming 3
+  const upcoming = my.filter(g=>!played(g) && g!==next).slice(0,3);
+  if (upcoming.length){
+    html += `<div class="section"><div class="section-h"><h2>בהמשך</h2><button class="more" data-view="games">כל המשחקים</button></div><div class="list">${upcoming.map((g,i)=>gameRow(g,i+4)).join("")}</div></div>`;
+  }
+  $("#homeBody").innerHTML = html;
+  startCountdown(next);
+  countUp($("#homeBody"));
+}
+function startCountdown(next){
+  clearInterval(cdTimer);
+  const el=$("#cd"); if(!el||!next) return;
+  const t=gameTime(next);
+  const target = t.tbd ? israelDate(`${parts(t.date).year}-${parts(t.date).month}-${parts(t.date).day}`,9,0) : t.date;
+  const prev={};
+  const tick=()=>{
+    let diff = Math.max(0, target.getTime()-Date.now());
+    const d=Math.floor(diff/86400000), h=Math.floor(diff%86400000/3600000), m=Math.floor(diff%3600000/60000), s=Math.floor(diff%60000/1000);
+    const units = d>0 ? [[d,"ימים"],[h,"שעות"],[m,"דקות"]] : [[h,"שעות"],[m,"דקות"],[s,"שניות"]];
+    if (diff===0){ el.innerHTML=`<span class="chip accent">המשחק מתחיל</span>`; clearInterval(cdTimer); return; }
+    if (el.childElementCount!==units.length) el.innerHTML = units.map((u,i)=>`<div class="cd"><b class="num" data-k="${i}">${u[0]}</b><span>${u[1]}</span></div>`).join("");
+    units.forEach((u,i)=>{ const b=el.querySelector(`[data-k="${i}"]`); if(b.textContent!==String(u[0])){ b.textContent=u[0]; if(!REDUCED){b.classList.remove("tick"); void b.offsetWidth; b.classList.add("tick");} } });
+  };
+  tick(); cdTimer=setInterval(tick,1000);
+}
+function countUp(root){
+  if(REDUCED) return;
+  root.querySelectorAll("[data-count]").forEach(el=>{
+    const to=Number(el.dataset.count); if(!to) return;
+    const t0=performance.now(), dur=700;
+    const step=(t)=>{ const p=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-p,3); el.textContent=Math.round(e*to); if(p<1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}
+
+/* ---------- render: games ---------- */
+function gameRow(g,i=0,focus=ME.id){
+  const t=gameTime(g); const isMine=mine(g);
+  const focusHome = g.home.id===focus;
+  const me = isMine ? (isMe(g.home)?"home":"away") : null;
+  const o = played(g) ? outcome(g, isMine?ME.id:focus) : null;
+  let res;
+  if (played(g)) res = `<span class="sc num ${o||""}">${g.home.goals}:${g.away.goals}</span>`;
+  else res = `<span class="t ${t.tbd?"tbd":""} num">${t.tbd?"שעה תתעדכן":esc(t.timeStr)}</span><span class="tag">מחזור ${g.round}</span>`;
+  const nowNext = !played(g) && g===NEXT;
+  const nameH = isMe(g.home)?CFG.team.displayName:shortName(g.home.name);
+  const nameA = isMe(g.away)?CFG.team.displayName:shortName(g.away.name);
+  const ov=OVR?.games?.[g.id]||{};
+  const where = ov.venue || (me==="home" ? (OVR?.venues?.home?.name||"") : "");
+  return `<button class="g rise ${nowNext?"next":""}" style="--i:${i}" data-act="game" data-id="${g.id}">
+    <div class="d"><b class="num">${esc(dayNum(t.date))}</b><span>${esc(monShort(t.date))} · ${esc(weekday(t.date)).replace("יום ","")}</span></div>
+    <div class="who">
+      <div class="n ${isMe(g.home)?"me":""}">${esc(nameH)}</div>
+      <div class="n ${isMe(g.away)?"me":""}">${esc(nameA)}</div>
+      ${isMine?`<div class="m">${me==="home"?"בית":"חוץ"}${where?" · "+esc(where):""}${played(g)?" · מחזור "+g.round:""}</div>`:""}
+    </div>
+    <div class="res">${res}</div>
+  </button>`;
+}
+let NEXT=null;
+function renderGames(){
+  const body=$("#gamesBody"); const bar=$("#roundsBar");
+  if (state.gamesMode===0){
+    bar.hidden=true;
+    const my=teamGames(ME.id).sort((a,b)=>a.date.localeCompare(b.date));
+    body.innerHTML = my.length ? my.map((g,i)=>gameRow(g,Math.min(i,10))).join("") : `<div class="card empty"><b>אין משחקים</b>הלוח טרם פורסם.</div>`;
+    const nx=body.querySelector(".g.next"); if(nx && !REDUCED) setTimeout(()=>nx.scrollIntoView({block:"center",behavior:"smooth"}),350);
+  } else {
+    bar.hidden=false;
+    const rounds=[...new Set(DATA.games.map(g=>g.round))].sort((a,b)=>a-b);
+    if(state.round===null){ state.round = NEXT ? NEXT.round : (lastPlayedRound()||rounds[0]); }
+    bar.innerHTML = rounds.map(r=>`<button aria-selected="${r===state.round}" data-round="${r}">מחזור ${r}</button>`).join("");
+    const sel=bar.querySelector('[aria-selected="true"]'); if(sel) sel.scrollIntoView({inline:"center",block:"nearest",behavior:REDUCED?"auto":"smooth"});
+    const gs=DATA.games.filter(g=>g.round===state.round).sort((a,b)=>a.date.localeCompare(b.date));
+    body.innerHTML = gs.map((g,i)=>gameRow(g,i,null)).join("");
+  }
+}
+
+/* ---------- render: table ---------- */
+function renderTable(){
+  const now=computeTable(); const lr=lastPlayedRound();
+  const before = lr>0 ? computeTable(lr-1) : null;
+  const rows = now.map((r,i)=>{
+    const pr = before ? before.find(x=>x.id===r.id) : null;
+    const moved = pr && pr.games!==r.games; // only teams that played in the last round get an arrow
+    const mv = moved && pr.rank>r.rank ? `<span class="mv up">▲</span>` : moved && pr.rank<r.rank ? `<span class="mv down">▼</span>` : "";
+    return `<tr class="rise ${r.id===ME.id?"me":""}" style="--i:${i}" data-act="opp" data-id="${r.id}">
+      <td class="rk num">${r.rank}</td>
+      <td class="l">${esc(r.id===ME.id?CFG.team.displayName:shortName(r.name))}${mv}</td>
+      <td class="num">${r.games}</td><td class="num">${r.wins}</td><td class="num">${r.draws}</td><td class="num">${r.losses}</td>
+      <td class="num">${r.gd>0?"+":""}${r.gd}</td><td class="pt num">${r.points}</td></tr>`;
+  }).join("");
+  $("#tblBody").innerHTML=rows;
+  $("#tblLegend").textContent = lr>0 ? `החצים מראים שינוי מקום לעומת סוף מחזור ${lr-1}. לחיצה על קבוצה פותחת את הפרטים שלה.` : "הטבלה תתמלא אחרי המשחקים הראשונים. לחיצה על קבוצה פותחת את הפרטים שלה.";
+}
+
+/* ---------- render: calendar ---------- */
+function renderCal(){
+  const my=teamGames(ME.id).sort((a,b)=>a.date.localeCompare(b.date));
+  let html="", curM="";
+  my.forEach((g,i)=>{
+    const t=gameTime(g); const m=monthYear(t.date);
+    if(m!==curM){ curM=m; html+=`<div class="month">${esc(m)}</div>`; }
+    html+=gameRow(g,Math.min(i,10));
+  });
+  $("#calBody").innerHTML = html || `<div class="card empty"><b>אין משחקים ביומן</b></div>`;
+}
+
+/* ---------- sheet: team ---------- */
+function openSheet(html){ $("#sheetBody").innerHTML=html; $("#sheet").classList.add("on"); $("#scrim").classList.add("on"); countUp($("#sheetBody")); }
+function closeSheet(){ $("#sheet").classList.remove("on"); $("#scrim").classList.remove("on"); }
+$("#scrim").addEventListener("click",closeSheet);
+function teamSheet(id){
+  const tm=DATA.teams.find(t=>t.id===id); if(!tm) return;
+  const tbl=computeTable(); const row=tbl.find(r=>r.id===id);
+  const gs=teamGames(id).sort((a,b)=>a.date.localeCompare(b.date));
+  const done=gs.filter(played); const recent=done.slice(-5).reverse();
+  const form=formOf(id);
+  const h2h=gs.filter(g=>mine(g));
+  const h2hDone=h2h.filter(played);
+  const avg = (n,d)=> d? (n/d).toFixed(1) : "0.0";
+  const me = id===ME.id;
+  const name = me?CFG.team.displayName:tm.name;
+  const nextVs = h2h.find(g=>!played(g));
+  let html=`<div class="sheet-h"><div class="badge">${esc(initial(tm.name))}</div><div><h3>${esc(name)}</h3><div class="sub">${row?`מקום ${row.rank} · ${row.points} נק' · ${row.games} משחקים`:""}</div></div></div>
+    <div class="stats">
+      <div class="stat"><b class="num">${row?.wins??0}</b><span>ניצחונות</span></div>
+      <div class="stat"><b class="num">${row?.draws??0}</b><span>תיקו</span></div>
+      <div class="stat"><b class="num">${row?.losses??0}</b><span>הפסדים</span></div>
+      <div class="stat"><b class="num">${avg(row?.gf,row?.games)}</b><span>שערים למשחק</span></div>
+    </div>
+    <div class="card" style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:none;background:var(--surface-2)">
+      <span style="font-weight:700;font-size:14px">כושר אחרון</span>
+      ${form.length?`<span class="form">${form.map((o,i)=>`<span class="pip ${o}" style="--i:${i}">${o==="W"?"נ":o==="D"?"ת":"ה"}</span>`).join("")}</span>`:`<span style="font-size:13px;color:var(--text-3)">עוד לא שיחקו</span>`}
+    </div>`;
+  if(!me){
+    html+=`<div class="h3">מול ${esc(CFG.team.displayName)}</div>`;
+    if(h2hDone.length){ html+=`<div class="list">${h2hDone.slice().reverse().map((g,i)=>gameRow(g,i)).join("")}</div>`; }
+    else if(nextVs){ const t=gameTime(nextVs); html+=`<div class="card empty" style="padding:16px;box-shadow:none;background:var(--surface-2)">עוד לא נפגשנו העונה. המפגש הראשון: ${esc(longDate(t.date))}${isMe(nextVs.home)?" אצלנו":" אצלם"}.</div>`; }
+  }
+  html+=`<div class="h3">המשחקים האחרונים ${me?"שלנו":"שלהם"}</div>`;
+  html+= recent.length ? `<div class="list">${recent.map((g,i)=>gameRow(g,i,id)).join("")}</div>` : `<div class="card empty" style="padding:16px;box-shadow:none;background:var(--surface-2)">עוד לא שוחקו משחקים העונה.</div>`;
+  const upcoming=gs.filter(g=>!played(g)).slice(0,3);
+  if(upcoming.length){ html+=`<div class="h3">המשחקים הבאים ${me?"שלנו":"שלהם"}</div><div class="list">${upcoming.map((g,i)=>gameRow(g,i,id)).join("")}</div>`; }
+  openSheet(html);
+}
+function gameSheet(id){
+  const g=DATA.games.find(x=>x.id===id); if(!g) return;
+  if (mine(g)){ const opp=isMe(g.home)?g.away:g.home; return teamSheet(opp.id); }
+  // league game: show both teams quickly
+  const t=gameTime(g);
+  openSheet(`<div class="sheet-h"><div><h3>${esc(shortName(g.home.name))} נגד ${esc(shortName(g.away.name))}</h3><div class="sub">${esc(longDate(t.date))}${t.tbd?"":" · "+t.timeStr} · מחזור ${g.round}</div></div></div>
+    ${played(g)?`<div class="score num" style="text-align:center;margin:8px 0 16px"><span data-count="${g.home.goals}">${g.home.goals}</span><span class="sep">:</span><span data-count="${g.away.goals}">${g.away.goals}</span></div>`:""}
+    <div class="actions"><button class="btn" data-act="opp" data-id="${g.home.id}">${esc(shortName(g.home.name))}</button><button class="btn" data-act="opp" data-id="${g.away.id}">${esc(shortName(g.away.name))}</button></div>`);
+}
+
+/* ---------- confetti ---------- */
+function maybeConfetti(g,o){
+  if (o!=="W" || REDUCED) return;
+  const key="gd-confetti-"+g.id;
+  try{ if(localStorage.getItem(key)) return; localStorage.setItem(key,"1"); }catch{ return; }
+  const c=$("#confetti"); c.hidden=false; const ctx=c.getContext("2d");
+  const dpr=Math.min(2,devicePixelRatio||1); c.width=innerWidth*dpr; c.height=innerHeight*dpr; ctx.scale(dpr,dpr);
+  const accent=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+  const cols=[accent,"#f3c969","#ffffff","#8fd3a6"];
+  const ps=Array.from({length:140},()=>({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*6+3,c:cols[Math.random()*cols.length|0],a:Math.random()*Math.PI,va:(Math.random()-.5)*.3}));
+  const t0=performance.now();
+  const loop=(t)=>{ const el=(t-t0)/1000; ctx.clearRect(0,0,innerWidth,innerHeight);
+    for(const p of ps){ p.vy+=.35; p.x+=p.vx; p.y+=p.vy; p.vx*=.99; p.a+=p.va; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.globalAlpha=Math.max(0,1-el/2.6); ctx.fillStyle=p.c; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6); ctx.restore(); }
+    if(el<2.8) requestAnimationFrame(loop); else { c.hidden=true; }
+  };
+  requestAnimationFrame(loop);
+}
+
+/* ---------- navigation ---------- */
+function showView(v){
+  state.view=v;
+  document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on", s.id==="v-"+v));
+  document.querySelectorAll(".nav button").forEach(b=>{ if(b.dataset.view===v) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  if(v==="games") renderGames(); if(v==="table") renderTable(); if(v==="cal") renderCal();
+  window.scrollTo({top:0,behavior:"instant"});
+  try{ history.replaceState(null,"","#"+v); }catch{}
+}
+document.addEventListener("click",(e)=>{
+  const nv=e.target.closest("[data-view]"); if(nv){ showView(nv.dataset.view); return; }
+  const rb=e.target.closest("[data-round]"); if(rb){ state.round=Number(rb.dataset.round); renderGames(); return; }
+  const sg=e.target.closest("#gamesSeg button"); if(sg){ state.gamesMode=Number(sg.dataset.i); $("#gamesSeg").dataset.i=state.gamesMode; $("#gamesSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b===sg)); renderGames(); return; }
+  const a=e.target.closest("[data-act]"); if(!a) return;
+  const id=a.dataset.id, act=a.dataset.act;
+  if(act==="share"){ share(gameText(DATA.games.find(g=>g.id===id))); }
+  else if(act==="ics"){ downloadIcs([DATA.games.find(g=>g.id===id)], "game.ics"); }
+  else if(act==="opp"){ teamSheet(id); }
+  else if(act==="game"){ gameSheet(id); }
+});
+$("#icsAll").addEventListener("click",()=>downloadIcs(teamGames(ME.id).filter(g=>!played(g)),"galil-season.ics"));
+$("#shareSeason").addEventListener("click",()=>{
+  const my=teamGames(ME.id).filter(g=>!played(g)).sort((a,b)=>a.date.localeCompare(b.date));
+  const lines=[`⚽ לוח המשחקים של ${CFG.team.displayName}`, ""];
+  for(const g of my){ const t=gameTime(g); const home=isMe(g.home); lines.push(`${heDate(t.date,{day:"2-digit",month:"2-digit"})} ${t.tbd?"":t.timeStr+" "}${home?"🏠":"🚌"} ${shortName(home?g.away.name:g.home.name)}`); }
+  lines.push("", location.href.split("#")[0]);
+  share(lines.join("\n"));
+});
+// swipe down to close sheet
+let sy=null; const sheet=$("#sheet");
+sheet.addEventListener("touchstart",e=>{ sy = sheet.scrollTop===0 ? e.touches[0].clientY : null; },{passive:true});
+sheet.addEventListener("touchmove",e=>{ if(sy!==null && e.touches[0].clientY-sy>70){ sy=null; closeSheet(); } },{passive:true});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet(); });
+
+/* ---------- boot ---------- */
+function relTime(iso){
+  const m=Math.round((Date.now()-new Date(iso).getTime())/60000);
+  if(m<1) return "ממש עכשיו"; if(m<60) return `לפני ${m} דק'`; const h=Math.round(m/60); if(h<48) return `לפני ${h} שעות`; return `לפני ${Math.round(h/24)} ימים`;
+}
+async function boot(){
+  try{
+    const bust="?v="+Date.now();
+    const [d,c,o]=await Promise.all([
+      fetch("data.json"+bust,{cache:"no-store"}).then(r=>{ if(!r.ok) throw new Error("data.json "+r.status); return r.json(); }),
+      fetch("config.json"+bust,{cache:"no-store"}).then(r=>r.json()),
+      fetch("overrides.json"+bust,{cache:"no-store"}).then(r=>r.ok?r.json():{}).catch(()=>({})),
+    ]);
+    DATA=d; CFG=c; OVR=o||{};
+    const t=DATA.teams.find(x=>x.name.includes(CFG.team.match));
+    if(!t) throw new Error("הקבוצה לא נמצאה בליגה: "+CFG.team.match);
+    ME=t;
+    $("#teamTitle").textContent=CFG.team.displayName; $("#leagueTitle").textContent=DATA.league.name; $("#crest").textContent=CFG.team.short?.charAt(0)||"ג";
+    document.title=CFG.site?.title||document.title;
+    const my=teamGames(ME.id).sort((a,b)=>a.date.localeCompare(b.date));
+    NEXT = my.find(g=>!played(g) && gameTime(g).date.getTime()>Date.now()-3*3600000) || null;
+    renderHome();
+    $("#updated").innerHTML=`הנתונים מ-ONE, עודכנו ${esc(relTime(DATA.fetchedAt))} · <a href="https://vole.one.co.il/league/${DATA.league.id}" target="_blank" rel="noopener">לעמוד הליגה</a>`;
+    const h=(location.hash||"#home").slice(1); if(["home","games","table","cal"].includes(h)&&h!=="home") showView(h);
+  }catch(e){
+    $("#homeBody").innerHTML=`<div class="err">לא הצלחנו לטעון את הנתונים. ${esc(e.message)}<br><small>אם פתחת את הקובץ ישירות מהמחשב, צריך שרת מקומי או את הכתובת של האתר.</small></div>`;
+  }
+}
+boot();
+})();
+</script>
+</body>
+</html>
