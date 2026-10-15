@@ -109,11 +109,19 @@ async function main() {
   const teams = new Map();
   for (const g of list) for (const s of ["home", "away"]) teams.set(g[s].id, g[s].name);
 
+  let previous = null;
+  try { previous = JSON.parse(await fs.readFile(path.join(ROOT, "data.json"), "utf8")); } catch {}
+  const prevCount = previous?.games?.length || 0;
+  if (!list.length || (prevCount && list.length < prevCount * 0.8)) {
+    throw new Error(`refusing to write data.json: fetched ${list.length} games, previous file has ${prevCount}`);
+  }
+  if (!standings.length && previous?.standings?.length) standings = previous.standings;
+
   const out = {
     league: {
       id: LEAGUE_ID,
       name: cleanName(league?.name) || CONFIG.leagueName || "",
-      currentRound: (league?.round?.number ?? 0) + 1,
+      currentRound: league?.round?.number ?? null,
     },
     fetchedAt: new Date().toISOString(),
     teams: Array.from(teams, ([id, name]) => ({ id, name })),
@@ -121,6 +129,12 @@ async function main() {
     standings,
   };
 
+  // keep the old timestamp when nothing but the clock changed, so the workflow's "commit if changed" guard works
+  const strip = (o) => JSON.stringify({ ...o, fetchedAt: null });
+  if (previous && strip(previous) === strip(out)) {
+    console.log("no changes since", previous.fetchedAt);
+    return;
+  }
   await fs.writeFile(path.join(ROOT, "data.json"), JSON.stringify(out, null, 2), "utf8");
   console.log(`saved data.json: ${list.length} games, ${standings.length} teams in table, round ${out.league.currentRound}`);
 }

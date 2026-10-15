@@ -9,24 +9,24 @@
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Karantina:wght@700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --bg:#f3f5f3;--surface:#fff;--surface-2:#f6f8f6;--line:rgba(16,32,22,.09);--line-strong:rgba(16,32,22,.18);
-  --text:#121a15;--text-2:#55635a;--text-3:#8a968e;--accent:#1b7a44;--accent-ink:#fff;--accent-soft:rgba(27,122,68,.10);
-  --loss:#c2413a;--loss-soft:rgba(194,65,58,.12);--r:18px;--r-s:12px;--ease:cubic-bezier(.16,1,.3,1);color-scheme:light;
+  --bg:#F3EEE3;--surface:#FFFCF5;--surface-2:#F3EEE3;--line:rgba(21,24,28,.12);--line-strong:rgba(21,24,28,.35);
+  --text:#15181C;--text-2:#5E5A52;--text-3:#8a857b;--accent:#F2A900;--accent-ink:#15181C;--accent-soft:rgba(242,169,0,.18);
+  --loss:#C62828;--loss-soft:rgba(198,40,40,.12);--r:0;--r-s:0;--ease:cubic-bezier(.23,1,.32,1);color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root{
-  --bg:#0f1512;--surface:#18211c;--surface-2:#1e2924;--line:rgba(255,255,255,.07);--line-strong:rgba(255,255,255,.16);
-  --text:#edf2ee;--text-2:#a7b3ab;--text-3:#6f7b74;--accent:#4fcf7f;--accent-ink:#0b1a11;--accent-soft:rgba(79,207,127,.12);
-  --loss:#ef6b63;--loss-soft:rgba(239,107,99,.14);color-scheme:dark;}}
+  --bg:#121417;--surface:#1C2026;--surface-2:#121417;--line:rgba(244,239,230,.12);--line-strong:rgba(244,239,230,.35);
+  --text:#F4EFE6;--text-2:#A8A397;--text-3:#6f7b74;--accent:#FFB400;--accent-ink:#15181C;--accent-soft:rgba(255,180,0,.18);
+  --loss:#E8453C;--loss-soft:rgba(232,69,60,.14);color-scheme:dark;}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--text);font-family:"Heebo",system-ui,sans-serif;font-size:16px;line-height:1.5;min-height:100dvh}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Rubik","Noto Sans Hebrew",system-ui,sans-serif;font-size:16px;line-height:1.5;min-height:100dvh}
 .app{max-width:680px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom))}
-h1{font-size:20px;margin:6px 0 2px;font-weight:800}
-h2{font-size:15px;margin:0 0 10px;font-weight:800}
+h1{font-family:"Karantina","Arial Narrow",sans-serif;font-size:40px;line-height:1;margin:6px 0 2px;font-weight:700}
+h2{font-family:"Karantina","Arial Narrow",sans-serif;font-size:26px;line-height:1;margin:0 0 10px;font-weight:700;border-bottom:2px solid var(--text);padding-bottom:4px}
 .sub{color:var(--text-2);font-size:13.5px;margin:0 0 16px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card{background:var(--surface);border:2px solid var(--text);border-radius:var(--r);padding:16px;margin-bottom:14px}
 label{display:block;font-size:13px;font-weight:700;color:var(--text-2);margin:10px 0 4px}
 label:first-child{margin-top:0}
 input,textarea{width:100%;font:inherit;font-size:16px;color:var(--text);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-s);padding:10px 12px;outline:0}
@@ -34,7 +34,7 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(-
 textarea{min-height:64px;resize:vertical}
 .help{font-size:12.5px;color:var(--text-3);margin-top:4px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{font:inherit;font-weight:700;font-size:14.5px;height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s var(--ease)}
+.btn{font:inherit;font-weight:600;font-size:15px;height:44px;padding:0 16px;border-radius:0;border:2px solid var(--text);background:var(--surface-2);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s var(--ease)}
 .btn:active{transform:scale(.97)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .btn:disabled{opacity:.5;cursor:default}
@@ -44,13 +44,13 @@ textarea{min-height:64px;resize:vertical}
 .game .t{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .game .t b{font-size:15px}
 .game .t span{font-size:12.5px;color:var(--text-2)}
-.chip{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--accent-soft);color:var(--accent);margin-inline-start:6px}
+.chip{display:inline-block;padding:2px 9px;border-radius:0;font-size:11.5px;font-weight:700;background:var(--accent-soft);color:var(--accent);margin-inline-start:6px}
 .chip.away{background:var(--surface-2);color:var(--text-2)}
 .chip.done{background:var(--surface-2);color:var(--text-3)}
-.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));inset-inline:16px;max-width:640px;margin:0 auto;padding:12px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-weight:600;font-size:14px;transform:translateY(120%);opacity:0;transition:all .35s var(--ease);z-index:9}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));inset-inline:16px;max-width:640px;margin:0 auto;padding:12px 16px;border-radius:0;background:var(--text);color:var(--bg);font-weight:600;font-size:14px;transform:translateY(120%);opacity:0;transition:all .35s var(--ease);z-index:9}
 .toast.on{transform:none;opacity:1}
 .toast.err{background:var(--loss);color:#fff}
-.savebar{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px;padding:10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);box-shadow:0 10px 30px -10px rgba(0,0,0,.35);margin-top:16px}
+.savebar{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px;padding:10px;background:var(--surface);border:2px solid var(--text);box-shadow:4px 4px 0 var(--accent);margin-top:16px}
 .savebar .btn{flex:1}
 .hidden{display:none}
 .status{font-size:13px;color:var(--text-2)}
@@ -186,7 +186,7 @@ function render(){
     return `<div class="game" data-id="${g.id}">
       <div class="t"><b>${esc(opp)}<span class="chip ${home?"":"away"}">${home?"בית":"חוץ"}</span>${done?`<span class="chip done">${g.home.goals}:${g.away.goals}</span>`:""}</b><span>${esc(heDate(d,{weekday:"short",day:"numeric",month:"short"}))} · מחזור ${g.round}</span></div>
       <div class="row">
-        <div><label>שעה</label><input data-f="time" inputmode="numeric" placeholder="${apiTime(g.date)||"לא פורסמה"}" value="${esc(ov.time||"")}" /></div>
+        <div><label>שעה</label><input data-f="time" inputmode="text" placeholder="${apiTime(g.date)||"לא פורסמה"}" value="${esc(ov.time||"")}" /></div>
         <div><label>מגרש</label><input data-f="venue" placeholder="${home?esc(OVR.venues.home.name||"מגרש הבית"):"מגרש היריבה"}" value="${esc(ov.venue||"")}" /></div>
       </div>
       <label>קישור ניווט</label><input data-f="waze" inputmode="url" value="${esc(ov.waze||"")}" placeholder="https://..." />
@@ -203,7 +203,7 @@ function collect(){
   const games={};
   document.querySelectorAll("#games .game").forEach(el=>{
     const o={}; el.querySelectorAll("[data-f]").forEach(i=>{ const v=i.value.trim(); if(v) o[i.dataset.f]=v; });
-    if(o.time && !/^\d{1,2}:\d{2}$/.test(o.time)) throw new Error("שעה לא תקינה: "+o.time);
+    if(o.time){ const m=/^(\d{1,2}):(\d{2})$/.exec(o.time); if(!m||+m[1]>23||+m[2]>59) throw new Error("שעה לא תקינה: "+o.time+" (לדוגמה 10:30)"); o.time=`${m[1].padStart(2,"0")}:${m[2]}`; }
     if(Object.keys(o).length) games[el.dataset.id]=o;
   });
   OVR.games=games;

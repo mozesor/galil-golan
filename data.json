@@ -2,9 +2,9 @@
   "league": {
     "id": 1247,
     "name": "ליגת ילדים ב' מפרץ",
-    "currentRound": 2
+    "currentRound": 1
   },
-  "fetchedAt": "2026-10-15T00:44:38.653Z",
+  "fetchedAt": "2026-10-15T02:17:21.642Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -146,7 +146,7 @@
     },
     {
       "id": "6acc331a9878872a9639eafa",
-      "date": "2026-10-17T06:00:00.000Z",
+      "date": "2026-10-17T08:00:00.000Z",
       "round": 1,
       "finished": false,
       "home": {
