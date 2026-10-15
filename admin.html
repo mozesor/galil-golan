@@ -70,7 +70,7 @@ a.btn{text-decoration:none}
     <h2>חיבור ל-GitHub</h2>
     <ol class="steps">
       <li>לוחצים על הכפתור הכחול. נפתח דף ב-GitHub (אם צריך, מתחברים לחשבון <bdi dir="ltr">mozesor</bdi>).</li>
-      <li>תחת <bdi dir="ltr"><b>Repository access</b></bdi> בוחרים <bdi dir="ltr"><b>Only select repositories</b></bdi> ואז <bdi dir="ltr"><b>galil-golan-darom</b></bdi>.</li>
+      <li>תחת <bdi dir="ltr"><b>Repository access</b></bdi> בוחרים <bdi dir="ltr"><b>Only select repositories</b></bdi> ואז <bdi dir="ltr"><b>galil-golan</b></bdi>.</li>
       <li>מוודאים שתחת <bdi dir="ltr"><b>Permissions</b></bdi> מופיע <bdi dir="ltr"><b>Contents</b></bdi> ו-<bdi dir="ltr"><b>Actions</b></bdi> עם <bdi dir="ltr"><b>Read and write</b></bdi>.</li>
       <li>למטה לוחצים <bdi dir="ltr"><b>Generate token</b></bdi>, ומעתיקים את הקוד שמתחיל ב-<bdi dir="ltr">github_pat_</bdi>.</li>
       <li>חוזרים לכאן, מדביקים בשדה הטוקן ולוחצים "התחברות וטעינה".</li>
@@ -81,7 +81,7 @@ a.btn{text-decoration:none}
     <div class="help">מטעמי אבטחה הטוקן נשמר רק עד שסוגרים את הלשונית, ובכל כניסה מדביקים אותו מחדש. כדאי לשמור אותו במנהל הסיסמאות של הטלפון או המחשב.</div>
     <details style="margin-top:12px"><summary>הגדרות מתקדמות</summary>
       <label for="repo">מאגר (owner/repo)</label>
-      <input id="repo" placeholder="mozesor/galil-golan-darom" autocomplete="off" />
+      <input id="repo" placeholder="mozesor/galil-golan" autocomplete="off" />
       <label for="branch">ענף</label>
       <input id="branch" value="main" autocomplete="off" />
     </details>
@@ -148,7 +148,7 @@ const heDate=(d,o)=>new Intl.DateTimeFormat("he-IL",{timeZone:TZ,...o}).format(d
 function apiTime(iso){ const f=new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit"}).format(new Date(iso)); return (f==="00:00"||f==="01:00")?"":f; }
 
 try{ localStorage.removeItem(LS.token); }catch{}
-try{ $("#repo").value=localStorage.getItem(LS.repo)||"mozesor/galil-golan-darom"; $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=sessionStorage.getItem(LS.token)||""; }catch{}
+try{ $("#repo").value=(localStorage.getItem(LS.repo)||"mozesor/galil-golan").replace(/^mozesor/galil-golan-darom$/,"mozesor/galil-golan"); $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=sessionStorage.getItem(LS.token)||""; }catch{}
 
 function gh(){ return {repo:$("#repo").value.trim(), branch:$("#branch").value.trim()||"main", token:$("#token").value.trim()}; }
 async function ghGet(path){

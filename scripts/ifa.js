@@ -1,7 +1,7 @@
 // Reads our team's fixture list from the Israel Football Association site (football.org.il).
 // ONE does not publish venues; the IFA page does, and it also shows the kickoff time once it is set.
 // One page request per run. Returns [{date:"YYYY-MM-DD", home, away, venue|null, time:"HH:MM"|null}].
-const UA = "Mozilla/5.0 (compatible; galil-golan-darom parents site; +https://mozesor.github.io/galil-golan-darom/)";
+const UA = "Mozilla/5.0 (compatible; galil-golan-darom parents site; +https://mozesor.github.io/galil-golan/)";
 
 const decode = (s) => String(s)
   .replace(/&quot;|&#34;/g, '"').replace(/&#39;|&#039;|&apos;/g, "'")
