@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light dark" />
-<meta name="theme-color" content="#F2A900" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#121417" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#1E56C8" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="description" content="לוח המשחקים של גליל גולן דרום, ילדים ב'. המשחק הבא, תוצאות, טבלה ויומן. מתעדכן אוטומטית." />
@@ -21,12 +21,12 @@
    חולצת הבית: בזלת, ענבר, צעיף, מספר גב, גיר, כרטיס, לוח LED
    ========================================================= */
 :root{
-  --bg:#F3EEE3; --surface:#FFFCF5; --ink:#15181C; --muted:#5E5A52;
-  --amber:#F2A900; --amber-ink:#15181C; --blue:#155FA0; --blue-ink:#FFFCF5;
-  --win:#1E8E4F; --draw:#7A7366; --loss:#C62828;
-  --line:rgba(21,24,28,.12); --line-strong:rgba(21,24,28,.3); --chalk:rgba(21,24,28,.45);
-  --led:#0E1013; --led-ink:#F4EFE6;
-  --hero-bg:#F3EEE3; --hero-ink:#15181C; --hero-muted:#5E5A52; --hero-chalk:rgba(21,24,28,.5);
+  --bg:#EEF2F8; --surface:#FAFBFE; --ink:#0F1B2D; --muted:#55627A;
+  --amber:#1E56C8; --amber-ink:#FAFBFE; --blue:#0F1B2D; --blue-ink:#FAFBFE;
+  --win:#1E8E4F; --draw:#6F7A8E; --loss:#C62828;
+  --line:rgba(15,27,45,.12); --line-strong:rgba(15,27,45,.3); --chalk:rgba(15,27,45,.45);
+  --led:#0B1220; --led-ink:#F3F6FB;
+  --hero-bg:#EEF2F8; --hero-ink:#0F1B2D; --hero-muted:#55627A; --hero-chalk:rgba(15,27,45,.5);
   --shadow-hard:3px 3px 0 var(--ink);
   --ease-out:cubic-bezier(.23,1,.32,1); --ease-drawer:cubic-bezier(.32,.72,0,1); --ease-slam:cubic-bezier(.2,.8,.2,1);
   --display:"Karantina","Arial Narrow","Noto Sans Hebrew",sans-serif;
@@ -35,21 +35,21 @@
   color-scheme:light;
 }
 :root[data-theme="dark"]{
-  --bg:#121417; --surface:#1C2026; --ink:#F4EFE6; --muted:#A8A397;
-  --amber:#FFB400; --amber-ink:#15181C; --blue:#2E8FE0; --blue-ink:#0E1013;
-  --win:#3CCB7F; --draw:#9E978A; --loss:#E8453C;
-  --line:rgba(244,239,230,.12); --line-strong:rgba(244,239,230,.3); --chalk:rgba(244,239,230,.45);
-  --hero-bg:#121417; --hero-ink:#F4EFE6; --hero-muted:#A8A397; --hero-chalk:rgba(244,239,230,.5);
+  --bg:#0B1220; --surface:#141E30; --ink:#F3F6FB; --muted:#A3AFC4;
+  --amber:#5B9BFF; --amber-ink:#0B1220; --blue:#F3F6FB; --blue-ink:#0B1220;
+  --win:#3CCB7F; --draw:#8E99AE; --loss:#E8453C;
+  --line:rgba(243,246,251,.12); --line-strong:rgba(243,246,251,.3); --chalk:rgba(243,246,251,.45);
+  --hero-bg:#0B1220; --hero-ink:#F3F6FB; --hero-muted:#A3AFC4; --hero-chalk:rgba(243,246,251,.5);
   --shadow-hard:3px 3px 0 var(--amber);
   color-scheme:dark;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#121417; --surface:#1C2026; --ink:#F4EFE6; --muted:#A8A397;
-    --amber:#FFB400; --amber-ink:#15181C; --blue:#2E8FE0; --blue-ink:#0E1013;
-    --win:#3CCB7F; --draw:#9E978A; --loss:#E8453C;
-    --line:rgba(244,239,230,.12); --line-strong:rgba(244,239,230,.3); --chalk:rgba(244,239,230,.45);
-    --hero-bg:#121417; --hero-ink:#F4EFE6; --hero-muted:#A8A397; --hero-chalk:rgba(244,239,230,.5);
+    --bg:#0B1220; --surface:#141E30; --ink:#F3F6FB; --muted:#A3AFC4;
+    --amber:#5B9BFF; --amber-ink:#0B1220; --blue:#F3F6FB; --blue-ink:#0B1220;
+    --win:#3CCB7F; --draw:#8E99AE; --loss:#E8453C;
+    --line:rgba(243,246,251,.12); --line-strong:rgba(243,246,251,.3); --chalk:rgba(243,246,251,.45);
+    --hero-bg:#0B1220; --hero-ink:#F3F6FB; --hero-muted:#A3AFC4; --hero-chalk:rgba(243,246,251,.5);
     --shadow-hard:3px 3px 0 var(--amber);
     color-scheme:dark;
   }
@@ -77,19 +77,19 @@ svg{display:block}
   position:sticky;top:0;z-index:20;height:calc(52px + env(safe-area-inset-top));
   padding-top:env(safe-area-inset-top);
   display:grid;grid-template-columns:1fr 1fr;align-items:stretch;overflow:hidden;
-  background:#15181C;
+  background:#FAFBFE;border-bottom:2px solid #1E56C8;
 }
 .scarf .a{
-  background:var(--amber);color:var(--amber-ink);
+  background:#1E56C8;color:#FAFBFE;
   clip-path:polygon(0 0,100% 0,calc(100% - 18px) 100%,0 100%);
   display:flex;align-items:center;padding-inline:16px 24px;gap:10px;
 }
-.scarf .b{color:#F4EFE6;display:flex;align-items:center;justify-content:space-between;padding-inline:4px 12px}
+.scarf .b{color:#0F1B2D;display:flex;align-items:center;justify-content:space-between;padding-inline:4px 12px}
 .scarf .name{font-family:var(--display);font-weight:700;font-size:24px;line-height:1;white-space:nowrap}
 .scarf .cat{font-family:var(--display);font-weight:400;font-size:20px;line-height:1;opacity:.9;white-space:nowrap}
 .scarf.enter{animation:scarfIn 380ms var(--ease-slam) both}
 @keyframes scarfIn{from{transform:translateY(-100%)}to{transform:none}}
-.themeBtn{width:40px;height:40px;display:grid;place-items:center;border:2px solid rgba(244,239,230,.35);color:#F4EFE6;border-radius:0}
+.themeBtn{width:40px;height:40px;display:grid;place-items:center;border:2px solid #1E56C8;color:#1E56C8;border-radius:0}
 .themeBtn svg{width:18px;height:18px}
 
 /* ---------- layout ---------- */
@@ -114,7 +114,7 @@ svg{display:block}
 .stamp.slam{animation:slam 260ms var(--ease-slam) both}
 @keyframes slam{from{opacity:0;transform:rotate(-8deg) scale(1.6)}to{opacity:1;transform:rotate(-8deg) scale(1)}}
 .stamp.amber{--c:var(--amber)}
-.stamp.blue{--c:var(--blue)}
+.stamp.blue{--c:var(--muted)}
 .stamp.win{--c:var(--win)}.stamp.draw{--c:var(--draw)}.stamp.loss{--c:var(--loss)}
 
 /* ---------- jersey mark ---------- */
@@ -194,17 +194,17 @@ svg{display:block}
 .led .row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
 .led .t{font-family:var(--display);font-weight:700;font-size:24px;line-height:.95;overflow-wrap:anywhere;text-align:center}
 .led .t.me{color:var(--amber)}
-.led .sc{font-family:var(--display);font-weight:700;font-size:64px;line-height:1;direction:ltr;unicode-bidi:isolate;white-space:nowrap;color:#F4EFE6}
-.led .sc.W{color:#3CCB7F}.led .sc.L{color:#E8453C}.led .sc.D{color:#A8A397}
+.led .sc{font-family:var(--display);font-weight:700;font-size:64px;line-height:1;direction:ltr;unicode-bidi:isolate;white-space:nowrap;color:#F3F6FB}
+.led .sc.W{color:#3CCB7F}.led .sc.L{color:#E8453C}.led .sc.D{color:#A3AFC4}
 .led .sc i{font-style:normal;opacity:.5;margin:0 6px}
-.led .meta{text-align:center;font-size:13px;color:#A8A397;margin-top:8px}
+.led .meta{text-align:center;font-size:13px;color:#A3AFC4;margin-top:8px}
 .led .stampWrap{position:absolute;top:10px;inset-inline-end:12px}
 .led .stamp{box-shadow:0 0 0 3px var(--led),0 0 0 4px var(--c)}
 
 /* ---------- form chevrons ---------- */
 .form{display:inline-flex;gap:2px;direction:rtl}
 .chev{
-  width:40px;height:26px;display:grid;place-items:center;color:#F4EFE6;
+  width:40px;height:26px;display:grid;place-items:center;color:#F3F6FB;
   font-family:var(--display);font-weight:700;font-size:20px;line-height:1;
   clip-path:polygon(0 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,0 100%,8px 50%);
   transform-origin:right center;animation:chevIn 220ms var(--ease-slam) both;animation-delay:calc(var(--i,0) * 60ms);
@@ -239,7 +239,7 @@ svg{display:block}
 :root[data-theme="dark"] .tk .mid .n.me{color:var(--amber)}
 .tk .mid .m{font-size:12.5px;color:var(--muted);margin-top:3px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .tk .tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 6px;border:1.5px solid currentColor}
-.tk .tag.blue{color:var(--blue)}
+.tk .tag.blue{color:var(--muted)}
 .tk .stub{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   border-inline-start:2px dashed var(--line-strong);padding:6px 4px;position:relative;
@@ -304,11 +304,11 @@ svg{display:block}
 .ticker.static .run{animation:none;overflow-x:auto;scroll-snap-type:x proximity}
 
 /* ---------- nav ---------- */
-.nav{position:fixed;inset-inline:0;bottom:0;z-index:30;background:#15181C;color:#F4EFE6;border-top:1px solid rgba(244,239,230,.12);padding-bottom:env(safe-area-inset-bottom)}
+.nav{position:fixed;inset-inline:0;bottom:0;z-index:30;background:#0F1B2D;color:#F3F6FB;border-top:2px solid #1E56C8;padding-bottom:env(safe-area-inset-bottom)}
 .nav-in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
-.nav button{height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:600;color:rgba(244,239,230,.6);position:relative;transition:color 160ms}
+.nav button{height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:600;color:rgba(243,246,251,.6);position:relative;transition:color 160ms}
 .nav button svg{width:22px;height:22px}
-.nav button[aria-current="page"]{color:#F4EFE6}
+.nav button[aria-current="page"]{color:#F3F6FB}
 .nav button[aria-current="page"]::after{content:"";position:absolute;top:0;inset-inline:18%;height:4px;background:var(--amber)}
 
 /* ---------- sheet ---------- */
@@ -681,7 +681,7 @@ function gameSheet(id){
 function maybeConfetti(g,o){
   if(o!=="W"||REDUCED) return; const key="gd-confetti-"+g.id; try{ if(localStorage.getItem(key)) return; localStorage.setItem(key,"1"); }catch{ return; }
   const c=$("#confetti"); c.hidden=false; const ctx=c.getContext("2d"); const dpr=Math.min(2,devicePixelRatio||1); c.width=innerWidth*dpr; c.height=innerHeight*dpr; ctx.scale(dpr,dpr);
-  const cols=[getComputedStyle(document.documentElement).getPropertyValue("--amber").trim(),"#F4EFE6","#1E8E4F","#155FA0"];
+  const cols=[getComputedStyle(document.documentElement).getPropertyValue("--amber").trim(),"#FAFBFE","#1E56C8","#5B9BFF"];
   const ps=Array.from({length:140},()=>({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*6+3,c:cols[Math.random()*cols.length|0],a:Math.random()*Math.PI,va:(Math.random()-.5)*.3}));
   const t0=performance.now(); const loop=t=>{ const el=(t-t0)/1000; ctx.clearRect(0,0,innerWidth,innerHeight);
     for(const p of ps){ p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.a+=p.va; ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.globalAlpha=Math.max(0,1-el/2.6);ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6);ctx.restore(); }
