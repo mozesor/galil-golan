@@ -146,6 +146,11 @@ svg{display:block}
   width:var(--s,44px);height:var(--s,44px);font-size:calc(var(--s,44px) * .52);
 }
 .mark.me{background:var(--club);color:#FAFBFE;border-color:var(--club)}
+.mark.rank{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.mark.rank b{font-family:var(--display);font-weight:700;font-size:calc(var(--s,44px) * .62);line-height:.85}
+.mark.rank small{font-family:var(--body);font-weight:600;font-size:13px;line-height:1;color:var(--muted)}
+.mark.rank.me small{color:inherit;opacity:.85}
+.mark.rank small.na{font-size:14px;text-align:center;line-height:1.2}
 
 /* ---------- hero ---------- */
 .hero{position:relative;overflow:hidden;background:var(--bg);color:var(--ink);padding:48px 16px 0}
@@ -518,6 +523,8 @@ function computeTable(maxRound=Infinity){
 const lastPlayedRound=()=>Math.max(0,...DATA.games.filter(played).map(g=>g.round));
 const venueOf=(g,home)=>{ const ov=OVR?.games?.[g.id]||{}; const hv=OVR?.venues?.home||{}; return {venue:ov.venue||(home?hv.name||"":""),waze:ov.waze||(home?hv.waze||"":""),note:ov.note||(home?hv.note||"":"")}; };
 const scoreLtr=g=>`<span class="n">${g.away.goals}</span><i>:</i><span class="n">${g.home.goals}</span>`; // home sits on the right in RTL
+// league position box (replaces initials). Before a team has played, the rank is meaningless, so say so.
+const rankBox=(row,me=false)=>`<div class="mark rank ${me?"me":""}" aria-label="${row?.games?`מקום ${row.rank} בטבלה`:"טרם שיחקו"}">${row?.games?`<b>${row.rank}</b><small>מקום</small>`:`<small class="na">טרם<br>שיחקו</small>`}</div>`;
 const computeNext=()=>teamGames(ME.id).find(g=>!played(g)&&expiresAt(g)>Date.now())||null;
 function fit(el){ const max=+el.dataset.fit,min=+el.dataset.min||max*.6; let s=max; el.style.fontSize=s+"px"; while(el.scrollHeight>s*.95*2+6&&s>min){ s-=2; el.style.fontSize=s+"px"; } }
 const fitAll=(r=document)=>r.querySelectorAll("[data-fit]").forEach(fit);
@@ -579,7 +586,7 @@ function renderHome(){
       : `${shareWide}${icsBtn}${v.waze?`<a class="btn sq press" href="${esc(v.waze)}" target="_blank" rel="noopener" aria-label="ניווט למגרש">${ICONS.pin}</a>`:`<button class="btn sq press" data-act="opp" data-id="${opp.id}" aria-label="על היריבה">${ICONS.info}</button>`}`;
     html+=`<div class="hero">
       <div class="hero-top rise" style="--i:0"><span class="eyebrow"><b>המשחק הבא</b>מחזור ${next.round}</span>${stamp}</div>
-      <div class="opp rise" style="--i:1"><div class="mark">${esc(initials(opp.name))}</div><div class="who"><div class="pre">${home?"מארחים את":"נוסעים אל"}${oppRow?.games?` · מקום ${oppRow.rank} בטבלה`:""}</div><div class="name fit" data-fit="56" data-min="34">${esc(shortName(opp.name))}</div></div></div>
+      <div class="opp rise" style="--i:1">${rankBox(oppRow)}<div class="who"><div class="pre">${home?"מארחים את":"נוסעים אל"}</div><div class="name fit" data-fit="56" data-min="34">${esc(shortName(opp.name))}</div></div></div>
       <div class="chalk"></div>
       <div class="details rise" style="--i:1">
         <div><div class="when">${today?"היום, ":""}${esc(longDate(t.date))}</div><div class="where">${ICONS.pin}<span class="iso">${home?"משחק בית":"משחק חוץ"}${v.venue?" · "+esc(v.venue):""}</span></div></div>
@@ -779,7 +786,7 @@ function teamSheet(id){
   const row=computeTable().find(r=>r.id===id),gs=teamGames(id),recent=gs.filter(played).slice(-5).reverse(),form=formOf(id);
   const me=id===ME.id,h2h=gs.filter(mine),h2hDone=h2h.filter(played),nextVs=h2h.find(g=>!played(g));
   const avg=(n,d)=>d?(n/d).toFixed(1):"0.0";
-  let html=`<div class="sheet-h"><div class="mark ${me?"me":""}">${esc(initials(tm.name))}</div><div><h3 class="fit" data-fit="38" data-min="24">${esc(me?CFG.team.displayName:heb(tm.name))}</h3><div class="sub">${row?.games?`מקום ${row.rank} · ${row.points} נק׳ · ${row.games} משחקים`:"עוד לא שיחקו העונה"}</div></div></div>
+  let html=`<div class="sheet-h">${rankBox(row,me)}<div><h3 class="fit" data-fit="38" data-min="24">${esc(me?CFG.team.displayName:heb(tm.name))}</h3><div class="sub">${row?.games?`מקום ${row.rank} · ${row.points} נק׳ · ${row.games} משחקים`:"עוד לא שיחקו העונה"}</div></div></div>
     <div class="tiles"><div class="tile"><b>${row?.wins??0}</b><span>ניצחונות</span></div><div class="tile"><b>${row?.draws??0}</b><span>תיקו</span></div><div class="tile"><b>${row?.losses??0}</b><span>הפסדים</span></div><div class="tile"><b>${avg(row?.gf,row?.games)}</b><span>שערים למשחק</span></div></div>
     <div class="formRow"><span>כושר אחרון</span>${formStrip(form)}</div>`;
   if(!me){ html+=`<div class="h3">מול ${esc(CFG.team.displayName)}</div>`;
