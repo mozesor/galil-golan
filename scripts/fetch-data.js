@@ -2,6 +2,7 @@
 // No dependencies. Node 20+ (built-in fetch).
 const fs = require("fs/promises");
 const path = require("path");
+const { buildIcs } = require("./build-ics");
 
 const ROOT = path.join(__dirname, "..");
 const CONFIG = require(path.join(ROOT, "config.json"));
@@ -133,10 +134,12 @@ async function main() {
   const strip = (o) => JSON.stringify({ ...o, fetchedAt: null });
   if (previous && strip(previous) === strip(out)) {
     console.log("no changes since", previous.fetchedAt);
+    await buildIcs(); // overrides.json may have changed even when ONE did not
     return;
   }
   await fs.writeFile(path.join(ROOT, "data.json"), JSON.stringify(out, null, 2), "utf8");
   console.log(`saved data.json: ${list.length} games, ${standings.length} teams in table, round ${out.league.currentRound}`);
+  await buildIcs();
 }
 
 main().catch((e) => {

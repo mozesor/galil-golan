@@ -2,6 +2,10 @@ name: Update data.json
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - overrides.json
+      - config.json
   schedule:
     - cron: "*/30 * * * *"
 
@@ -27,7 +31,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json
+          git add data.json season.ics ics
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
           git commit -m "עדכון תוצאות"
           git pull --rebase origin ${GITHUB_REF_NAME}
