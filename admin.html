@@ -148,7 +148,7 @@ const heDate=(d,o)=>new Intl.DateTimeFormat("he-IL",{timeZone:TZ,...o}).format(d
 function apiTime(iso){ const f=new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit"}).format(new Date(iso)); return (f==="00:00"||f==="01:00")?"":f; }
 
 try{ localStorage.removeItem(LS.token); }catch{}
-try{ $("#repo").value=(localStorage.getItem(LS.repo)||"mozesor/galil-golan").replace(/^mozesor/galil-golan-darom$/,"mozesor/galil-golan"); $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=sessionStorage.getItem(LS.token)||""; }catch{}
+try{ $("#repo").value=(localStorage.getItem(LS.repo)||"mozesor/galil-golan").replace("mozesor/galil-golan-darom","mozesor/galil-golan"); $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=sessionStorage.getItem(LS.token)||""; }catch{}
 
 function gh(){ return {repo:$("#repo").value.trim(), branch:$("#branch").value.trim()||"main", token:$("#token").value.trim()}; }
 async function ghGet(path){
