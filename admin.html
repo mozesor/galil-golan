@@ -56,6 +56,9 @@ textarea{min-height:64px;resize:vertical}
 .status{font-size:13px;color:var(--text-2)}
 details summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--text-2)}
 code{background:var(--surface-2);padding:1px 6px;border-radius:6px;font-size:13px}
+.steps{margin:0 0 12px;padding-inline-start:22px;font-size:14.5px;line-height:1.6}
+.steps li{margin-bottom:4px}
+a.btn{text-decoration:none}
 </style>
 </head>
 <body>
@@ -65,13 +68,23 @@ code{background:var(--surface-2);padding:1px 6px;border-radius:6px;font-size:13p
 
   <div class="card" id="setup">
     <h2>חיבור ל-GitHub</h2>
-    <label for="repo">מאגר (owner/repo)</label>
-    <input id="repo" placeholder="username/GalilDarom" autocomplete="off" />
-    <label for="branch">ענף</label>
-    <input id="branch" value="main" autocomplete="off" />
+    <ol class="steps">
+      <li>לוחצים על הכפתור הכחול. נפתח דף ב-GitHub (אם צריך, מתחברים לחשבון <bdi dir="ltr">mozesor</bdi>).</li>
+      <li>תחת <bdi dir="ltr"><b>Repository access</b></bdi> בוחרים <bdi dir="ltr"><b>Only select repositories</b></bdi> ואז <bdi dir="ltr"><b>galil-golan-darom</b></bdi>.</li>
+      <li>מוודאים שתחת <bdi dir="ltr"><b>Permissions</b></bdi> מופיע <bdi dir="ltr"><b>Contents</b></bdi> ו-<bdi dir="ltr"><b>Actions</b></bdi> עם <bdi dir="ltr"><b>Read and write</b></bdi>.</li>
+      <li>למטה לוחצים <bdi dir="ltr"><b>Generate token</b></bdi>, ומעתיקים את הקוד שמתחיל ב-<bdi dir="ltr">github_pat_</bdi>.</li>
+      <li>חוזרים לכאן, מדביקים בשדה הטוקן ולוחצים "התחברות וטעינה".</li>
+    </ol>
+    <a class="btn primary" style="width:100%;margin:4px 0 14px" href="https://github.com/settings/personal-access-tokens/new?name=galil-admin&amp;description=%D7%A0%D7%99%D7%94%D7%95%D7%9C%20%D7%9C%D7%95%D7%97%20%D7%94%D7%9E%D7%A9%D7%97%D7%A7%D7%99%D7%9D&amp;target_name=mozesor&amp;expires_in=366&amp;contents=write&amp;actions=write" target="_blank" rel="noopener">יצירת טוקן ב-GitHub</a>
     <label for="token">טוקן גישה אישי</label>
     <input id="token" type="password" placeholder="github_pat_..." autocomplete="off" />
-    <div class="help"><a href="https://github.com/settings/personal-access-tokens/new?name=galil-admin&amp;description=%D7%A0%D7%99%D7%94%D7%95%D7%9C%20%D7%9C%D7%95%D7%97%20%D7%94%D7%9E%D7%A9%D7%97%D7%A7%D7%99%D7%9D&amp;target_name=mozesor&amp;expires_in=366&amp;contents=write&amp;actions=write" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:600">ליצירת טוקן ב-GitHub</a>. הטוקן נשמר רק בדפדפן הזה. צרו טוקן מסוג Fine-grained עם הרשאת Contents: Read and write (ו-Actions: Read and write כדי להפעיל עדכון ידני) למאגר הזה בלבד.</div>
+    <div class="help">הטוקן נשמר רק בדפדפן הזה. במכשיר אחר צריך להדביק אותו שוב.</div>
+    <details style="margin-top:12px"><summary>הגדרות מתקדמות</summary>
+      <label for="repo">מאגר (owner/repo)</label>
+      <input id="repo" placeholder="mozesor/galil-golan-darom" autocomplete="off" />
+      <label for="branch">ענף</label>
+      <input id="branch" value="main" autocomplete="off" />
+    </details>
     <div class="actions"><button class="btn primary" id="connect">התחברות וטעינה</button><button class="btn" id="forget">מחיקת הטוקן מהדפדפן</button></div>
     <div class="status" id="setupStatus" style="margin-top:10px"></div>
   </div>
