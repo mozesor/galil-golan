@@ -10,10 +10,11 @@ X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb56@galil-golan-darom
 DTSTAMP:20260101T000000Z
-SUMMARY:⚽ גליל גולן דרום נגד מרום הגליל (חוץ)
+SUMMARY:⚽ גליל גולן דרום נגד מרום הגליל (חוץ) 
+ | מועד משוער
 DTSTART;VALUE=DATE:20261219
 DTEND;VALUE=DATE:20261220
-DESCRIPTION:מחזור 7\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 7\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 END:VCALENDAR

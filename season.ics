@@ -14,6 +14,7 @@ SUMMARY:⚽ גליל גולן דרום נגד קרית חיים שמשון
  (בית)
 DTSTART:20261018T163000Z
 DTEND:20261018T180000Z
+LOCATION:צפת
 DESCRIPTION:מחזור 1
 BEGIN:VALARM
 ACTION:DISPLAY
@@ -25,135 +26,140 @@ BEGIN:VEVENT
 UID:6acc331a9878872a9639eb12@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפועל עירוני כר
- מיאל 2 (חוץ)
+ מיאל 2 (חוץ) | מועד משוער
 DTSTART;VALUE=DATE:20261028
 DTEND;VALUE=DATE:20261029
-DESCRIPTION:מחזור 2\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 2\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb14@galil-golan-darom
 DTSTAMP:20260101T000000Z
-SUMMARY:⚽ גליל גולן דרום נגד הפועל עכו 2 (בית)
+SUMMARY:⚽ גליל גולן דרום נגד הפועל עכו 2 (בית) 
+ | מועד משוער
 DTSTART;VALUE=DATE:20261031
 DTEND;VALUE=DATE:20261101
-DESCRIPTION:מחזור 3\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 3\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb31@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפועל מטה אשר 2 (
- בית)
+ בית) | מועד משוער
 DTSTART;VALUE=DATE:20261114
 DTEND;VALUE=DATE:20261115
-DESCRIPTION:מחזור 4\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 4\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb35@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפועל ביר אל מכס
- ור (חוץ)
+ ור (חוץ) | מועד משוער
 DTSTART;VALUE=DATE:20261128
 DTEND;VALUE=DATE:20261129
-DESCRIPTION:מחזור 5\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 5\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb4f@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפועל עמק הירדן 
- (בית)
+ (בית) | מועד משוער
 DTSTART;VALUE=DATE:20261205
 DTEND;VALUE=DATE:20261206
-DESCRIPTION:מחזור 6\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 6\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb56@galil-golan-darom
 DTSTAMP:20260101T000000Z
-SUMMARY:⚽ גליל גולן דרום נגד מרום הגליל (חוץ)
+SUMMARY:⚽ גליל גולן דרום נגד מרום הגליל (חוץ) 
+ | מועד משוער
 DTSTART;VALUE=DATE:20261219
 DTEND;VALUE=DATE:20261220
-DESCRIPTION:מחזור 7\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 7\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb6c@galil-golan-darom
 DTSTAMP:20260101T000000Z
-SUMMARY:⚽ גליל גולן דרום נגד קרית חיים (בית)
+SUMMARY:⚽ גליל גולן דרום נגד קרית חיים (בית) | 
+ מועד משוער
 DTSTART;VALUE=DATE:20261226
 DTEND;VALUE=DATE:20261227
-DESCRIPTION:מחזור 8\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 8\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb76@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפ׳ בני אעבלין (
- חוץ)
+ חוץ) | מועד משוער
 DTSTART;VALUE=DATE:20270109
 DTEND;VALUE=DATE:20270110
-DESCRIPTION:מחזור 9\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 9\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb8a@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד מכבי סקציה מעלו
- ת תרשיחא (בית)
+ ת תרשיחא (בית) | מועד משוער
 DTSTART;VALUE=DATE:20270116
 DTEND;VALUE=DATE:20270117
-DESCRIPTION:מחזור 10\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 10\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb98@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד ביתר נהריה 2 (חוץ
- )
+ ) | מועד משוער
 DTSTART;VALUE=DATE:20270123
 DTEND;VALUE=DATE:20270124
-DESCRIPTION:מחזור 11\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 11\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eba6@galil-golan-darom
 DTSTAMP:20260101T000000Z
-SUMMARY:⚽ גליל גולן דרום נגד גולן קצרין (בית)
+SUMMARY:⚽ גליל גולן דרום נגד גולן קצרין (בית) 
+ | מועד משוער
 DTSTART;VALUE=DATE:20270130
 DTEND;VALUE=DATE:20270131
-DESCRIPTION:מחזור 12\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 12\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331b9878872a9639ebb9@galil-golan-darom
 DTSTAMP:20260101T000000Z
-SUMMARY:⚽ גליל גולן דרום נגד כפר קמא (חוץ)
+SUMMARY:⚽ גליל גולן דרום נגד כפר קמא (חוץ) | מו
+ עד משוער
 DTSTART;VALUE=DATE:20270206
 DTEND;VALUE=DATE:20270207
-DESCRIPTION:מחזור 13\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 13\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331b9878872a9639ebc3@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד מכבי עירוני קרי
- ת אתא 3 (בית)
+ ת אתא 3 (בית) | מועד משוער
 DTSTART;VALUE=DATE:20270213
 DTEND;VALUE=DATE:20270214
-DESCRIPTION:מחזור 14\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 14\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331b9878872a9639ebd9@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפ׳ רמות מנשה מג
- ידו 2 (חוץ)
+ ידו 2 (חוץ) | מועד משוער
 DTSTART;VALUE=DATE:20270220
 DTEND;VALUE=DATE:20270221
-DESCRIPTION:מחזור 15\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 15\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 END:VCALENDAR

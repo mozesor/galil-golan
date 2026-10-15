@@ -3,6 +3,7 @@
 const fs = require("fs/promises");
 const path = require("path");
 const { buildIcs } = require("./build-ics");
+const { fetchIfaGames, attachIfa } = require("./ifa");
 
 const ROOT = path.join(__dirname, "..");
 const CONFIG = require(path.join(ROOT, "config.json"));
@@ -105,6 +106,23 @@ async function main() {
     }));
   } catch (e) {
     console.warn("standings failed:", String(e));
+  }
+
+  // IFA: venue + kickoff time for our games (ONE does not publish venues)
+  let previous0 = null;
+  try { previous0 = JSON.parse(await fs.readFile(path.join(ROOT, "data.json"), "utf8")); } catch {}
+  const ours = (g) => g.home.name.includes(CONFIG.team.match) || g.away.name.includes(CONFIG.team.match);
+  const ourPid = list.find(ours) ? (list.find(ours).home.name.includes(CONFIG.team.match) ? list.find(ours).home.pid : list.find(ours).away.pid) : null;
+  const ifaTeam = CONFIG.ifa?.teamId || ourPid;
+  const season = base?.games?.[0]?.season_id || CONFIG.ifa?.seasonId || 28;
+  try {
+    const rows = await fetchIfaGames(ifaTeam, season);
+    const n = attachIfa(list, rows, ours);
+    console.log(`IFA: ${rows.length} rows, matched ${n} of our games`);
+  } catch (e) {
+    console.warn("IFA fetch failed, keeping previous IFA data:", String(e));
+    const prev = new Map((previous0?.games || []).filter((g) => g.ifa).map((g) => [g.id, g.ifa]));
+    for (const g of list) if (prev.has(g.id)) g.ifa = prev.get(g.id);
   }
 
   const teams = new Map();

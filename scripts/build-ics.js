@@ -28,14 +28,19 @@ function validTime(s) {
   const m = /^(\d{1,2}):(\d{2})$/.exec(s || "");
   return m && +m[1] < 24 && +m[2] < 60 ? [+m[1], +m[2]] : null;
 }
+// same precedence as the site: admin override, ONE kickoff time, IFA kickoff time; otherwise an estimated date
 function gameTime(g, ovr) {
   const d = new Date(g.date);
   const p = parts(d);
-  const iso = `${p.year}-${p.month}-${p.day}`;
+  const oneIso = `${p.year}-${p.month}-${p.day}`;
+  const iso = /^\d{4}-\d{2}-\d{2}$/.test(g.ifa?.date || "") ? g.ifa.date : oneIso;
   const t = validTime(ovr?.games?.[g.id]?.time);
   if (t) return { date: israelDate(iso, t[0], t[1]), tbd: false, iso };
-  const tbd = (p.hour === "00" || p.hour === "01") && p.minute === "00";
-  return { date: d, tbd, iso };
+  const oneTbd = (p.hour === "00" || p.hour === "01") && p.minute === "00";
+  if (!oneTbd) return { date: d, tbd: false, iso: oneIso };
+  const it = validTime(g.ifa?.time);
+  if (it) return { date: israelDate(iso, it[0], it[1]), tbd: false, iso };
+  return { date: israelDate(iso, 12, 0), tbd: true, iso };
 }
 const heb = (s) => String(s || "").replace(/'/g, "׳").replace(/"/g, "״");
 function shortName(n) {
@@ -64,7 +69,7 @@ function event(g, cfg, ovr) {
   const t = gameTime(g, ovr);
   const o = ovr?.games?.[g.id] || {};
   const hv = ovr?.venues?.home || {};
-  const venue = o.venue || (home ? hv.name || "" : "");
+  const venue = o.venue || g.ifa?.venue || (home ? hv.name || "" : "");
   const note = o.note || (home ? hv.note || "" : "");
   const rawWaze = o.waze || (home ? hv.waze || "" : "");
   const waze = /^https:\/\/[^\s"<>]+$/i.test(rawWaze) ? rawWaze : "";
@@ -75,7 +80,7 @@ function event(g, cfg, ovr) {
     "BEGIN:VEVENT",
     `UID:${g.id}@galil-golan-darom`,
     `DTSTAMP:${DTSTAMP}`,
-    `SUMMARY:${esc(`⚽ ${cfg.team.displayName} נגד ${shortName(opp.name)}${score} (${home ? "בית" : "חוץ"})`)}`,
+    `SUMMARY:${esc(`⚽ ${cfg.team.displayName} נגד ${shortName(opp.name)}${score} (${home ? "בית" : "חוץ"})${t.tbd && !played ? " | מועד משוער" : ""}`)}`,
   ];
   if (t.tbd) {
     const next = new Date(israelDate(t.iso, 12, 0).getTime() + 86400000);
@@ -85,7 +90,7 @@ function event(g, cfg, ovr) {
     lines.push(`DTSTART:${fmt(t.date)}`, `DTEND:${fmt(new Date(t.date.getTime() + 90 * 60000))}`);
   }
   if (venue) lines.push(`LOCATION:${esc(venue)}`);
-  const desc = [`מחזור ${g.round}`, t.tbd ? "שעת המשחק טרם פורסמה, היומן יתעדכן כשתפורסם" : "", note, waze].filter(Boolean).join("\n");
+  const desc = [`מחזור ${g.round}`, t.tbd ? "מועד משוער: השעה טרם פורסמה והיום עוד יכול לזוז. היומן יתעדכן לבד" : "", note, waze].filter(Boolean).join("\n");
   lines.push(`DESCRIPTION:${esc(desc)}`);
   if (!t.tbd && !played) lines.push("BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${esc("משחק בעוד שעתיים")}`, "TRIGGER:-PT2H", "END:VALARM");
   lines.push("END:VEVENT");

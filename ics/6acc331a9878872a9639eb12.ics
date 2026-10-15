@@ -11,10 +11,10 @@ BEGIN:VEVENT
 UID:6acc331a9878872a9639eb12@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפועל עירוני כר
- מיאל 2 (חוץ)
+ מיאל 2 (חוץ) | מועד משוער
 DTSTART;VALUE=DATE:20261028
 DTEND;VALUE=DATE:20261029
-DESCRIPTION:מחזור 2\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 2\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 END:VCALENDAR

@@ -11,10 +11,10 @@ BEGIN:VEVENT
 UID:6acc331a9878872a9639eb8a@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד מכבי סקציה מעלו
- ת תרשיחא (בית)
+ ת תרשיחא (בית) | מועד משוער
 DTSTART;VALUE=DATE:20270116
 DTEND;VALUE=DATE:20270117
-DESCRIPTION:מחזור 10\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 10\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 END:VCALENDAR

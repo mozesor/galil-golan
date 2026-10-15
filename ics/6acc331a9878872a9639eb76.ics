@@ -11,10 +11,10 @@ BEGIN:VEVENT
 UID:6acc331a9878872a9639eb76@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפ׳ בני אעבלין (
- חוץ)
+ חוץ) | מועד משוער
 DTSTART;VALUE=DATE:20270109
 DTEND;VALUE=DATE:20270110
-DESCRIPTION:מחזור 9\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 9\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 END:VCALENDAR

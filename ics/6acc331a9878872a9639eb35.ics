@@ -11,10 +11,10 @@ BEGIN:VEVENT
 UID:6acc331a9878872a9639eb35@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפועל ביר אל מכס
- ור (חוץ)
+ ור (חוץ) | מועד משוער
 DTSTART;VALUE=DATE:20261128
 DTEND;VALUE=DATE:20261129
-DESCRIPTION:מחזור 5\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 5\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 END:VCALENDAR

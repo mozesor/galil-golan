@@ -170,6 +170,7 @@ svg{display:block}
 .chalk{height:0;border-top:2px dashed var(--chalk);margin:18px 0 14px}
 .details{display:grid;grid-template-columns:1fr auto;align-items:end;gap:12px}
 .details .when{font-weight:500;font-size:16px;line-height:1.3}
+.est{display:inline-block;font-size:12px;font-weight:600;color:var(--muted);border:2px dashed var(--line-strong);padding:0 6px;margin-inline-start:4px;white-space:nowrap;vertical-align:middle}
 .details .where{font-size:14px;color:var(--muted);margin-top:4px;display:flex;gap:6px;align-items:center}
 .details .where svg{width:15px;height:15px;flex:none}
 .details .time{font-family:var(--display);font-weight:700;font-size:44px;line-height:.9;color:var(--accent)}
@@ -494,12 +495,17 @@ function israelDate(iso,h,m){
   return new Date(guess.getTime()-(wall-guess.getTime()));
 }
 const validTime=s=>{ const m=/^(\d{1,2}):(\d{2})$/.exec(s||""); return m&&+m[1]<24&&+m[2]<60?[+m[1],+m[2]]:null; };
+// Sources, strongest first: admin override, ONE kickoff time, IFA kickoff time. A game with none of them
+// has only the round's planned date ("est"), which can still move to a nearby day.
 function gameTime(g){
-  const d=new Date(g.date); const p=parts(d); const iso=`${p.year}-${p.month}-${p.day}`;
-  const t=validTime(OVR?.games?.[g.id]?.time);
-  if(t){ const dt=israelDate(iso,t[0],t[1]); if(dt) return {date:dt,tbd:false,timeStr:`${String(t[0]).padStart(2,"0")}:${String(t[1]).padStart(2,"0")}`,iso}; }
-  const tbd=(p.hour==="00"||p.hour==="01")&&p.minute==="00";
-  return {date:d,tbd,timeStr:tbd?"":`${p.hour}:${p.minute}`,iso};
+  const d=new Date(g.date); const p=parts(d); const oneIso=`${p.year}-${p.month}-${p.day}`;
+  const iso=/^\d{4}-\d{2}-\d{2}$/.test(g.ifa?.date||"")?g.ifa.date:oneIso;
+  const mk=(t,src)=>{ const dt=israelDate(iso,t[0],t[1]); return dt?{date:dt,tbd:false,est:false,timeStr:`${String(t[0]).padStart(2,"0")}:${String(t[1]).padStart(2,"0")}`,iso,src}:null; };
+  const ov=validTime(OVR?.games?.[g.id]?.time); if(ov){ const r=mk(ov,"admin"); if(r) return r; }
+  const oneTbd=(p.hour==="00"||p.hour==="01")&&p.minute==="00";
+  if(!oneTbd) return {date:d,tbd:false,est:false,timeStr:`${p.hour}:${p.minute}`,iso:oneIso,src:"one"};
+  const it=validTime(g.ifa?.time); if(it){ const r=mk(it,"ifa"); if(r) return r; }
+  return {date:israelDate(iso,12,0)||d,tbd:true,est:true,timeStr:"",iso,src:"none"};
 }
 function expiresAt(g){ const t=gameTime(g); return t.tbd?israelDate(t.iso,23,59).getTime():t.date.getTime()+3*3600000; }
 const heDate=(d,o)=>new Intl.DateTimeFormat("he-IL",{timeZone:TZ,...o}).format(d);
@@ -525,7 +531,7 @@ function computeTable(maxRound=Infinity){
 const lastPlayedRound=()=>Math.max(0,...DATA.games.filter(played).map(g=>g.round));
 // only plain https links ever become buttons (blocks javascript: and data: links)
 const safeUrl=u=>/^https:\/\/[^\s"<>]+$/i.test(u||"")?u:"";
-const venueOf=(g,home)=>{ const ov=OVR?.games?.[g.id]||{}; const hv=OVR?.venues?.home||{}; return {venue:ov.venue||(home?hv.name||"":""),waze:safeUrl(ov.waze||(home?hv.waze||"":"")),note:ov.note||(home?hv.note||"":"")}; };
+const venueOf=(g,home)=>{ const ov=OVR?.games?.[g.id]||{}; const hv=OVR?.venues?.home||{}; return {venue:ov.venue||g.ifa?.venue||(home?hv.name||"":""),waze:safeUrl(ov.waze||(home?hv.waze||"":"")),note:ov.note||(home?hv.note||"":"")}; };
 const scoreLtr=g=>`<span class="n">${g.away.goals}</span><i>:</i><span class="n">${g.home.goals}</span>`; // home sits on the right in RTL
 // league position box (replaces initials). Before a team has played, the rank is meaningless, so say so.
 const rankBox=(row,me=false)=>`<div class="mark rank ${me?"me":""}" aria-label="${row?.games?`מקום ${row.rank} בטבלה`:"טרם שיחקו"}">${row?.games?`<b>${row.rank}</b><small>מקום</small>`:`<small class="na">טרם<br>שיחקו</small>`}</div>`;
@@ -548,7 +554,7 @@ const ICONS={
 const siteUrl=()=>location.href.split("#")[0];
 function gameText(g){
   const t=gameTime(g),home=isMe(g.home),opp=home?g.away:g.home,v=venueOf(g,home);
-  const l=[`⚽ ${CFG.team.displayName} נגד ${shortName(opp.name)}`,`${longDate(t.date)}${t.tbd?" (השעה תפורסם)":" בשעה "+t.timeStr}`,`${home?"משחק בית":"משחק חוץ"} | מחזור ${g.round}`];
+  const l=[`⚽ ${CFG.team.displayName} נגד ${shortName(opp.name)}`,`${longDate(t.date)}${t.tbd?" (מועד משוער, השעה תפורסם)":" בשעה "+t.timeStr}`,`${home?"משחק בית":"משחק חוץ"} | מחזור ${g.round}`];
   if(v.venue) l.push(`📍 ${v.venue}`); if(v.waze) l.push(v.waze); if(v.note) l.push(v.note);
   return l.join("\n");
 }
@@ -580,7 +586,7 @@ function renderHome(){
   let html="";
   if(next){
     const t=gameTime(next),home=isMe(next.home),opp=home?next.away:next.home,v=venueOf(next,home),oppRow=tbl.find(r=>r.id===opp.id);
-    const today=t.iso===todayIso();
+    const today=t.iso===todayIso()&&!t.est;
     const slamKey="gd-today-"+t.iso, slam=today&&!REDUCED&&!LS.get(slamKey); if(today) LS.set(slamKey,"1");
     const stamp=today?`<span class="stamp big accent ${slam?"slam":""}">היום משחקים!</span>`:`<span class="stamp ${home?"accent":"muted"}">${home?"בית":"חוץ"}</span>`;
     const icsBtn=`<a class="btn sq press" href="ics/${esc(next.id)}.ics" data-flash="נפתח" aria-label="הוספה ליומן">${ICONS.cal}</a>`;
@@ -593,7 +599,7 @@ function renderHome(){
       <div class="opp rise" style="--i:1">${rankBox(oppRow)}<div class="who"><div class="pre">${home?"מארחים את":"נוסעים אל"}</div><div class="name fit" data-fit="56" data-min="34">${esc(shortName(opp.name))}</div></div></div>
       <div class="chalk"></div>
       <div class="details rise" style="--i:1">
-        <div><div class="when">${today?"היום, ":""}${esc(longDate(t.date))}</div><div class="where">${ICONS.pin}<span class="iso">${home?"משחק בית":"משחק חוץ"}${v.venue?" · "+esc(v.venue):""}</span></div></div>
+        <div><div class="when">${today?"היום, ":""}${esc(longDate(t.date))}${t.est?` <span class="est">מועד משוער</span>`:""}</div><div class="where">${ICONS.pin}<span class="iso">${home?"משחק בית":"משחק חוץ"}${v.venue?" · "+esc(v.venue):""}</span></div></div>
         <div>${t.tbd?`<span class="stamp sm muted">השעה תפורסם</span>`:`<div class="time">${esc(t.timeStr)}</div>`}</div>
       </div>
       <div class="cd rise" id="cd" style="--i:2" aria-live="off"></div>
@@ -656,9 +662,9 @@ function startCountdown(next){
     if(nm!==mode){
       const first=!mode; mode=nm;
       el.className="cd"+(["t-days","t-today","t-tomorrow","live","done"].includes(nm)?" single":nm==="ms"?" two":"");
-      el.innerHTML=nm==="t-days"?cell("a","ימים למשחק")
-        :nm==="t-today"?big("היום משחקים")+`<div class="lab c">השעה טרם פורסמה</div>`
-        :nm==="t-tomorrow"?big("מחר משחקים")+`<div class="lab c">השעה טרם פורסמה</div>`
+      el.innerHTML=nm==="t-days"?cell("a","ימים למשחק, בערך")
+        :nm==="t-today"?big("מתוכנן להיום")+`<div class="lab c">השעה טרם פורסמה, והמועד עוד יכול לזוז</div>`
+        :nm==="t-tomorrow"?big("מתוכנן למחר")+`<div class="lab c">השעה טרם פורסמה, והמועד עוד יכול לזוז</div>`
         :nm==="live"?big("המשחק בעיצומו")
         :nm==="done"?big("המשחק הסתיים")+`<div class="lab c">התוצאה תתעדכן כשתפורסם</div>`
         :nm==="dhm"?cell("a","ימים")+cell("b","שעות")+cell("c","דקות")
@@ -705,7 +711,7 @@ function ticket(g,i=0,focus=ME.id){
   const t=gameTime(g),isMine=mine(g),me=isMine?(isMe(g.home)?"home":"away"):null,p=played(g),o=p?outcome(g,focus):null,v=venueOf(g,me==="home");
   const ln=(team,a,b)=>`<div class="ln"><span class="n ${isMe(team)?"me":""}">${esc(tname(team))}</span>${p?`<span class="g ${a<b?"lo":""}">${a}</span>`:""}</div>`;
   const stub=p?`${o?`<span class="res ${o}">${OUT[o]}</span>`:`<span class="res">סיום</span>`}<span class="r">מחזור ${g.round}</span>`
-    :t.tbd?`<span class="tbd">השעה<br>תפורסם</span><span class="r">מחזור ${g.round}</span>`
+    :t.tbd?`<span class="tbd">מועד<br>משוער</span><span class="r">מחזור ${g.round}</span>`
     :`<span class="tm">${esc(t.timeStr)}</span><span class="r">מחזור ${g.round}</span>`;
   return `<button class="tk press rise ${g===NEXT?"next":""}" style="--i:${Math.min(i,4)}" data-act="game" data-id="${g.id}">
     <div class="dt"><b>${esc(heDate(t.date,{day:"numeric"}))}</b><span>${esc(heDate(t.date,{month:"short"}))}<br>${esc(heDate(t.date,{weekday:"long"}).replace("יום ",""))}</span></div>

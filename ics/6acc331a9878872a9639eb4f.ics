@@ -11,10 +11,10 @@ BEGIN:VEVENT
 UID:6acc331a9878872a9639eb4f@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפועל עמק הירדן 
- (בית)
+ (בית) | מועד משוער
 DTSTART;VALUE=DATE:20261205
 DTEND;VALUE=DATE:20261206
-DESCRIPTION:מחזור 6\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 6\nמועד משוער: השעה טרם פורסמה
+  והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 END:VCALENDAR

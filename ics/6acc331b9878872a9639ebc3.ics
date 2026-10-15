@@ -11,10 +11,10 @@ BEGIN:VEVENT
 UID:6acc331b9878872a9639ebc3@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד מכבי עירוני קרי
- ת אתא 3 (בית)
+ ת אתא 3 (בית) | מועד משוער
 DTSTART;VALUE=DATE:20270213
 DTEND;VALUE=DATE:20270214
-DESCRIPTION:מחזור 14\nשעת המשחק טרם פורסמה\, היומ
- ן יתעדכן כשתפורסם
+DESCRIPTION:מחזור 14\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
 END:VCALENDAR
