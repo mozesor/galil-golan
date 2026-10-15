@@ -71,7 +71,7 @@ code{background:var(--surface-2);padding:1px 6px;border-radius:6px;font-size:13p
     <input id="branch" value="main" autocomplete="off" />
     <label for="token">טוקן גישה אישי</label>
     <input id="token" type="password" placeholder="github_pat_..." autocomplete="off" />
-    <div class="help">הטוקן נשמר רק בדפדפן הזה. צרו טוקן מסוג Fine-grained עם הרשאת Contents: Read and write (ו-Actions: Read and write כדי להפעיל עדכון ידני) למאגר הזה בלבד.</div>
+    <div class="help"><a href="https://github.com/settings/personal-access-tokens/new?name=galil-admin&amp;description=%D7%A0%D7%99%D7%94%D7%95%D7%9C%20%D7%9C%D7%95%D7%97%20%D7%94%D7%9E%D7%A9%D7%97%D7%A7%D7%99%D7%9D&amp;target_name=mozesor&amp;expires_in=366&amp;contents=write&amp;actions=write" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:600">ליצירת טוקן ב-GitHub</a>. הטוקן נשמר רק בדפדפן הזה. צרו טוקן מסוג Fine-grained עם הרשאת Contents: Read and write (ו-Actions: Read and write כדי להפעיל עדכון ידני) למאגר הזה בלבד.</div>
     <div class="actions"><button class="btn primary" id="connect">התחברות וטעינה</button><button class="btn" id="forget">מחיקת הטוקן מהדפדפן</button></div>
     <div class="status" id="setupStatus" style="margin-top:10px"></div>
   </div>
@@ -134,7 +134,7 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const heDate=(d,o)=>new Intl.DateTimeFormat("he-IL",{timeZone:TZ,...o}).format(d);
 function apiTime(iso){ const f=new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit"}).format(new Date(iso)); return (f==="00:00"||f==="01:00")?"":f; }
 
-try{ $("#repo").value=localStorage.getItem(LS.repo)||""; $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=localStorage.getItem(LS.token)||""; }catch{}
+try{ $("#repo").value=localStorage.getItem(LS.repo)||"mozesor/galil-golan-darom"; $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=localStorage.getItem(LS.token)||""; }catch{}
 
 function gh(){ return {repo:$("#repo").value.trim(), branch:$("#branch").value.trim()||"main", token:$("#token").value.trim()}; }
 async function ghGet(path){
