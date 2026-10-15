@@ -242,6 +242,8 @@ svg{display:block}
 .tile b.W{color:var(--win)}.tile b.L{color:var(--loss)}
 .tile b.na{font-family:var(--body);font-weight:500;font-size:15px;color:var(--muted);line-height:38px}
 .tile span{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-top:4px}
+.cupRow{text-align:start;color:var(--ink)}
+.cupRow .cupSt{font-weight:500;color:var(--accent);white-space:normal;text-align:end}
 .formRow{display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:nowrap;padding:12px 14px;border:2px solid var(--ink);border-top:0;background:var(--surface);font-weight:600;font-size:15px}
 
 /* ---------- ticket ---------- */
@@ -263,6 +265,7 @@ svg{display:block}
 .tk .m{font-size:13px;color:var(--muted);margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .tk .tag{display:inline-block;font-size:12px;font-weight:600;padding:0 6px;border:2px solid currentColor;line-height:1.5}
 .tk .tag.home{color:var(--accent)}
+.tk .tag.cup{color:#FAFBFE;background:var(--club);border-color:var(--club)}
 .tk .stub{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-inline-start:2px dashed var(--line-strong);padding:6px 4px;position:relative}
 .tk .stub::before,.tk .stub::after{content:"";position:absolute;inset-inline-start:-9px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid var(--ink)}
 .tk .stub::before{top:-10px;clip-path:inset(50% 0 0 0)}
@@ -283,11 +286,15 @@ svg{display:block}
 .emptyMonth{font-size:15px;color:var(--muted);padding:8px 2px 4px}
 
 /* segmented + rounds */
-.seg{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);position:relative;margin:16px 0 12px;background:var(--surface)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:2px solid var(--ink);position:relative;margin:16px 0 12px;background:var(--surface)}
 .seg button{position:relative;z-index:1;height:44px;font-weight:600;font-size:15px;color:var(--muted);transition:color 160ms ease}
 .seg button[aria-selected="true"]{color:#FAFBFE}
-.seg .thumb{position:absolute;top:0;bottom:0;inset-inline-start:0;width:50%;background:var(--club);transition:transform 240ms var(--ease-out)}
+.seg .thumb{position:absolute;top:0;bottom:0;inset-inline-start:0;width:calc(100% / 3);background:var(--club);transition:transform 240ms var(--ease-out)}
 .seg[data-i="1"] .thumb{transform:translateX(-100%)}
+.seg[data-i="2"] .thumb{transform:translateX(-200%)}
+.cupHead{border:2px solid var(--ink);background:var(--surface);padding:14px;margin-bottom:12px}
+.cupHead b{display:block;font-family:var(--display);font-weight:700;font-size:30px;line-height:1}
+.cupHead span{display:block;font-size:13px;color:var(--muted);margin-top:4px}
 .rounds{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 12px;margin:0 -16px;scroll-snap-type:x proximity;scrollbar-width:none}
 .rounds[hidden]{display:none}
 .rounds::-webkit-scrollbar{display:none}
@@ -412,6 +419,7 @@ svg{display:block}
       <div class="seg" id="gamesSeg" data-i="0"><div class="thumb"></div>
         <button aria-selected="true" data-i="0">המשחקים שלנו</button>
         <button aria-selected="false" data-i="1">כל הליגה</button>
+        <button aria-selected="false" data-i="2">גביע</button>
       </div>
       <div id="roundsBar" class="rounds" hidden></div>
       <div id="gamesBody" class="list"></div>
@@ -466,7 +474,7 @@ const STANDALONE=matchMedia("(display-mode: standalone)").matches||navigator.sta
 const LS={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
 const SS={get(k){try{return sessionStorage.getItem(k)}catch{return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch{}}};
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
-let DATA=null,CFG=null,OVR=null,ME=null,NEXT=null,lastFetch=0,installEvt=null;
+let DATA=null,CFG=null,OVR=null,ME=null,NEXT=null,lastFetch=0,installEvt=null,CUP=[];
 const state={view:"home",gamesMode:0,round:null};
 const seen=new Set(), scrollPos={};
 
@@ -519,6 +527,9 @@ const played=g=>g.home.goals!==null&&g.away.goals!==null;
 function outcome(g,id){ if(!played(g)||!id||(g.home.id!==id&&g.away.id!==id)) return null; const h=g.home.id===id; const a=h?g.home.goals:g.away.goals,b=h?g.away.goals:g.home.goals; return a>b?"W":a<b?"L":"D"; }
 const OUT_US={W:"ניצחנו",D:"תיקו",L:"הפסדנו"}, OUT={W:"ניצחון",D:"תיקו",L:"הפסד"}, OUTC={W:"win",D:"draw",L:"loss"};
 const teamGames=id=>DATA.games.filter(g=>g.home.id===id||g.away.id===id).sort((a,b)=>a.date.localeCompare(b.date));
+const findGame=id=>DATA.games.find(g=>g.id===id)||CUP.find(g=>g.id===id);
+const myGames=()=>teamGames(ME.id).concat(CUP).sort((a,b)=>a.date.localeCompare(b.date));
+const roundLabel=g=>g.cup?`גביע · ${heb(g.roundName||"")}`:`מחזור ${g.round}`;
 const formOf=(id,n=5)=>teamGames(id).filter(played).slice(-n).map(g=>outcome(g,id));
 function computeTable(maxRound=Infinity){
   const t=new Map(); for(const tm of DATA.teams) t.set(tm.id,{id:tm.id,name:tm.name,games:0,wins:0,draws:0,losses:0,gf:0,ga:0,points:0});
@@ -535,7 +546,7 @@ const venueOf=(g,home)=>{ const ov=OVR?.games?.[g.id]||{}; const hv=OVR?.venues?
 const scoreLtr=g=>`<span class="n">${g.away.goals}</span><i>:</i><span class="n">${g.home.goals}</span>`; // home sits on the right in RTL
 // league position box (replaces initials). Before a team has played, the rank is meaningless, so say so.
 const rankBox=(row,me=false)=>`<div class="mark rank ${me?"me":""}" aria-label="${row?.games?`מקום ${row.rank} בטבלה`:"טרם שיחקו"}">${row?.games?`<b>${row.rank}</b><small>מקום</small>`:`<small class="na">טרם<br>שיחקו</small>`}</div>`;
-const computeNext=()=>teamGames(ME.id).find(g=>!played(g)&&expiresAt(g)>Date.now())||null;
+const computeNext=()=>myGames().find(g=>!played(g)&&expiresAt(g)>Date.now())||null;
 function fit(el){ const max=+el.dataset.fit,min=+el.dataset.min||max*.6; let s=max; el.style.fontSize=s+"px"; while(el.scrollHeight>s*.95*2+6&&s>min){ s-=2; el.style.fontSize=s+"px"; } }
 const fitAll=(r=document)=>r.querySelectorAll("[data-fit]").forEach(fit);
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>fitAll());
@@ -554,7 +565,7 @@ const ICONS={
 const siteUrl=()=>location.href.split("#")[0];
 function gameText(g){
   const t=gameTime(g),home=isMe(g.home),opp=home?g.away:g.home,v=venueOf(g,home);
-  const l=[`⚽ ${CFG.team.displayName} נגד ${shortName(opp.name)}`,`${longDate(t.date)}${t.tbd?" (מועד משוער, השעה תפורסם)":" בשעה "+t.timeStr}`,`${home?"משחק בית":"משחק חוץ"} | מחזור ${g.round}`];
+  const l=[`⚽ ${CFG.team.displayName} נגד ${shortName(opp.name)}`,`${longDate(t.date)}${t.tbd?" (מועד משוער, השעה תפורסם)":" בשעה "+t.timeStr}`,`${home?"משחק בית":"משחק חוץ"} | ${roundLabel(g)}`];
   if(v.venue) l.push(`📍 ${v.venue}`); if(v.waze) l.push(v.waze); if(v.note) l.push(v.note);
   return l.join("\n");
 }
@@ -581,7 +592,7 @@ if(/Android/.test(navigator.userAgent)) $("#subscribe").target="_blank";
 /* ---------- home ---------- */
 let cdTimer=null;
 function renderHome(){
-  const my=teamGames(ME.id), next=NEXT, last=[...my].reverse().find(played);
+  const my=myGames(), next=NEXT, last=[...my].reverse().find(played);
   const tbl=computeTable(), meRow=tbl.find(r=>r.id===ME.id);
   let html="";
   if(next){
@@ -595,7 +606,7 @@ function renderHome(){
       ? `<a class="btn accent press" href="${esc(v.waze)}" target="_blank" rel="noopener">${ICONS.pin}<span>נווטו למגרש</span></a><button class="btn sq press" data-act="share" data-id="${next.id}" aria-label="שיתוף">${ICONS.share}</button>${icsBtn}`
       : `${shareWide}${icsBtn}${v.waze?`<a class="btn sq press" href="${esc(v.waze)}" target="_blank" rel="noopener" aria-label="ניווט למגרש">${ICONS.pin}</a>`:`<button class="btn sq press" data-act="opp" data-id="${opp.id}" aria-label="על היריבה">${ICONS.info}</button>`}`;
     html+=`<div class="hero">
-      <div class="hero-top rise" style="--i:0"><span class="eyebrow"><b>המשחק הבא</b>מחזור ${next.round}</span>${stamp}</div>
+      <div class="hero-top rise" style="--i:0"><span class="eyebrow"><b>${next.cup?"משחק גביע":"המשחק הבא"}</b>${next.cup?esc(heb(next.roundName||"")):`מחזור ${next.round}`}</span>${stamp}</div>
       <div class="opp rise" style="--i:1">${rankBox(oppRow)}<div class="who"><div class="pre">${home?"מארחים את":"נוסעים אל"}</div><div class="name fit" data-fit="56" data-min="34">${esc(shortName(opp.name))}</div></div></div>
       <div class="chalk"></div>
       <div class="details rise" style="--i:1">
@@ -616,7 +627,7 @@ function renderHome(){
       <div class="led rise ${fresh?"reveal":""}" style="--i:3" role="button" tabindex="0" data-act="game" data-id="${last.id}" data-o="${o}">
         <div class="stampWrap"><span class="stamp ${OUTC[o]}">${OUT_US[o]}</span></div>
         <div class="row"><div class="t fit ${isMe(last.home)?"me":""}" data-fit="26" data-min="18">${esc(tname(last.home))}</div><div class="sc ${o}">${scoreLtr(last)}</div><div class="t fit ${isMe(last.away)?"me":""}" data-fit="26" data-min="18">${esc(tname(last.away))}</div></div>
-        <div class="meta">מחזור ${last.round} · לחיצה לפרטי היריבה</div>
+        <div class="meta">${esc(roundLabel(last))} · לחיצה לפרטי המשחק</div>
       </div></div>`;
   }
   const gd=meRow?.gd??0;
@@ -627,7 +638,7 @@ function renderHome(){
       <div class="tile"><b>${meRow?.games??0}</b><span>משחקים</span></div>
       <div class="tile"><b class="ltr ${gd>0?"W":gd<0?"L":""}">${gd>0?"+":""}${gd}</b><span>הפרש שערים</span></div>
     </div>
-    <div class="formRow rise" style="--i:4"><span>כושר אחרון</span>${formStrip(formOf(ME.id))}</div></div>`;
+    <div class="formRow rise" style="--i:4"><span>כושר אחרון</span>${formStrip(formOf(ME.id))}</div>${CUP.length?`<button class="formRow cupRow rise" style="--i:4;width:100%" data-cup="1"><span>${esc(cupShortName())}</span><span class="cupSt">${esc(cupStatus())}</span></button>`:""}</div>`;
   const upcoming=my.filter(g=>!played(g)&&g!==next).slice(0,3);
   if(upcoming.length) html+=`<div class="pad"><h2 class="h2 rise" style="--i:4">בהמשך</h2><div class="list">${upcoming.map(g=>ticket(g,4)).join("")}</div></div>`;
   html+=`<div class="pad" id="installSlot"></div>`+tickerHtml();
@@ -710,18 +721,20 @@ function renderInstall(){
 function ticket(g,i=0,focus=ME.id){
   const t=gameTime(g),isMine=mine(g),me=isMine?(isMe(g.home)?"home":"away"):null,p=played(g),o=p?outcome(g,focus):null,v=venueOf(g,me==="home");
   const ln=(team,a,b)=>`<div class="ln"><span class="n ${isMe(team)?"me":""}">${esc(tname(team))}</span>${p?`<span class="g ${a<b?"lo":""}">${a}</span>`:""}</div>`;
-  const stub=p?`${o?`<span class="res ${o}">${OUT[o]}</span>`:`<span class="res">סיום</span>`}<span class="r">מחזור ${g.round}</span>`
-    :t.tbd?`<span class="tbd">מועד<br>משוער</span><span class="r">מחזור ${g.round}</span>`
-    :`<span class="tm">${esc(t.timeStr)}</span><span class="r">מחזור ${g.round}</span>`;
+  const rl=g.cup?esc(heb(g.roundName||"גביע")):`מחזור ${g.round}`;
+  const stub=p?`${o?`<span class="res ${o}">${OUT[o]}</span>`:`<span class="res">סיום</span>`}<span class="r">${rl}</span>`
+    :t.tbd?`<span class="tbd">מועד<br>משוער</span><span class="r">${rl}</span>`
+    :`<span class="tm">${esc(t.timeStr)}</span><span class="r">${rl}</span>`;
   return `<button class="tk press rise ${g===NEXT?"next":""}" style="--i:${Math.min(i,4)}" data-act="game" data-id="${g.id}">
     <div class="dt"><b>${esc(heDate(t.date,{day:"numeric"}))}</b><span>${esc(heDate(t.date,{month:"short"}))}<br>${esc(heDate(t.date,{weekday:"long"}).replace("יום ",""))}</span></div>
-    <div class="mid">${ln(g.home,g.home.goals,g.away.goals)}${ln(g.away,g.away.goals,g.home.goals)}${isMine?`<div class="m"><span class="tag ${me}">${me==="home"?"בית":"חוץ"}</span>${v.venue?`<span class="iso">${esc(v.venue)}</span>`:""}</div>`:""}</div>
+    <div class="mid">${ln(g.home,g.home.goals,g.away.goals)}${ln(g.away,g.away.goals,g.home.goals)}${isMine?`<div class="m">${g.cup?`<span class="tag cup">גביע</span>`:""}<span class="tag ${me}">${me==="home"?"בית":"חוץ"}</span>${v.venue?`<span class="iso">${esc(v.venue)}</span>`:""}</div>`:""}</div>
     <div class="stub">${stub}</div></button>`;
 }
 function renderGames(first){
   const body=$("#gamesBody"),bar=$("#roundsBar");
+  if(state.gamesMode===2){ bar.hidden=true; body.innerHTML=cupHtml(); return; }
   if(state.gamesMode===0){
-    bar.hidden=true; const my=teamGames(ME.id);
+    bar.hidden=true; const my=myGames();
     body.innerHTML=my.length?my.map((g,i)=>ticket(g,i)).join(""):`<div class="empty"><b>אין משחקים</b>הלוח טרם פורסם.</div>`;
     if(first){ const nx=body.querySelector(".tk.next"); if(nx) nx.scrollIntoView({block:"center",behavior:"instant"}); }
   } else {
@@ -733,6 +746,19 @@ function renderGames(first){
   }
 }
 
+/* ---------- cup ---------- */
+const cupShortName=()=>{ const n=heb(DATA.cup?.name||"גביע"); return n.replace(/\s+ע״?ש.*$/,"")||n; };
+function cupStatus(){
+  const last=[...CUP].reverse().find(played), next=CUP.find(g=>!played(g));
+  if(next) return `${heb(next.roundName||"")}: נגד ${shortName((isMe(next.home)?next.away:next.home).name)}`;
+  if(!last) return "טרם התחיל";
+  if(outcome(last,ME.id)==="L") return `הודחנו ב${heb(last.roundName||"גביע")}`;
+  return `עלינו מ${heb(last.roundName||"הסיבוב")}. ההגרלה הבאה טרם פורסמה`;
+}
+function cupHtml(){
+  if(!CUP.length) return `<div class="empty"><b>אין משחקי גביע</b>הקבוצה עוד לא שובצה בגביע העונה.</div>`;
+  return `<div class="cupHead"><b>${esc(heb(DATA.cup?.name||"גביע"))}</b><span>${esc(cupStatus())}</span></div><div class="list">${CUP.map((g,i)=>ticket(g,i)).join("")}</div>`;
+}
 /* ---------- table ---------- */
 function renderTable(first){
   const now=computeTable(),lr=lastPlayedRound(),before=lr>=2?computeTable(lr-1):null;
@@ -750,7 +776,7 @@ function renderTable(first){
 
 /* ---------- calendar ---------- */
 function renderCal(){
-  const my=teamGames(ME.id); if(!my.length){ $("#calBody").innerHTML=`<div class="empty"><b>אין משחקים</b></div>`; return; }
+  const my=myGames(); if(!my.length){ $("#calBody").innerHTML=`<div class="empty"><b>אין משחקים</b></div>`; return; }
   const p0=parts(gameTime(my[0]).date),p1=parts(gameTime(my[my.length-1]).date);
   const months=[]; let y=+p0.year,m=+p0.month;
   while(y<+p1.year||(y===+p1.year&&m<=+p1.month)){ months.push([y,m]); m++; if(m>12){m=1;y++;} }
@@ -807,12 +833,12 @@ function teamSheet(id){
   openSheet(html);
 }
 function gameSheet(id){
-  const g=DATA.games.find(x=>x.id===id); if(!g) return;
-  if(mine(g)) return teamSheet(isMe(g.home)?g.away.id:g.home.id);
+  const g=findGame(id); if(!g) return;
+  if(mine(g)&&DATA.teams.some(t=>t.id===(isMe(g.home)?g.away.id:g.home.id))) return teamSheet(isMe(g.home)?g.away.id:g.home.id);
   const t=gameTime(g);
-  openSheet(`<div class="sheet-h"><div><h3 class="fit" data-fit="34" data-min="22"><bdi>${esc(shortName(g.home.name))}</bdi> נגד <bdi>${esc(shortName(g.away.name))}</bdi></h3><div class="sub">${esc(longDate(t.date))}${t.tbd?"":" · "+t.timeStr} · מחזור ${g.round}</div></div></div>
+  openSheet(`<div class="sheet-h"><div><h3 class="fit" data-fit="34" data-min="22"><bdi>${esc(shortName(g.home.name))}</bdi> נגד <bdi>${esc(shortName(g.away.name))}</bdi></h3><div class="sub">${esc(longDate(t.date))}${t.tbd?"":" · "+t.timeStr} · ${esc(roundLabel(g))}</div></div></div>
     ${played(g)?`<div class="led"><div class="row"><div class="t">${esc(shortName(g.home.name))}</div><div class="sc">${scoreLtr(g)}</div><div class="t">${esc(shortName(g.away.name))}</div></div></div>`:""}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button class="btn press" data-act="opp" data-id="${g.home.id}"><span class="iso">${esc(shortName(g.home.name))}</span></button><button class="btn press" data-act="opp" data-id="${g.away.id}"><span class="iso">${esc(shortName(g.away.name))}</span></button></div>`);
+    ${g.cup?`<p class="emptyLine" style="margin-top:12px">${esc(heb(DATA.cup?.name||"גביע"))}. היריבה משחקת בליגה אחרת, ולכן אין לנו את הטבלה שלה.</p>`:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button class="btn press" data-act="opp" data-id="${g.home.id}"><span class="iso">${esc(shortName(g.home.name))}</span></button><button class="btn press" data-act="opp" data-id="${g.away.id}"><span class="iso">${esc(shortName(g.away.name))}</span></button></div>`}`);
 }
 
 /* ---------- confetti (rare: once per win, from the stamp) ---------- */
@@ -845,9 +871,10 @@ document.addEventListener("click",e=>{
   const fl=e.target.closest("[data-flash]"); if(fl){ flash(fl,fl.dataset.flash); return; }
   const nv=e.target.closest("[data-view]"); if(nv){ showView(nv.dataset.view); return; }
   const rb=e.target.closest("[data-round]"); if(rb){ state.round=Number(rb.dataset.round); renderGames(false); return; }
+  const cr=e.target.closest("[data-cup]"); if(cr){ state.gamesMode=2; $("#gamesSeg").dataset.i=2; $("#gamesSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.i==="2")); if(state.view==="games") renderGames(false); else showView("games"); return; }
   const sg=e.target.closest("#gamesSeg button"); if(sg){ state.gamesMode=Number(sg.dataset.i); $("#gamesSeg").dataset.i=state.gamesMode; $("#gamesSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b===sg)); renderGames(false); return; }
   const a=e.target.closest("[data-act]"); if(!a||!DATA) return; const id=a.dataset.id,act=a.dataset.act;
-  if(act==="share") share(gameText(DATA.games.find(g=>g.id===id))).then(ok=>ok&&flash(a,"נשלח"));
+  if(act==="share") share(gameText(findGame(id))).then(ok=>ok&&flash(a,"נשלח"));
   else if(act==="opp") teamSheet(id);
   else if(act==="game") gameSheet(id);
   else if(act==="install"&&installEvt){ installEvt.prompt(); installEvt.userChoice.finally(()=>{ installEvt=null; renderInstall(); }); }
@@ -892,7 +919,7 @@ function updateStamp(){
 }
 function init(d,c,o){
   const m=d.teams.find(x=>x.name.includes(c.team.match)); if(!m) throw new Error("הקבוצה לא נמצאה בליגה: "+c.team.match);
-  DATA=d; CFG=c; OVR=o||{}; ME=m;
+  DATA=d; CFG=c; OVR=o||{}; ME=m; CUP=(d.cup?.games||[]).map(g=>({...g,cup:true}));
   $("#teamTitle").textContent=CFG.team.displayName; document.title=heb(CFG.site?.title||document.title);
   NEXT=computeNext(); renderHome(); if(state.view!=="home") renderView(state.view,false); updateStamp();
 }

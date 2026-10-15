@@ -48,6 +48,9 @@ function normGoal(v) {
 }
 
 function normalizeGame(g) {
+  return normalizeGameBase(g);
+}
+function normalizeGameBase(g) {
   const hg = normGoal(g?.home?.goals);
   const ag = normGoal(g?.away?.goals);
   return {
@@ -125,6 +128,35 @@ async function main() {
     for (const g of list) if (prev.has(g.id)) g.ifa = prev.get(g.id);
   }
 
+  // Cup (knockout): keep only our games; round names like "סיבוב א"
+  let cup = null;
+  if (CONFIG.cupLeagueId) {
+    try {
+      const cupApi = `${BASE}/api/leagues/rounds?league_id=${CONFIG.cupLeagueId}`;
+      const cupBase = await fetchJson(cupApi);
+      const cg = [];
+      let empty = 0;
+      for (let n = 0; n <= 20; n++) {
+        const gs = games(await fetchJson(`${cupApi}&round=${n}`));
+        if (!gs.length) { if (++empty >= 3) break; continue; }
+        empty = 0;
+        for (const raw of gs) {
+          const g = normalizeGameBase(raw);
+          if (!ours(g)) continue;
+          g.cup = true;
+          g.roundName = cleanName(raw?.round?.name) || `סיבוב ${g.round}`;
+          cg.push(g);
+        }
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      cup = { id: CONFIG.cupLeagueId, name: String(cupBase?.league?.name || "גביע").replace(/\s+/g, " ").trim(), games: cg.sort((a, b) => a.date.localeCompare(b.date)) };
+      console.log(`cup: ${cg.length} of our games`);
+    } catch (e) {
+      console.warn("cup fetch failed, keeping previous cup data:", String(e));
+      cup = previous0?.cup || null;
+    }
+  }
+
   const teams = new Map();
   for (const g of list) for (const s of ["home", "away"]) teams.set(g[s].id, g[s].name);
 
@@ -146,6 +178,7 @@ async function main() {
     teams: Array.from(teams, ([id, name]) => ({ id, name })),
     games: list,
     standings,
+    cup,
   };
 
   // keep the old timestamp when nothing but the clock changed, so the workflow's "commit if changed" guard works

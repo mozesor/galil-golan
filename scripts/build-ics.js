@@ -80,7 +80,7 @@ function event(g, cfg, ovr) {
     "BEGIN:VEVENT",
     `UID:${g.id}@galil-golan-darom`,
     `DTSTAMP:${DTSTAMP}`,
-    `SUMMARY:${esc(`⚽ ${cfg.team.displayName} נגד ${shortName(opp.name)}${score} (${home ? "בית" : "חוץ"})${t.tbd && !played ? " | מועד משוער" : ""}`)}`,
+    `SUMMARY:${esc(`${g.cup ? "🏆 גביע: " : "⚽ "}${cfg.team.displayName} נגד ${shortName(opp.name)}${score} (${home ? "בית" : "חוץ"})${t.tbd && !played ? " | מועד משוער" : ""}`)}`,
   ];
   if (t.tbd) {
     const next = new Date(israelDate(t.iso, 12, 0).getTime() + 86400000);
@@ -90,7 +90,7 @@ function event(g, cfg, ovr) {
     lines.push(`DTSTART:${fmt(t.date)}`, `DTEND:${fmt(new Date(t.date.getTime() + 90 * 60000))}`);
   }
   if (venue) lines.push(`LOCATION:${esc(venue)}`);
-  const desc = [`מחזור ${g.round}`, t.tbd ? "מועד משוער: השעה טרם פורסמה והיום עוד יכול לזוז. היומן יתעדכן לבד" : "", note, waze].filter(Boolean).join("\n");
+  const desc = [g.cup ? `גביע, ${g.roundName}` : `מחזור ${g.round}`, t.tbd ? "מועד משוער: השעה טרם פורסמה והיום עוד יכול לזוז. היומן יתעדכן לבד" : "", note, waze].filter(Boolean).join("\n");
   lines.push(`DESCRIPTION:${esc(desc)}`);
   if (!t.tbd && !played) lines.push("BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${esc("משחק בעוד שעתיים")}`, "TRIGGER:-PT2H", "END:VALARM");
   lines.push("END:VEVENT");
@@ -121,6 +121,7 @@ async function buildIcs() {
   if (!data || !cfg) throw new Error("build-ics: data.json or config.json missing");
   const mine = data.games
     .filter((g) => g.home.name.includes(cfg.team.match) || g.away.name.includes(cfg.team.match))
+    .concat(data.cup?.games || [])
     .sort((a, b) => a.date.localeCompare(b.date));
 
   await fs.mkdir(path.join(ROOT, "ics"), { recursive: true });
