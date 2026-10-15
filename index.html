@@ -580,7 +580,7 @@ function renderHome(){
     const slamKey="gd-today-"+t.iso, slam=today&&!REDUCED&&!LS.get(slamKey); if(today) LS.set(slamKey,"1");
     const stamp=today?`<span class="stamp big accent ${slam?"slam":""}">היום משחקים!</span>`:`<span class="stamp ${home?"accent":"muted"}">${home?"בית":"חוץ"}</span>`;
     const icsBtn=`<a class="btn sq press" href="ics/${esc(next.id)}.ics" data-flash="נפתח" aria-label="הוספה ליומן">${ICONS.cal}</a>`;
-    const shareWide=`<button class="btn accent press" data-act="share" data-id="${next.id}">${ICONS.share}<span>שתפו להורים</span></button>`;
+    const shareWide=`<button class="btn accent press" data-act="share" data-id="${next.id}">${ICONS.share}<span>שתפו את המשחק</span></button>`;
     const acts=today&&v.waze
       ? `<a class="btn accent press" href="${esc(v.waze)}" target="_blank" rel="noopener">${ICONS.pin}<span>נווטו למגרש</span></a><button class="btn sq press" data-act="share" data-id="${next.id}" aria-label="שיתוף">${ICONS.share}</button>${icsBtn}`
       : `${shareWide}${icsBtn}${v.waze?`<a class="btn sq press" href="${esc(v.waze)}" target="_blank" rel="noopener" aria-label="ניווט למגרש">${ICONS.pin}</a>`:`<button class="btn sq press" data-act="opp" data-id="${opp.id}" aria-label="על היריבה">${ICONS.info}</button>`}`;
