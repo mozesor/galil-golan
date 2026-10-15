@@ -177,11 +177,12 @@ svg{display:block}
 .details .where{font-size:14px;color:var(--muted);margin-top:4px;display:flex;gap:6px;align-items:center}
 .details .where svg{width:15px;height:15px;flex:none}
 .details .time{font-family:var(--display);font-weight:700;font-size:44px;line-height:.9;color:var(--accent)}
-.cd{display:grid;grid-template-columns:repeat(3,1fr);margin:18px 0 0;min-height:132px;align-content:center}
+.cd{display:grid;grid-template-columns:repeat(3,1fr);margin:18px 0 0;min-height:132px;align-content:center;direction:ltr}
+.cd .lab,.cd .today{direction:rtl}
 .cd.two{grid-template-columns:1fr 1fr}
 .cd.single{grid-template-columns:1fr}
-.cd .cell{text-align:center;padding:8px 0 10px;border-inline-start:2px dashed var(--chalk)}
-.cd .cell:first-of-type{border-inline-start:0}
+.cd .cell{text-align:center;padding:8px 0 10px;border-left:2px dashed var(--chalk)}
+.cd .cell:first-of-type{border-left:0}
 .cd .digits{font-family:var(--display);font-weight:700;font-size:104px;line-height:.86;display:inline-flex;direction:ltr}
 .cd.single .digits{font-size:120px}
 .cd .d{display:inline-block;min-width:.5em;text-align:center}
