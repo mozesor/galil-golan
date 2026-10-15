@@ -66,7 +66,8 @@ function event(g, cfg, ovr) {
   const hv = ovr?.venues?.home || {};
   const venue = o.venue || (home ? hv.name || "" : "");
   const note = o.note || (home ? hv.note || "" : "");
-  const waze = o.waze || (home ? hv.waze || "" : "");
+  const rawWaze = o.waze || (home ? hv.waze || "" : "");
+  const waze = /^https:\/\/[^\s"<>]+$/i.test(rawWaze) ? rawWaze : "";
   const played = g.home.goals !== null && g.away.goals !== null;
   const my = home ? g.home.goals : g.away.goals, op = home ? g.away.goals : g.home.goals;
   const score = played ? ` ${my}:${op}` : "";

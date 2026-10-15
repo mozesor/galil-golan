@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="גליל גולן" />
-<meta name="description" content="לוח המשחקים של גליל גולן דרום, ילדים ב׳. המשחק הבא, תוצאות, טבלה ויומן. מתעדכן אוטומטית." />
+<meta name="description" content="אתר הורים לא רשמי: לוח המשחקים של גליל גולן דרום, ילדים ב׳. המשחק הבא, תוצאות, טבלה ויומן." />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="he_IL" />
 <meta property="og:title" content="גליל גולן דרום | ילדים ב׳" />
@@ -371,6 +371,7 @@ svg{display:block}
 .updated{font-size:13px;color:var(--muted);text-align:center;margin:26px 16px 0}
 .updated a{text-decoration:underline}
 .stale .updated{color:var(--loss);font-weight:600}
+.disclaimer{font-size:12px;color:var(--muted);text-align:center;margin:8px 16px 0;opacity:.85}
 #confetti{position:fixed;inset:0;width:100%;height:100%;z-index:50;pointer-events:none}
 .calTop{display:grid;grid-template-columns:1fr 56px;gap:10px;margin:16px 0 4px}
 .calHint{font-size:13px;color:var(--muted);margin:0 0 6px}
@@ -435,6 +436,7 @@ svg{display:block}
     </section>
 
     <div class="updated" id="updated"></div>
+    <p class="disclaimer">אתר הורים לא רשמי. אינו קשור למועדון, להתאחדות לכדורגל או לאתר ONE.</p>
   </main>
 </div>
 
@@ -521,7 +523,9 @@ function computeTable(maxRound=Infinity){
   arr.sort((a,b)=>b.points-a.points||b.gd-a.gd||b.gf-a.gf||a.name.localeCompare(b.name,"he")); arr.forEach((x,i)=>x.rank=i+1); return arr;
 }
 const lastPlayedRound=()=>Math.max(0,...DATA.games.filter(played).map(g=>g.round));
-const venueOf=(g,home)=>{ const ov=OVR?.games?.[g.id]||{}; const hv=OVR?.venues?.home||{}; return {venue:ov.venue||(home?hv.name||"":""),waze:ov.waze||(home?hv.waze||"":""),note:ov.note||(home?hv.note||"":"")}; };
+// only plain https links ever become buttons (blocks javascript: and data: links)
+const safeUrl=u=>/^https:\/\/[^\s"<>]+$/i.test(u||"")?u:"";
+const venueOf=(g,home)=>{ const ov=OVR?.games?.[g.id]||{}; const hv=OVR?.venues?.home||{}; return {venue:ov.venue||(home?hv.name||"":""),waze:safeUrl(ov.waze||(home?hv.waze||"":"")),note:ov.note||(home?hv.note||"":"")}; };
 const scoreLtr=g=>`<span class="n">${g.away.goals}</span><i>:</i><span class="n">${g.home.goals}</span>`; // home sits on the right in RTL
 // league position box (replaces initials). Before a team has played, the rank is meaningless, so say so.
 const rankBox=(row,me=false)=>`<div class="mark rank ${me?"me":""}" aria-label="${row?.games?`מקום ${row.rank} בטבלה`:"טרם שיחקו"}">${row?.games?`<b>${row.rank}</b><small>מקום</small>`:`<small class="na">טרם<br>שיחקו</small>`}</div>`;

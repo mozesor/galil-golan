@@ -78,14 +78,14 @@ a.btn{text-decoration:none}
     <a class="btn primary" style="width:100%;margin:4px 0 14px" href="https://github.com/settings/personal-access-tokens/new?name=galil-admin&amp;description=%D7%A0%D7%99%D7%94%D7%95%D7%9C%20%D7%9C%D7%95%D7%97%20%D7%94%D7%9E%D7%A9%D7%97%D7%A7%D7%99%D7%9D&amp;target_name=mozesor&amp;expires_in=366&amp;contents=write&amp;actions=write" target="_blank" rel="noopener">יצירת טוקן ב-GitHub</a>
     <label for="token">טוקן גישה אישי</label>
     <input id="token" type="password" placeholder="github_pat_..." autocomplete="off" />
-    <div class="help">הטוקן נשמר רק בדפדפן הזה. במכשיר אחר צריך להדביק אותו שוב.</div>
+    <div class="help">מטעמי אבטחה הטוקן נשמר רק עד שסוגרים את הלשונית, ובכל כניסה מדביקים אותו מחדש. כדאי לשמור אותו במנהל הסיסמאות של הטלפון או המחשב.</div>
     <details style="margin-top:12px"><summary>הגדרות מתקדמות</summary>
       <label for="repo">מאגר (owner/repo)</label>
       <input id="repo" placeholder="mozesor/galil-golan-darom" autocomplete="off" />
       <label for="branch">ענף</label>
       <input id="branch" value="main" autocomplete="off" />
     </details>
-    <div class="actions"><button class="btn primary" id="connect">התחברות וטעינה</button><button class="btn" id="forget">מחיקת הטוקן מהדפדפן</button></div>
+    <div class="actions"><button class="btn primary" id="connect">התחברות וטעינה</button><button class="btn" id="forget">התנתקות</button></div>
     <div class="status" id="setupStatus" style="margin-top:10px"></div>
   </div>
 
@@ -147,7 +147,8 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const heDate=(d,o)=>new Intl.DateTimeFormat("he-IL",{timeZone:TZ,...o}).format(d);
 function apiTime(iso){ const f=new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit"}).format(new Date(iso)); return (f==="00:00"||f==="01:00")?"":f; }
 
-try{ $("#repo").value=localStorage.getItem(LS.repo)||"mozesor/galil-golan-darom"; $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=localStorage.getItem(LS.token)||""; }catch{}
+try{ localStorage.removeItem(LS.token); }catch{}
+try{ $("#repo").value=localStorage.getItem(LS.repo)||"mozesor/galil-golan-darom"; $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=sessionStorage.getItem(LS.token)||""; }catch{}
 
 function gh(){ return {repo:$("#repo").value.trim(), branch:$("#branch").value.trim()||"main", token:$("#token").value.trim()}; }
 async function ghGet(path){
@@ -179,7 +180,7 @@ async function load(){
     DATA=d.json; CFG=c.json; OVR=o.json||{games:{},venues:{home:{}}}; SHA={"data.json":d.sha,"config.json":c.sha,"overrides.json":o.sha};
     OVR.games=OVR.games||{}; OVR.venues=OVR.venues||{}; OVR.venues.home=OVR.venues.home||{};
     delete OVR.games.EXAMPLE_GAME_ID;
-    try{ localStorage.setItem(LS.repo,repo); localStorage.setItem(LS.branch,gh().branch); localStorage.setItem(LS.token,token); }catch{}
+    try{ localStorage.setItem(LS.repo,repo); localStorage.setItem(LS.branch,gh().branch); sessionStorage.setItem(LS.token,token); }catch{}
     MATCH=CFG.team.match;
     render();
     $("#editor").classList.remove("hidden"); $("#setupStatus").textContent=`מחובר. ${DATA.games.length} משחקים בליגה.`;
@@ -212,10 +213,12 @@ function collect(){
   CFG.team.displayName=$("#displayName").value.trim()||CFG.team.displayName;
   CFG.team.short=$("#shortName").value.trim()||CFG.team.short;
   CFG.site=CFG.site||{}; CFG.site.title=$("#siteTitle").value.trim()||CFG.site.title;
-  OVR.venues.home={name:$("#homeVenue").value.trim(),waze:$("#homeWaze").value.trim(),note:$("#homeNote").value.trim()};
+  const okUrl=(u,where)=>{ if(u&&!/^https:\/\/[^\s"<>]+$/i.test(u)) throw new Error("קישור ניווט חייב להתחיל ב-https:// ("+where+")"); return u; };
+  OVR.venues.home={name:$("#homeVenue").value.trim(),waze:okUrl($("#homeWaze").value.trim(),"מגרש הבית"),note:$("#homeNote").value.trim()};
   const games={};
   document.querySelectorAll("#games .game").forEach(el=>{
     const o={}; el.querySelectorAll("[data-f]").forEach(i=>{ const v=i.value.trim(); if(v) o[i.dataset.f]=v; });
+    if(o.waze) okUrl(o.waze, el.querySelector(".t b")?.childNodes[0]?.textContent||"משחק");
     if(o.time){ const m=/^(\d{1,2}):(\d{2})$/.exec(o.time); if(!m||+m[1]>23||+m[2]>59) throw new Error("שעה לא תקינה: "+o.time+" (לדוגמה 10:30)"); o.time=`${m[1].padStart(2,"0")}:${m[2]}`; }
     if(Object.keys(o).length) games[el.dataset.id]=o;
   });
@@ -225,7 +228,7 @@ function collect(){
 
 $("#connect").addEventListener("click",load);
 $("#reload").addEventListener("click",load);
-$("#forget").addEventListener("click",()=>{ try{localStorage.removeItem(LS.token);}catch{} $("#token").value=""; toast("הטוקן נמחק מהדפדפן"); });
+$("#forget").addEventListener("click",()=>{ try{localStorage.removeItem(LS.token); sessionStorage.removeItem(LS.token);}catch{} $("#token").value=""; toast("הטוקן נמחק מהדפדפן"); });
 $("#save").addEventListener("click",async()=>{
   try{ collect(); }catch(e){ toast(e.message,true); return; }
   $("#save").disabled=true; $("#save").textContent="שומר...";
