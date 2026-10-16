@@ -88,15 +88,16 @@ export default {
       if (!env.PUSH_SECRET || auth !== `Bearer ${env.PUSH_SECRET}`) return json({ error: "auth" }, 401);
       let body; try { body = await req.json(); } catch { return json({ error: "json" }, 400); }
       const items = Array.isArray(body?.items) ? body.items.slice(0, 20) : [];
+      const keys = await listAll(env);
       const fresh = [];
       for (const it of items) {
         if (!it || typeof it.key !== "string" || typeof it.title !== "string" || typeof it.body !== "string") continue;
-        if (await env.SUBS.get("sent:" + it.key)) continue;
+        if (await env.SUBS.get("sent:" + it.key, { cacheTtl: 60 })) continue;
+        // claim the key before sending: two runs a minute apart can no longer send the same item twice
+        if (keys.length) await env.SUBS.put("sent:" + it.key, String(Date.now()), { expirationTtl: 180 * 24 * 3600 });
         fresh.push(it);
       }
-      if (!fresh.length) return json({ sent: 0, items: 0, subscribers: 0 });
-
-      const keys = await listAll(env);
+      if (!fresh.length) return json({ sent: 0, items: 0, subscribers: keys.length });
       // with nobody subscribed yet, keep the items unsent so the first subscribers still get them
       if (!keys.length) return json({ sent: 0, items: fresh.length, subscribers: 0, deferred: true });
       let sent = 0, dropped = 0, failed = 0;
@@ -111,7 +112,6 @@ export default {
           } catch { failed++; }
         }
       }
-      for (const it of fresh) await env.SUBS.put("sent:" + it.key, String(Date.now()), { expirationTtl: 180 * 24 * 3600 });
       return json({ sent, failed, dropped, items: fresh.length, subscribers: keys.length });
     }
 
