@@ -7,7 +7,10 @@ on:
       - overrides.json
       - config.json
   schedule:
-    - cron: "*/30 * * * *"
+    # off the top of the hour, when GitHub queues are least busy
+    - cron: "7,37 * * * *"
+    # match days (Sat/Sun, 10:00 to 22:00 Israel): every 15 minutes
+    - cron: "22,52 7-19 * * 0,6"
 
 permissions:
   contents: write

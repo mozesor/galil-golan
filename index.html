@@ -916,10 +916,19 @@ $("#shareSeason").addEventListener("click",()=>{ if(!DATA) return; const btn=$("
 
 /* ---------- data: snapshot first, then network ---------- */
 function relTime(iso){ const m=Math.round((Date.now()-new Date(iso).getTime())/60000); if(m<1) return "ממש עכשיו"; if(m<60) return `לפני ${m} דק׳`; const h=Math.round(m/60); if(h===1) return "לפני שעה"; if(h===2) return "לפני שעתיים"; if(h<48) return `לפני ${h} שעות`; const d=Math.round(h/24); return d===2?"לפני יומיים":`לפני ${d} ימים`; }
+let CHECKED=null, checkedAsked=0;
+// last successful check of ONE (the updater runs even when nothing changed); public GitHub API, cached 10 min
+async function fetchChecked(){
+  if(Date.now()-checkedAsked<10*60000) return; checkedAsked=Date.now();
+  try{ const r=await fetch("https://api.github.com/repos/mozesor/galil-golan/actions/workflows/update-data.yml/runs?status=success&per_page=1",{cache:"no-store"});
+    if(!r.ok) return; const j=await r.json(); const t=j.workflow_runs?.[0]?.updated_at; if(t){ CHECKED=t; updateStamp(); } }catch{}
+}
 function updateStamp(){
   if(!DATA) return; const stale=document.body.classList.contains("stale");
+  const checked=CHECKED&&new Date(CHECKED)>new Date(DATA.fetchedAt)?` · נבדק שוב ${esc(relTime(CHECKED))}, אין חדש`:"";
   $("#updated").innerHTML=stale?`אין חיבור. מוצגים הנתונים שנשמרו ${esc(relTime(DATA.fetchedAt))}`
-    :`הנתונים מאתר ONE, עודכנו ${esc(relTime(DATA.fetchedAt))} · <a href="https://vole.one.co.il/league/${DATA.league.id}" target="_blank" rel="noopener">לעמוד הליגה</a>`;
+    :`עדכון אחרון מאתר ONE ${esc(relTime(DATA.fetchedAt))}${checked} · <a href="https://vole.one.co.il/league/${DATA.league.id}" target="_blank" rel="noopener">לעמוד הליגה</a>`;
+  if(!stale) fetchChecked();
 }
 function init(d,c,o){
   const m=d.teams.find(x=>x.name.includes(c.team.match)); if(!m) throw new Error("הקבוצה לא נמצאה בליגה: "+c.team.match);
