@@ -97,6 +97,8 @@ export default {
       if (!fresh.length) return json({ sent: 0, items: 0, subscribers: 0 });
 
       const keys = await listAll(env);
+      // with nobody subscribed yet, keep the items unsent so the first subscribers still get them
+      if (!keys.length) return json({ sent: 0, items: fresh.length, subscribers: 0, deferred: true });
       let sent = 0, dropped = 0, failed = 0;
       for (const k of keys) {
         const sub = await env.SUBS.get(k, "json");
