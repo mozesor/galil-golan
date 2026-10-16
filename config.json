@@ -10,5 +10,9 @@
     "title": "גליל גולן דרום | ילדים ב׳",
     "whatsappFooter": "נשלח מלוח המשחקים של הקבוצה"
   },
-  "cupLeagueId": 1306
+  "cupLeagueId": 1306,
+  "push": {
+    "server": "https://galil-push.mozesor.workers.dev",
+    "vapidPublicKey": "BMBIF1gCc_XeqVzzAKa8o-Q6HWlbQ8MGyWNt8x1OWAOZ34f66tk1J6EDWqBUNi15DNJaJTs86gc-cHNZROQZ5Ww"
+  }
 }

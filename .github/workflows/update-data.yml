@@ -30,6 +30,11 @@ jobs:
       - name: Fetch from ONE
         working-directory: scripts
         run: node fetch-data.js
+      - name: Push notifications
+        working-directory: scripts
+        env:
+          PUSH_SECRET: ${{ secrets.PUSH_SECRET }}
+        run: node notify.js
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"

@@ -1,0 +1,14 @@
+name = "galil-push"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "SUBS"
+id = "99125bb502d44b849aa878653a5d9e6e"
+
+[vars]
+ALLOWED_ORIGIN = "https://mozesor.github.io"
+VAPID_SUBJECT = "mailto:mozesor@gmail.com"
+SITE_URL = "https://mozesor.github.io/galil-golan/"

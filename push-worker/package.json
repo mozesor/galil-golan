@@ -1,0 +1,11 @@
+{
+  "name": "galil-push",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@block65/webcrypto-web-push": "*"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

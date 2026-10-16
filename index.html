@@ -646,9 +646,9 @@ function renderHome(){
     <div class="formRow rise" style="--i:4"><span>כושר אחרון</span>${formStrip(formOf(ME.id))}</div>${CUP.length?`<button class="formRow cupRow rise" style="--i:4;width:100%" data-cup="1"><span>${esc(cupShortName())}</span><span class="cupSt">${esc(cupStatus())}</span></button>`:""}</div>`;
   const upcoming=my.filter(g=>!played(g)&&g!==next).slice(0,3);
   if(upcoming.length) html+=`<div class="pad"><h2 class="h2 rise" style="--i:4">בהמשך</h2><div class="list">${upcoming.map(g=>ticket(g,4)).join("")}</div></div>`;
-  html+=`<div class="pad" id="installSlot"></div>`+tickerHtml();
+  html+=`<div class="pad" id="pushSlot"></div><div class="pad" id="installSlot"></div>`+tickerHtml();
   $("#homeBody").innerHTML=html;
-  fitAll($("#homeBody")); renderInstall(); startCountdown(next); armTicker(); armReveal();
+  fitAll($("#homeBody")); renderInstall(); renderPush(); startCountdown(next); armTicker(); armReveal();
 }
 function formStrip(form,sm=false){
   const cells=[...form]; while(cells.length<5) cells.unshift("E");
@@ -709,6 +709,49 @@ function armReveal(){
   },{threshold:.6});
   io.observe(led);
 }
+
+/* ---------- push notifications (badge + alerts) ---------- */
+const PUSH_OK = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+let swReg = null, pushState = "idle";
+async function swReady(){ if(!PUSH_OK) return null; if(swReg) return swReg; try{ swReg = await navigator.serviceWorker.register("sw.js?v=1"); await navigator.serviceWorker.ready; }catch(e){ swReg = null; } return swReg; }
+function clearBadge(){ try{ navigator.clearAppBadge && navigator.clearAppBadge(); }catch{} try{ navigator.serviceWorker?.controller?.postMessage("clear-badge"); }catch{} }
+const b64url = (s) => { const pad = "=".repeat((4 - s.length % 4) % 4); const raw = atob((s + pad).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(raw, c => c.charCodeAt(0)); };
+async function pushStatus(){
+  if(!PUSH_OK || !CFG?.push?.server) return "unsupported";
+  if(IOS && !STANDALONE) return "needs-install";
+  if(Notification.permission === "denied") return "denied";
+  const reg = await swReady(); if(!reg) return "unsupported";
+  const sub = await reg.pushManager.getSubscription();
+  return sub ? "on" : "off";
+}
+async function pushSubscribe(){
+  const reg = await swReady(); if(!reg) return;
+  const perm = await Notification.requestPermission(); if(perm !== "granted") return renderPush();
+  const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64url(CFG.push.vapidPublicKey) });
+  const r = await fetch(CFG.push.server + "/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON() }) });
+  if(!r.ok){ await sub.unsubscribe(); throw new Error("subscribe " + r.status); }
+  LS.set("gd-push", "on");
+}
+async function pushUnsubscribe(){
+  const reg = await swReady(); const sub = reg && await reg.pushManager.getSubscription(); if(!sub) return;
+  try{ await fetch(CFG.push.server + "/unsubscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ endpoint: sub.endpoint }) }); }catch{}
+  await sub.unsubscribe(); LS.set("gd-push", "off");
+}
+async function renderPush(){
+  const slot = $("#pushSlot"); if(!slot) return;
+  const st = await pushStatus();
+  const hidden = Date.now() - (+(LS.get("gd-push-x") || 0)) < 30 * 86400000;
+  if(st === "unsupported" || (st !== "on" && hidden)){ slot.innerHTML = ""; return; }
+  const bell = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></svg>`;
+  const rows = {
+    "on":           ["התראות פועלות", "תקבלו הודעה על תוצאה, שעה או מגרש חדשים, ותזכורת יום לפני משחק.", `<button class="linkBtn" data-act="push-off">ביטול</button>`],
+    "off":          ["קבלו התראות", "תוצאה, שעה או מגרש חדשים, ותזכורת יום לפני משחק. מספר על האייקון כשיש חדש.", `<button class="btn accent press" data-act="push-on">הפעלה</button><button class="linkBtn" data-act="push-x">לא עכשיו</button>`],
+    "needs-install":["התראות על המשחקים", "באייפון זה עובד רק אחרי הוספה למסך הבית: שיתוף, ואז ׳הוספה למסך הבית׳. אחר כך פותחים מהאייקון ולוחצים הפעלה.", `<button class="linkBtn" data-act="push-x">הבנתי</button>`],
+    "denied":       ["ההתראות חסומות", "אישרתם בעבר לחסום. אפשר לשנות בהגדרות הטלפון תחת ההתראות של האתר.", `<button class="linkBtn" data-act="push-x">הבנתי</button>`],
+  }[st];
+  slot.innerHTML = `<h2 class="h2">התראות</h2><div class="tk install"><div class="dt">${bell}</div><div class="mid"><div class="ln"><span class="n">${rows[0]}</span></div><div class="m" style="white-space:normal">${rows[1]}</div></div><div class="stub">${rows[2]}</div></div>`;
+}
+if(PUSH_OK){ swReady(); if(STANDALONE) clearBadge(); }
 
 /* ---------- install card ---------- */
 addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); installEvt=e; renderInstall(); });
@@ -884,6 +927,9 @@ document.addEventListener("click",e=>{
   else if(act==="game") gameSheet(id);
   else if(act==="install"&&installEvt){ installEvt.prompt(); installEvt.userChoice.finally(()=>{ installEvt=null; renderInstall(); }); }
   else if(act==="install-x"){ LS.set("gd-install-x",String(Date.now())); renderInstall(); }
+  else if(act==="push-on"){ a.disabled=true; pushSubscribe().catch(()=>{}).finally(()=>{ a.disabled=false; renderPush(); }); }
+  else if(act==="push-off"){ pushUnsubscribe().finally(renderPush); }
+  else if(act==="push-x"){ LS.set("gd-push-x",String(Date.now())); renderPush(); }
 });
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){ closeSheet(); return; }
@@ -956,7 +1002,7 @@ async function load(){
   }
 }
 document.addEventListener("visibilitychange",()=>{
-  if(document.visibilityState!=="visible"||!DATA) return;
+  if(document.visibilityState!=="visible") return; clearBadge(); if(!DATA) return;
   const n=computeNext(); if(n!==NEXT){ NEXT=n; renderHome(); } else startCountdown(NEXT);
   if(Date.now()-lastFetch>5*60000) load();
 });
