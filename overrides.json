@@ -1,5 +1,5 @@
 {
-  "_help": "מידע ידני שההתאחדות לא מפרסמת. עורכים דרך admin.html. games: מפתח = מזהה המשחק (id) מתוך data.json, שדות time/venue/waze/note. venues.home: ברירת מחדל לכל משחקי הבית.",
+  "_help": "מידע ידני שההתאחדות לא מפרסמת. נערך מתוך admin.html",
   "venues": {
     "home": {
       "name": "",
@@ -7,12 +7,5 @@
       "note": ""
     }
   },
-  "games": {
-    "EXAMPLE_GAME_ID": {
-      "time": "10:00",
-      "venue": "מגרש הדוגמה",
-      "waze": "https://waze.com/ul?q=",
-      "note": "להגיע 30 דקות לפני, להביא מים"
-    }
-  }
+  "games": {}
 }
