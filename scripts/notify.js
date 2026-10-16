@@ -9,7 +9,7 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 const TZ = "Asia/Jerusalem";
-const SERVER = process.env.PUSH_SERVER || "https://galil-push.mozesor.workers.dev";
+const SERVER = process.env.PUSH_SERVER || (JSON.parse(require("fs").readFileSync(require("path").join(__dirname, "..", "config.json"), "utf8")).push?.server) || "https://galil-push.mozesor.workers.dev";
 const SECRET = process.env.PUSH_SECRET;
 
 const read = (f, fb) => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8")); } catch { return fb; } };
