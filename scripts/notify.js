@@ -56,7 +56,7 @@ for (const g of mine) {
   }
   if (t.iso < today) continue;
   const venue = venueOf(g, home);
-  if (g.cup && t.iso >= today) items.push({ key: `cup:${g.id}`, title: "הגרלת הגביע פורסמה", body: `${heb(g.roundName || "")}: ${home ? "בבית" : "בחוץ"} מול ${opp}, ${heDate(t.iso)}${t.time ? " בשעה " + t.time : ""}.`, url });
+  if (g.cup && t.iso >= today) items.push({ key: `cup:${t.iso}:${opp}`, title: "הגרלת הגביע פורסמה", body: `${heb(g.roundName || "")}: ${home ? "בבית" : "בחוץ"} מול ${opp}, ${heDate(t.iso)}${t.time ? " בשעה " + t.time : ""}.`, url });
   if (t.time && t.iso <= addDays(today, 10)) items.push({ key: `time:${g.id}:${t.time}:${venue}`, title: `נקבעה שעה למשחק מול ${opp}`, body: `${heDate(t.iso)} בשעה ${t.time}${venue ? ", " + heb(venue) : ""}. ${home ? "משחק בית" : "משחק חוץ"}.`, url });
   if (t.iso === tomorrow) items.push({ key: `reminder:${g.id}`, title: `מחר משחק מול ${opp}`, body: `${t.time ? "בשעה " + t.time : "השעה טרם פורסמה"}${venue ? ", " + heb(venue) : ""}. ${home ? "משחק בית" : "משחק חוץ"}. בהצלחה!`, url });
 }

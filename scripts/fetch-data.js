@@ -157,6 +157,27 @@ async function main() {
     }
   }
 
+  // Manual fixtures from overrides.json (e.g. a cup draw published as a PDF before ONE loads it).
+  // Each is dropped automatically once ONE has a game on the same date against the same opponent.
+  try {
+    const ovr = JSON.parse(await fs.readFile(path.join(ROOT, "overrides.json"), "utf8"));
+    const extras = Array.isArray(ovr?.extraGames) ? ovr.extraGames : [];
+    const core = (n) => cleanName(n).replace(/^(מ\.כ\.?|מ\.ס\.?|ה\.|מועדון הכדורגל|מרכז קהילתי|איחוד|הפועל|הפ'|מכבי|בית"ר|ביתר|בני|עירוני|צעירי)\s*/g, "").replace(/\s*צו פיוס\s*$/, "").trim();
+    const isoOf = (d) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jerusalem" }).format(new Date(d));
+    const midnightIsrael = (iso) => { const g = new Date(`${iso}T00:00:00Z`); const p = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Jerusalem", hour12: false, hour: "2-digit" }).formatToParts(g); const h = +p.find((x) => x.type === "hour").value % 24; return new Date(g.getTime() - h * 3600000).toISOString(); };
+    for (const x of extras) {
+      if (!x?.date || !x?.home || !x?.away) continue;
+      const pool = x.cup ? (cup?.games || []) : list.filter(ours);
+      const opp = ours({ home: { name: x.home }, away: { name: x.away } }) ? (x.home.includes(CONFIG.team.match) ? x.away : x.home) : null;
+      const dup = pool.some((g) => isoOf(g.date) === x.date && [g.home.name, g.away.name].some((n) => opp && core(n) === core(opp)));
+      if (dup) { console.log("manual game superseded by ONE:", x.id); continue; }
+      const mk = (n) => ({ id: "manual:" + cleanName(n), pid: null, name: cleanName(n) });
+      const g = { id: x.id || `manual-${x.date}`, date: midnightIsrael(x.date), round: x.round ?? 0, finished: false, home: { ...mk(x.home), goals: null }, away: { ...mk(x.away), goals: null }, manual: true, note: x.note || "" };
+      if (x.cup) { g.cup = true; g.roundName = x.roundName || "גביע"; if (!cup) cup = { id: CONFIG.cupLeagueId || null, name: "גביע", games: [] }; cup.games.push(g); cup.games.sort((a, b) => a.date.localeCompare(b.date)); }
+      else list.push(g);
+    }
+  } catch (e) { console.warn("manual games:", String(e)); }
+
   const teams = new Map();
   for (const g of list) for (const s of ["home", "away"]) teams.set(g[s].id, g[s].name);
 
