@@ -5,6 +5,7 @@
 const fs = require("fs/promises");
 const path = require("path");
 
+const isMeName = (n) => { const c = JSON.parse(require("fs").readFileSync(require("path").join(__dirname, "..", "config.json"), "utf8")); return n.includes(c.team.match) && !(c.team.exclude && n.includes(c.team.exclude)); };
 const ROOT = path.join(__dirname, "..");
 const TZ = "Asia/Jerusalem";
 const DTSTAMP = "20260101T000000Z";
@@ -63,7 +64,7 @@ function fold(line) {
 }
 
 function event(g, cfg, ovr) {
-  const isMe = (t) => t.name.includes(cfg.team.match);
+  const isMe = (t) => t.name.includes(cfg.team.match) && !(cfg.team.exclude && t.name.includes(cfg.team.exclude));
   const home = isMe(g.home);
   const opp = home ? g.away : g.home;
   const t = gameTime(g, ovr);
@@ -78,7 +79,7 @@ function event(g, cfg, ovr) {
   const score = played ? ` ${my}:${op}` : "";
   const lines = [
     "BEGIN:VEVENT",
-    `UID:${g.id}@galil-golan-darom`,
+    `UID:${g.id}@${cfg.site?.icsId || "galil-golan-darom"}`,
     `DTSTAMP:${DTSTAMP}`,
     `SUMMARY:${esc(`${g.cup ? "🏆 גביע: " : "⚽ "}${cfg.team.displayName} נגד ${shortName(opp.name)}${score} (${home ? "בית" : "חוץ"})${t.tbd && !played ? " | מועד משוער" : ""}`)}`,
   ];
@@ -120,7 +121,7 @@ async function buildIcs() {
   const ovr = await read("overrides.json", {});
   if (!data || !cfg) throw new Error("build-ics: data.json or config.json missing");
   const mine = data.games
-    .filter((g) => g.home.name.includes(cfg.team.match) || g.away.name.includes(cfg.team.match))
+    .filter((g) => isMeName(g.home.name) || isMeName(g.away.name))
     .concat(data.cup?.games || [])
     .sort((a, b) => a.date.localeCompare(b.date));
 

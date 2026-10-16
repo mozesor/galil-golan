@@ -4,11 +4,15 @@
   "team": {
     "displayName": "גליל גולן דרום",
     "match": "גליל גולן דרום",
-    "short": "גליל"
+    "short": "גליל",
+    "exclude": ""
   },
   "site": {
     "title": "גליל גולן דרום | ילדים ב׳",
-    "whatsappFooter": "נשלח מלוח המשחקים של הקבוצה"
+    "whatsappFooter": "נשלח מלוח המשחקים של הקבוצה",
+    "repo": "mozesor/galil-golan",
+    "url": "https://mozesor.github.io/galil-golan/",
+    "icsId": "galil-golan-darom"
   },
   "cupLeagueId": 1306,
   "push": {

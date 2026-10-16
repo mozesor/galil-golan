@@ -114,8 +114,9 @@ async function main() {
   // IFA: venue + kickoff time for our games (ONE does not publish venues)
   let previous0 = null;
   try { previous0 = JSON.parse(await fs.readFile(path.join(ROOT, "data.json"), "utf8")); } catch {}
-  const ours = (g) => g.home.name.includes(CONFIG.team.match) || g.away.name.includes(CONFIG.team.match);
-  const ourPid = list.find(ours) ? (list.find(ours).home.name.includes(CONFIG.team.match) ? list.find(ours).home.pid : list.find(ours).away.pid) : null;
+  const nameIsMe = (n) => !!n && n.includes(CONFIG.team.match) && !(CONFIG.team.exclude && n.includes(CONFIG.team.exclude));
+  const ours = (g) => nameIsMe(g.home.name) || nameIsMe(g.away.name);
+  const ourPid = list.find(ours) ? (nameIsMe(list.find(ours).home.name) ? list.find(ours).home.pid : list.find(ours).away.pid) : null;
   const ifaTeam = CONFIG.ifa?.teamId || ourPid;
   const season = base?.games?.[0]?.season_id || CONFIG.ifa?.seasonId || 28;
   try {
@@ -168,7 +169,7 @@ async function main() {
     for (const x of extras) {
       if (!x?.date || !x?.home || !x?.away) continue;
       const pool = x.cup ? (cup?.games || []) : list.filter(ours);
-      const opp = ours({ home: { name: x.home }, away: { name: x.away } }) ? (x.home.includes(CONFIG.team.match) ? x.away : x.home) : null;
+      const opp = ours({ home: { name: x.home }, away: { name: x.away } }) ? (nameIsMe(x.home) ? x.away : x.home) : null;
       const dup = pool.some((g) => isoOf(g.date) === x.date && [g.home.name, g.away.name].some((n) => opp && core(n) === core(opp)));
       if (dup) { console.log("manual game superseded by ONE:", x.id); continue; }
       const mk = (n) => ({ id: "manual:" + cleanName(n), pid: null, name: cleanName(n) });

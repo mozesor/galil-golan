@@ -15,11 +15,11 @@ self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 
 self.addEventListener("push", (e) => {
   let d = {};
-  try { d = e.data ? e.data.json() : {}; } catch { d = { title: "גליל גולן דרום", body: e.data ? e.data.text() : "" }; }
+  try { d = e.data ? e.data.json() : {}; } catch { d = { title: "לוח המשחקים", body: e.data ? e.data.text() : "" }; }
   e.waitUntil((async () => {
     const n = (await getBadge()) + 1;
     await setBadge(n);
-    await self.registration.showNotification(d.title || "גליל גולן דרום", {
+    await self.registration.showNotification(d.title || "לוח המשחקים", {
       body: d.body || "",
       tag: d.tag || undefined,
       icon: "icons/crest-192.png?v=5",

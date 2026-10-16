@@ -139,7 +139,8 @@ const $=(s)=>document.querySelector(s);
 const TZ="Asia/Jerusalem";
 const LS={repo:"gd-admin-repo",branch:"gd-admin-branch",token:"gd-admin-token"};
 let DATA=null, CFG=null, OVR=null, SHA={};
-let MATCH="";
+let MATCH="", EXCL="";
+const nameIsMe=n=>!!n&&n.includes(MATCH)&&!(EXCL&&n.includes(EXCL));
 
 const toastEl=$("#toast"); let toastT;
 function toast(msg,err){ toastEl.textContent=msg; toastEl.classList.toggle("err",!!err); toastEl.classList.add("on"); clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove("on"),3200); }
@@ -148,7 +149,7 @@ const heDate=(d,o)=>new Intl.DateTimeFormat("he-IL",{timeZone:TZ,...o}).format(d
 function apiTime(iso){ const f=new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit"}).format(new Date(iso)); return (f==="00:00"||f==="01:00")?"":f; }
 
 try{ localStorage.removeItem(LS.token); }catch{}
-try{ $("#repo").value=(localStorage.getItem(LS.repo)||"mozesor/galil-golan").replace("mozesor/galil-golan-darom","mozesor/galil-golan"); $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=sessionStorage.getItem(LS.token)||""; }catch{}
+try{ $("#repo").value=(localStorage.getItem(LS.repo)||(location.pathname.includes("galil-golan-tzafon")?"mozesor/galil-golan-tzafon":"mozesor/galil-golan")).replace("mozesor/galil-golan-darom","mozesor/galil-golan"); $("#branch").value=localStorage.getItem(LS.branch)||"main"; $("#token").value=sessionStorage.getItem(LS.token)||""; }catch{}
 
 function gh(){ return {repo:$("#repo").value.trim(), branch:$("#branch").value.trim()||"main", token:$("#token").value.trim()}; }
 async function ghGet(path){
@@ -181,7 +182,7 @@ async function load(){
     OVR.games=OVR.games||{}; OVR.venues=OVR.venues||{}; OVR.venues.home=OVR.venues.home||{};
     delete OVR.games.EXAMPLE_GAME_ID;
     try{ localStorage.setItem(LS.repo,repo); localStorage.setItem(LS.branch,gh().branch); sessionStorage.setItem(LS.token,token); }catch{}
-    MATCH=CFG.team.match;
+    MATCH=CFG.team.match; EXCL=CFG.team.exclude||"";
     render();
     $("#editor").classList.remove("hidden"); $("#setupStatus").textContent=`מחובר. ${DATA.games.length} משחקים בליגה.`;
     toast("נטען בהצלחה");
@@ -192,9 +193,9 @@ async function load(){
 function render(){
   $("#displayName").value=CFG.team.displayName||""; $("#shortName").value=CFG.team.short||""; $("#siteTitle").value=CFG.site?.title||"";
   $("#homeVenue").value=OVR.venues.home.name||""; $("#homeWaze").value=OVR.venues.home.waze||""; $("#homeNote").value=OVR.venues.home.note||"";
-  const my=DATA.games.filter(g=>g.home.name.includes(MATCH)||g.away.name.includes(MATCH)).sort((a,b)=>a.date.localeCompare(b.date));
+  const my=DATA.games.filter(g=>nameIsMe(g.home.name)||nameIsMe(g.away.name)).sort((a,b)=>a.date.localeCompare(b.date));
   $("#games").innerHTML=my.map(g=>{
-    const home=g.home.name.includes(MATCH); const opp=home?g.away.name:g.home.name; const ov=OVR.games[g.id]||{};
+    const home=nameIsMe(g.home.name); const opp=home?g.away.name:g.home.name; const ov=OVR.games[g.id]||{};
     const done=g.home.goals!==null&&g.away.goals!==null;
     const d=new Date(g.date);
     return `<div class="game" data-id="${g.id}">

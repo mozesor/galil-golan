@@ -543,7 +543,8 @@ const heDate=(d,o)=>new Intl.DateTimeFormat("he-IL",{timeZone:TZ,...o}).format(d
 const longDate=d=>heDate(d,{weekday:"long",day:"numeric",month:"long"});
 function shortName(n){ return heb(String(n).replace(/^(מ\.כ\.?|מ\.ס\.?|ה\.|מועדון הכדורגל|מרכז קהילתי|איחוד)\s*/,"").replace(/\s*צו פיוס\s*$/,"").trim()||n); }
 function initials(n){ const w=shortName(n).replace(/^(הפועל|הפ׳|מכבי|בית״ר|ביתר|בני|עירוני)\s+/,"").split(/\s+/).filter(x=>/[א-ת]/.test(x)); return (w[0]?.[0]||"?")+(w[1]?.[0]||""); }
-const isMe=t=>t&&(t.id===ME.id||t.name.includes(CFG.team.match));
+const nameIsMe=n=>!!n&&n.includes(CFG.team.match)&&!(CFG.team.exclude&&n.includes(CFG.team.exclude));
+const isMe=t=>t&&(t.id===ME.id||nameIsMe(t.name));
 const tname=t=>isMe(t)?CFG.team.displayName:shortName(t.name);
 const mine=g=>isMe(g.home)||isMe(g.away);
 const played=g=>g.home.goals!==null&&g.away.goals!==null;
@@ -1035,7 +1036,7 @@ let CHECKED=null, checkedAsked=0;
 // last successful check of ONE (the updater runs even when nothing changed); public GitHub API, cached 10 min
 async function fetchChecked(){
   if(Date.now()-checkedAsked<10*60000) return; checkedAsked=Date.now();
-  try{ const r=await fetch("https://api.github.com/repos/mozesor/galil-golan/actions/workflows/update-data.yml/runs?status=success&per_page=1",{cache:"no-store"});
+  try{ const r=await fetch(`https://api.github.com/repos/${CFG.site?.repo||"mozesor/galil-golan"}/actions/workflows/update-data.yml/runs?status=success&per_page=1`,{cache:"no-store"});
     if(!r.ok) return; const j=await r.json(); const t=j.workflow_runs?.[0]?.updated_at; if(t){ CHECKED=t; updateStamp(); } }catch{}
 }
 function updateStamp(){
@@ -1046,7 +1047,7 @@ function updateStamp(){
   if(!stale) fetchChecked();
 }
 function init(d,c,o){
-  const m=d.teams.find(x=>x.name.includes(c.team.match)); if(!m) throw new Error("הקבוצה לא נמצאה בליגה: "+c.team.match);
+  const m=d.teams.find(x=>x.name.includes(c.team.match)&&!(c.team.exclude&&x.name.includes(c.team.exclude))); if(!m) throw new Error("הקבוצה לא נמצאה בליגה: "+c.team.match);
   DATA=d; CFG=c; OVR=o||{}; ME=m; CUP=(d.cup?.games||[]).map(g=>({...g,cup:true}));
   $("#teamTitle").textContent=CFG.team.displayName; document.title=heb(CFG.site?.title||document.title);
   NEXT=computeNext(); renderHome(); if(state.view!=="home") renderView(state.view,false); updateStamp();

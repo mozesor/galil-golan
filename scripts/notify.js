@@ -21,7 +21,7 @@ const parts = (d) => { const f = new Intl.DateTimeFormat("en-GB", { timeZone: TZ
 const isoOf = (d) => { const p = parts(d); return `${p.year}-${p.month}-${p.day}`; };
 const heb = (s) => String(s || "").replace(/'/g, "׳").replace(/"/g, "״");
 const shortName = (n) => heb(String(n).replace(/^(מ\.כ\.?|מ\.ס\.?|ה\.|מועדון הכדורגל|מרכז קהילתי|איחוד)\s*/, "").replace(/\s*צו פיוס\s*$/, "").trim() || n);
-const isMe = (t) => t.name.includes(cfg.team.match);
+const isMe = (t) => t.name.includes(cfg.team.match) && !(cfg.team.exclude && t.name.includes(cfg.team.exclude));
 const validTime = (s) => { const m = /^(\d{1,2}):(\d{2})$/.exec(s || ""); return m && +m[1] < 24 && +m[2] < 60 ? `${m[1].padStart(2, "0")}:${m[2]}` : null; };
 function gameTime(g) {
   const p = parts(new Date(g.date)); const oneIso = `${p.year}-${p.month}-${p.day}`;
@@ -40,7 +40,7 @@ const mine = data.games.filter((g) => isMe(g.home) || isMe(g.away)).map((g) => (
   .concat((data.cup?.games || []).map((g) => ({ ...g, cup: true })))
   .sort((a, b) => a.date.localeCompare(b.date));
 const today = isoOf(new Date()), tomorrow = addDays(today, 1);
-const url = cfg.push?.url || "https://mozesor.github.io/galil-golan/";
+const url = cfg.push?.url || cfg.site?.url || "https://mozesor.github.io/galil-golan/";
 const items = [];
 
 for (const g of mine) {
