@@ -389,6 +389,23 @@ svg{display:block}
 .calTop{display:grid;grid-template-columns:1fr 56px;gap:10px;margin:16px 0 4px}
 .calHint{font-size:13px;color:var(--muted);margin:0 0 6px}
 
+
+/* ---------- first-visit tour ---------- */
+.tour{position:fixed;inset:0;z-index:60;display:none}
+.tour.on{display:block}
+.tour .spot{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(11,18,32,.72),0 0 0 3px var(--club);pointer-events:none;transition:top 320ms var(--ease-out),left 320ms var(--ease-out),width 320ms var(--ease-out),height 320ms var(--ease-out)}
+.tour .bubble{position:fixed;max-width:min(340px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:2px solid var(--ink);box-shadow:var(--shadow-hard);padding:14px 16px 12px;transition:top 320ms var(--ease-out),left 320ms var(--ease-out)}
+.tour .bubble::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:2px solid var(--ink);border-width:2px 0 0 2px;transform:rotate(45deg);inset-inline-start:calc(50% - 7px);top:-9px}
+.tour .bubble.below::before{top:auto;bottom:-9px;transform:rotate(225deg)}
+.tour .bubble.float::before{display:none}
+.tour .bubble .step{font-size:12px;font-weight:600;color:var(--muted)}
+.tour .bubble h4{font-family:var(--display);font-weight:700;font-size:26px;line-height:1;margin:4px 0 6px}
+.tour .bubble p{margin:0;font-size:15px;line-height:1.5}
+.tour .bubble .row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:12px}
+.tour .bubble .btn{height:42px;font-size:15px;padding:0 16px}
+.tour .bubble .btn.accent{min-width:92px}
+.tourLink{font-size:12px;color:var(--muted);text-decoration:underline;margin-inline-start:8px}
+@media (prefers-reduced-motion: reduce){ .tour .spot,.tour .bubble{transition:none} }
 @media (min-width:900px){ .app{max-width:720px} }
 @media (prefers-reduced-motion: reduce){
   .view.on,.view.first .rise,.view.first .formRow .chev,.stamp.slam,.scarf.enter{animation:fade 200ms ease both}
@@ -450,7 +467,7 @@ svg{display:block}
     </section>
 
     <div class="updated" id="updated"></div>
-    <p class="disclaimer">אתר הורים לא רשמי. אינו קשור למועדון, להתאחדות לכדורגל או לאתר ONE.</p>
+    <p class="disclaimer">אתר הורים לא רשמי. אינו קשור למועדון, להתאחדות לכדורגל או לאתר ONE.<button class="tourLink" data-tour-start="1">הדרכה קצרה</button></p>
   </main>
 </div>
 
@@ -466,6 +483,7 @@ svg{display:block}
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="פרטים" tabindex="-1"><div class="grab" aria-hidden="true"></div><div id="sheetBody"></div></div>
 <canvas id="confetti" hidden></canvas>
+<div class="tour" id="tour" role="dialog" aria-label="הדרכה"><div class="spot"></div><div class="bubble"><div class="step"></div><h4></h4><p></p><div class="row"><button class="linkBtn" data-tour="skip">דלג</button><button class="btn accent press" data-tour="next">הבא</button></div></div></div>
 
 <script>
 (() => {
@@ -900,6 +918,53 @@ function confetti(x,y){
     if(el<2) requestAnimationFrame(loop); else c.hidden=true; }; requestAnimationFrame(loop);
 }
 
+
+/* ---------- first-visit tour ---------- */
+const TOUR_STEPS=[
+  {sel:".hero",title:"המשחק הבא",text:"כאן תמיד המשחק הקרוב: מול מי, מתי, בית או חוץ, והמגרש כשהוא מתפרסם."},
+  {sel:"#cd",title:"ספירה לאחור",text:"כמה זמן נשאר עד השריקה. כשאין שעה רשמית תראו 'מועד משוער', והיא תתעדכן לבד."},
+  {sel:".actions .btn.accent",title:"שיתוף",text:"שולח את פרטי המשחק מוכנים לקבוצת הוואטסאפ של ההורים."},
+  {sel:'.actions a[href*=".ics"]',title:"ליומן",text:"מוסיף את המשחק ליומן של הטלפון. בלשונית 'יומן' אפשר לחבר את כל העונה בבת אחת."},
+  {sel:"#pushSlot .tk",title:"התראות",text:"הפעילו כדי לקבל הודעה על תוצאה, שעה חדשה ותזכורת יום לפני משחק.",optional:true},
+  {sel:'.nav [data-view="games"]',title:"משחקים",text:"כל המשחקים שלנו, כל הליגה לפי מחזור, והגביע. לחיצה על משחק פותחת את פרטי היריבה."},
+  {sel:'.nav [data-view="table"]',title:"טבלה",text:"טבלת הליגה המעודכנת. השורה שלנו מסומנת בכחול."},
+  {sel:'.nav [data-view="cal"]',title:"יומן",text:"לוח העונה לפי חודשים, וחיבור ליומן הטלפון שמתעדכן לבד."},
+  {sel:"#themeBtn",title:"יום ולילה",text:"מחליף בין מצב בהיר לכהה. זהו, נהנים מהעונה!"},
+];
+let tourI=0, tourSteps=[];
+const tourEl=$("#tour");
+function tourRect(el){ const r=el.getBoundingClientRect(); const pad=8; return {top:r.top-pad,left:r.left-pad,width:r.width+pad*2,height:r.height+pad*2}; }
+function tourPlace(){
+  const st=tourSteps[tourI]; const el=document.querySelector(st.sel); if(!el){ tourNext(); return; }
+  const r=tourRect(el); const spot=tourEl.querySelector(".spot"), b=tourEl.querySelector(".bubble");
+  Object.assign(spot.style,{top:r.top+"px",left:r.left+"px",width:r.width+"px",height:r.height+"px"});
+  b.querySelector(".step").textContent=`${tourI+1} מתוך ${tourSteps.length}`;
+  b.querySelector("h4").textContent=st.title; b.querySelector("p").textContent=st.text;
+  b.querySelector('[data-tour="next"]').textContent=tourI===tourSteps.length-1?"סיום":"הבא";
+  const bw=Math.min(340,innerWidth-32); b.style.width=bw+"px";
+  const bh=b.offsetHeight||160; const tall=r.height>innerHeight*0.55; const below=!tall&&r.top+r.height+12+bh<innerHeight-70;
+  b.classList.toggle("below",!below&&!tall); b.classList.toggle("float",tall);
+  const top=tall? innerHeight-bh-84 : below? r.top+r.height+14 : Math.max(10,r.top-14-bh);
+  const left=Math.min(innerWidth-bw-16, Math.max(16, r.left+r.width/2-bw/2));
+  Object.assign(b.style,{top:top+"px",left:left+"px"});
+}
+function tourShow(i){
+  tourI=i; const st=tourSteps[tourI]; const el=document.querySelector(st.sel); if(!el){ tourNext(); return; }
+  const fixed=el.closest(".nav,.scarf");
+  if(!fixed){ const r=el.getBoundingClientRect(); const target=scrollY+r.top-Math.max(80,(innerHeight-r.height)/2); const instant=REDUCED||tourI===0; scrollTo({top:Math.max(0,target),behavior:instant?"instant":"smooth"}); setTimeout(tourPlace,instant?0:360); }
+  else tourPlace();
+}
+function tourNext(){ if(tourI>=tourSteps.length-1) return tourEnd(); tourShow(tourI+1); }
+function tourEnd(){ tourEl.classList.remove("on"); LS.set("gd-tour","done"); removeEventListener("resize",tourPlace); removeEventListener("scroll",tourPlace); }
+function tourStart(){
+  if(state.view!=="home") showView("home");
+  tourSteps=TOUR_STEPS.filter(st=>document.querySelector(st.sel)); if(!tourSteps.length) return;
+  tourEl.classList.add("on"); addEventListener("resize",tourPlace); addEventListener("scroll",tourPlace,{passive:true});
+  tourShow(0);
+}
+tourEl.addEventListener("click",e=>{ const b=e.target.closest("[data-tour]"); if(!b) return; if(b.dataset.tour==="skip") tourEnd(); else tourNext(); });
+document.addEventListener("keydown",e=>{ if(!tourEl.classList.contains("on")) return; if(e.key==="Escape") tourEnd(); if(e.key==="ArrowLeft"||e.key==="Enter") tourNext(); });
+function maybeTour(){ if(LS.get("gd-tour")||!DATA||!NEXT) return; setTimeout(()=>{ if(!LS.get("gd-tour")&&!sheetOpen()) tourStart(); },900); }
 /* ---------- navigation ---------- */
 function renderView(v,first){ if(v==="games") renderGames(first); else if(v==="table") renderTable(first); else if(v==="cal") renderCal(); }
 function showView(v){
@@ -916,6 +981,7 @@ function showView(v){
   try{ history.replaceState(history.state,"","#"+v); }catch{}
 }
 document.addEventListener("click",e=>{
+  if(e.target.closest("[data-tour-start]")){ LS.set("gd-tour",""); tourStart(); return; }
   const fl=e.target.closest("[data-flash]"); if(fl){ flash(fl,fl.dataset.flash); return; }
   const nv=e.target.closest("[data-view]"); if(nv){ showView(nv.dataset.view); return; }
   const rb=e.target.closest("[data-round]"); if(rb){ state.round=Number(rb.dataset.round); renderGames(false); return; }
@@ -1015,6 +1081,7 @@ document.addEventListener("visibilitychange",()=>{
   seen.add("home");
   if(["games","table","cal"].includes(hash)) showView(hash);
   await load();
+  maybeTour();
 })();
 })();
 </script>
