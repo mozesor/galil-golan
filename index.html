@@ -776,7 +776,7 @@ addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); installEvt=e; re
 function renderInstall(){
   const slot=$("#installSlot"); if(!slot) return;
   const visits=+(LS.get("gd-visits")||0), hidden=Date.now()-(+(LS.get("gd-install-x")||0))<30*86400000;
-  if(STANDALONE||visits<2||hidden||!(IOS||installEvt)){ slot.innerHTML=""; return; }
+  if(STANDALONE||hidden||!(IOS||installEvt)){ slot.innerHTML=""; return; }
   slot.innerHTML=`<h2 class="h2">על המסך שלכם</h2><div class="tk install">
     <div class="dt"><b>+</b></div>
     <div class="mid"><div class="ln"><span class="n">הוסיפו את הלוח למסך הבית</span></div><div class="m">${IOS?"בספארי: לחצו על שיתוף ואז ׳הוספה למסך הבית׳":"נפתח כמו אפליקציה, בלי לחפש את הקישור"}</div></div>
@@ -925,7 +925,9 @@ const TOUR_STEPS=[
   {sel:"#cd",title:"ספירה לאחור",text:"כמה זמן נשאר עד השריקה. כשאין שעה רשמית תראו 'מועד משוער', והיא תתעדכן לבד."},
   {sel:".actions .btn.accent",title:"שיתוף",text:"שולח את פרטי המשחק מוכנים לקבוצת הוואטסאפ של ההורים."},
   {sel:'.actions a[href*=".ics"]',title:"ליומן",text:"מוסיף את המשחק ליומן של הטלפון. בלשונית 'יומן' אפשר לחבר את כל העונה בבת אחת."},
-  {sel:"#pushSlot .tk",title:"התראות",text:"הפעילו כדי לקבל הודעה על תוצאה, שעה חדשה ותזכורת יום לפני משחק.",optional:true},
+  {sel:"#pushSlot .tk",title:"התראות",text:"הפעילו כדי לקבל הודעה על תוצאה, שעה חדשה ותזכורת יום לפני משחק.",when:()=>STANDALONE||!IOS},
+  {sel:"#pushSlot .tk",title:"כדאי להוסיף למסך הבית",text:"באייפון ההתראות עובדות רק מהאפליקציה: לחצו על שיתוף בספארי, ואז ׳הוספה למסך הבית׳. פתחו מהאייקון, חזרו לכאן ולחצו הפעלה.",when:()=>IOS&&!STANDALONE},
+  {sel:"#installSlot .tk",title:"כדאי להוסיף למסך הבית",text:"ככה הלוח נפתח כמו אפליקציה, בלי לחפש את הקישור, וההתראות עובדות.",when:()=>!STANDALONE&&!IOS},
   {sel:'.nav [data-view="games"]',title:"משחקים",text:"כל המשחקים שלנו, כל הליגה לפי מחזור, והגביע. לחיצה על משחק פותחת את פרטי היריבה."},
   {sel:'.nav [data-view="table"]',title:"טבלה",text:"טבלת הליגה המעודכנת. השורה שלנו מסומנת בכחול."},
   {sel:'.nav [data-view="cal"]',title:"יומן",text:"לוח העונה לפי חודשים, וחיבור ליומן הטלפון שמתעדכן לבד."},
@@ -958,7 +960,7 @@ function tourNext(){ if(tourI>=tourSteps.length-1) return tourEnd(); tourShow(to
 function tourEnd(){ tourEl.classList.remove("on"); LS.set("gd-tour","done"); removeEventListener("resize",tourPlace); removeEventListener("scroll",tourPlace); }
 function tourStart(){
   if(state.view!=="home") showView("home");
-  tourSteps=TOUR_STEPS.filter(st=>document.querySelector(st.sel)); if(!tourSteps.length) return;
+  tourSteps=TOUR_STEPS.filter(st=>document.querySelector(st.sel)&&(!st.when||st.when())); if(!tourSteps.length) return;
   tourEl.classList.add("on"); addEventListener("resize",tourPlace); addEventListener("scroll",tourPlace,{passive:true});
   tourShow(0);
 }
