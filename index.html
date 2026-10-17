@@ -750,6 +750,7 @@ async function pushStatus(){
   const sub = await reg.pushManager.getSubscription();
   return sub ? "on" : "off";
 }
+let prefsOpen=false;
 const PUSH_TYPES=[
   {k:"result",n:"תוצאות",d:"בסיום כל משחק שלנו"},
   {k:"time",n:"שעה ומגרש",d:"כשנקבעים או משתנים"},
@@ -770,7 +771,7 @@ async function pushSubscribe(){
   const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64url(CFG.push.vapidPublicKey) });
   const r = await fetch(CFG.push.server + "/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON(), prefs: pushPrefs() }) });
   if(!r.ok){ await sub.unsubscribe(); throw new Error("subscribe " + r.status); }
-  LS.set("gd-push", "on");
+  LS.set("gd-push", "on"); prefsOpen=true;
 }
 async function pushUnsubscribe(){
   const reg = await swReady(); const sub = reg && await reg.pushManager.getSubscription(); if(!sub) return;
@@ -784,12 +785,12 @@ async function renderPush(){
   if(st === "unsupported" || (st !== "on" && hidden)){ slot.innerHTML = ""; return; }
   const bell = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></svg>`;
   const rows = {
-    "on":           ["התראות פועלות", "בחרו מה לקבל. השינוי נשמר מיד.", `<button class="linkBtn" data-act="push-off">ביטול</button>`],
+    "on":           ["התראות פועלות", "תוצאות, שעה ומגרש, תזכורת ועוד. אפשר לבחור מה לקבל.", `<button class="linkBtn" data-act="push-prefs">${prefsOpen?"סגירה":"מה לקבל"}</button><button class="linkBtn" data-act="push-off">ביטול</button>`],
     "off":          ["קבלו התראות", "תוצאה, שעה או מגרש חדשים, ותזכורת יום לפני משחק. מספר על האייקון כשיש חדש.", `<button class="btn accent press" data-act="push-on">הפעלה</button><button class="linkBtn" data-act="push-x">לא עכשיו</button>`],
     "needs-install":["התראות על המשחקים", "באייפון זה עובד רק אחרי הוספה למסך הבית: שיתוף, ואז ׳הוספה למסך הבית׳. אחר כך פותחים מהאייקון ולוחצים הפעלה.", `<button class="linkBtn" data-act="push-x">הבנתי</button>`],
     "denied":       ["ההתראות חסומות", "אישרתם בעבר לחסום. אפשר לשנות בהגדרות הטלפון תחת ההתראות של האתר.", `<button class="linkBtn" data-act="push-x">הבנתי</button>`],
   }[st];
-  slot.innerHTML = `<h2 class="h2">התראות</h2><div class="tk install"><div class="dt">${bell}</div><div class="mid"><div class="ln"><span class="n">${rows[0]}</span></div><div class="m" style="white-space:normal">${rows[1]}</div></div><div class="stub">${rows[2]}</div></div>${st==="on"?prefsHtml():""}`;
+  slot.innerHTML = `<h2 class="h2">התראות</h2><div class="tk install"><div class="dt">${bell}</div><div class="mid"><div class="ln"><span class="n">${rows[0]}</span></div><div class="m" style="white-space:normal">${rows[1]}</div></div><div class="stub">${rows[2]}</div></div>${st==="on"&&prefsOpen?prefsHtml():""}`;
 }
 function prefsHtml(){ const p=pushPrefs(); return `<div class="prefs">${PUSH_TYPES.map(t=>`<label class="pref"><input type="checkbox" data-pref="${t.k}" ${p[t.k]?"checked":""}><span><b>${t.n}</b><span class="d">${t.d}</span></span></label>`).join("")}</div>`; }
 document.addEventListener("change",e=>{ const i=e.target.closest("[data-pref]"); if(!i) return; const p=pushPrefs(); p[i.dataset.pref]=i.checked; pushSavePrefs(p); });
@@ -1020,6 +1021,7 @@ document.addEventListener("click",e=>{
   else if(act==="install"&&installEvt){ installEvt.prompt(); installEvt.userChoice.finally(()=>{ installEvt=null; renderInstall(); }); }
   else if(act==="install-x"){ LS.set("gd-install-x",String(Date.now())); renderInstall(); }
   else if(act==="push-on"){ a.disabled=true; pushSubscribe().catch(()=>{}).finally(()=>{ a.disabled=false; renderPush(); }); }
+  else if(act==="push-prefs"){ prefsOpen=!prefsOpen; renderPush(); }
   else if(act==="push-off"){ pushUnsubscribe().finally(renderPush); }
   else if(act==="push-x"){ LS.set("gd-push-x",String(Date.now())); renderPush(); }
 });
