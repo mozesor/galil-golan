@@ -411,6 +411,9 @@ svg{display:block}
 .pref input:checked{background:var(--club)}
 .pref input:checked::after{transform:translateX(-18px)}
 .pref .d{font-size:12px;color:var(--muted);display:block}
+.hero .wx{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;opacity:.92}
+.hero .wx .ic{font-size:20px;line-height:1}
+.hero .wx small{opacity:.75}
 .tourLink{font-size:12px;color:var(--muted);text-decoration:underline;margin-inline-start:8px}
 @media (prefers-reduced-motion: reduce){ .tour .spot,.tour .bubble{transition:none} }
 @media (min-width:900px){ .app{max-width:720px} }
@@ -645,6 +648,7 @@ function renderHome(){
         <div>${t.tbd?`<span class="stamp sm muted">השעה תפורסם</span>`:`<div class="time">${esc(t.timeStr)}</div>`}</div>
       </div>
       <div class="cd rise" id="cd" style="--i:2" aria-live="off"></div>
+      <div class="wx rise" id="wx" style="--i:2" hidden></div>
       ${v.note?`<div class="note rise" style="--i:2">${esc(v.note)}</div>`:""}
       <div class="tear"></div>
     </div>
@@ -674,7 +678,7 @@ function renderHome(){
   if(upcoming.length) html+=`<div class="pad"><h2 class="h2 rise" style="--i:4">בהמשך</h2><div class="list">${upcoming.map(g=>ticket(g,4)).join("")}</div></div>`;
   html+=`<div class="pad" id="pushSlot"></div><div class="pad" id="installSlot"></div>`+tickerHtml();
   $("#homeBody").innerHTML=html;
-  fitAll($("#homeBody")); renderInstall(); renderPush(); startCountdown(next); armTicker(); armReveal();
+  fitAll($("#homeBody")); renderInstall(); renderPush(); renderWeather(next); startCountdown(next); armTicker(); armReveal();
 }
 function formStrip(form,sm=false){
   const cells=[...form]; while(cells.length<5) cells.unshift("E");
@@ -796,6 +800,39 @@ async function renderPush(){
 function prefsHtml(){ const p=pushPrefs(); return `<div class="prefs">${PUSH_TYPES.map(t=>`<label class="pref"><input type="checkbox" data-pref="${t.k}" ${p[t.k]?"checked":""}><span><b>${t.n}</b><span class="d">${t.d}</span></span></label>`).join("")}</div>`; }
 document.addEventListener("change",e=>{ const i=e.target.closest("[data-pref]"); if(!i) return; const p=pushPrefs(); p[i.dataset.pref]=i.checked; pushSavePrefs(p); });
 if(PUSH_OK){ swReady(); if(STANDALONE) clearBadge(); }
+
+/* ---------- weather for the next game (open-meteo, no key) ---------- */
+const WX_CODES=[[0,"☀️","בהיר"],[1,"🌤️","בהיר ברובו"],[2,"⛅","מעונן חלקית"],[3,"☁️","מעונן"],[45,"🌫️","ערפל"],[48,"🌫️","ערפל"],[51,"🌦️","טפטוף"],[53,"🌦️","טפטוף"],[55,"🌧️","טפטוף"],[61,"🌧️","גשם קל"],[63,"🌧️","גשם"],[65,"🌧️","גשם חזק"],[80,"🌦️","ממטרים"],[81,"🌧️","ממטרים"],[82,"⛈️","ממטרים עזים"],[95,"⛈️","סופת רעמים"],[96,"⛈️","סופת ברד"],[99,"⛈️","סופת ברד"]];
+const wxOf=code=>{ let best=WX_CODES[0]; for(const c of WX_CODES) if(code>=c[0]) best=c; return best; };
+async function wxGeo(name){
+  const places=CFG.weather?.places||{}; if(places[name]) return places[name];
+  const k="gd-geo:"+name; try{ const c=JSON.parse(LS.get(k)||"null"); if(c) return c; }catch{}
+  const clean=name.replace(/^(מגרש|אצטדיון|מתחם|מגרש סינטטי|סינטטי|עירוני|ספורטק|היכל)\s+/g,"").trim();
+  for(const q of [clean, clean.split(/\s+/).slice(-1)[0]]){
+    try{ const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=he`); const j=await r.json(); const hit=(j.results||[]).find(x=>x.country_code==="IL"); if(hit){ const v=[+hit.latitude.toFixed(3),+hit.longitude.toFixed(3)]; LS.set(k,JSON.stringify(v)); return v; } }catch{}
+  }
+  return null;
+}
+async function renderWeather(next){
+  const el=$("#wx"); if(!el||!next) return;
+  const t=gameTime(next),home=isMe(next.home),v=venueOf(next,home);
+  const days=(new Date(t.iso+"T12:00:00Z")-new Date(todayIso()+"T12:00:00Z"))/86400000; if(days<0||days>9) return;
+  const place=v.venue||(home?CFG.weather?.home:null); if(!place) return;
+  const geo=await wxGeo(place); if(!geo) return;
+  const hour=t.tbd?16:+t.timeStr.split(":")[0];
+  const key=`gd-wx:${geo.join(",")}:${t.iso}:${hour}`; let w=null;
+  try{ const c=JSON.parse(LS.get(key)||"null"); if(c&&Date.now()-c.at<3600000) w=c.w; }catch{}
+  if(!w){
+    try{ const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geo[0]}&longitude=${geo[1]}&hourly=temperature_2m,precipitation_probability,weather_code,wind_speed_10m&timezone=Asia%2FJerusalem&forecast_days=10`); const j=await r.json();
+      const i=j.hourly.time.indexOf(`${t.iso}T${String(hour).padStart(2,"0")}:00`); if(i<0) return;
+      w={temp:Math.round(j.hourly.temperature_2m[i]),rain:j.hourly.precipitation_probability[i],code:j.hourly.weather_code[i],wind:Math.round(j.hourly.wind_speed_10m[i])};
+      LS.set(key,JSON.stringify({at:Date.now(),w})); }catch{ return; }
+  }
+  const [,ic,txt]=wxOf(w.code);
+  const extra=[w.rain>=20?`סיכוי לגשם ${w.rain}%`:"", w.wind>=30?"רוח חזקה":""].filter(Boolean).join(" · ");
+  el.innerHTML=`<span class="ic">${ic}</span><span><b>${w.temp}°</b> ${txt}${extra?` · ${extra}`:""}</span><small>${t.tbd?"תחזית לאחר הצהריים":"תחזית לשעת המשחק"}${home?"":" ב"+esc(heb(place))}</small>`;
+  el.hidden=false;
+}
 
 /* ---------- install card ---------- */
 addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); installEvt=e; renderInstall(); });
