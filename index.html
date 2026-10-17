@@ -411,13 +411,6 @@ svg{display:block}
 .pref input:checked{background:var(--club)}
 .pref input:checked::after{transform:translateX(-18px)}
 .pref .d{font-size:12px;color:var(--muted);display:block}
-.prefs{display:grid;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-strong)}
-.pref{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;min-height:30px}
-.pref input{appearance:none;width:40px;height:22px;border-radius:999px;background:var(--line-strong);position:relative;flex:none;transition:background 200ms;cursor:pointer;margin:0}
-.pref input::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 200ms}
-.pref input:checked{background:var(--club)}
-.pref input:checked::after{transform:translateX(-18px)}
-.pref .d{font-size:12px;color:var(--muted);display:block}
 .tourLink{font-size:12px;color:var(--muted);text-decoration:underline;margin-inline-start:8px}
 @media (prefers-reduced-motion: reduce){ .tour .spot,.tour .bubble{transition:none} }
 @media (min-width:900px){ .app{max-width:720px} }
@@ -756,20 +749,6 @@ async function pushStatus(){
   const reg = await swReady(); if(!reg) return "unsupported";
   const sub = await reg.pushManager.getSubscription();
   return sub ? "on" : "off";
-}
-const PUSH_TYPES=[
-  {k:"result",n:"תוצאות",d:"בסיום כל משחק שלנו"},
-  {k:"time",n:"שעה ומגרש",d:"כשנקבעים או משתנים"},
-  {k:"reminder",n:"תזכורת",d:"יום לפני משחק"},
-  {k:"cup",n:"גביע",d:"הגרלה חדשה"},
-  {k:"league",n:"סיכום מחזור",d:"כל התוצאות בליגה, הודעה אחת"},
-  {k:"rank",n:"מקום בטבלה",d:"כשעולים או יורדים"},
-];
-function pushPrefs(){ let p={}; try{ p=JSON.parse(LS.get("gd-push-prefs")||"{}")||{}; }catch{} const o={}; for(const t of PUSH_TYPES) o[t.k]=p[t.k]!==false; return o; }
-async function pushSavePrefs(p){
-  LS.set("gd-push-prefs",JSON.stringify(p));
-  const reg=await swReady(); const sub=reg&&await reg.pushManager.getSubscription(); if(!sub) return;
-  try{ await fetch(CFG.push.server+"/prefs",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({endpoint:sub.endpoint,prefs:p})}); }catch{}
 }
 const PUSH_TYPES=[
   {k:"result",n:"תוצאות",d:"בסיום כל משחק שלנו"},
