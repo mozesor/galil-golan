@@ -4,7 +4,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 1
   },
-  "fetchedAt": "2026-10-16T16:02:10.167Z",
+  "fetchedAt": "2026-10-17T10:05:22.086Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -148,18 +148,18 @@
       "id": "6acc331a9878872a9639eafa",
       "date": "2026-10-17T08:00:00.000Z",
       "round": 1,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68ccd70a1b7b720e589fa01c",
         "pid": 8512,
         "name": "מכבי עירוני קרית אתא 3",
-        "goals": null
+        "goals": 1
       },
       "away": {
         "id": "68b5d99c1348fa686c13b864",
         "pid": 4180,
         "name": "איחוד הפועל ביר אל מכסור",
-        "goals": null
+        "goals": 1
       }
     },
     {
