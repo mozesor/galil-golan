@@ -5,7 +5,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 1
   },
-  "fetchedAt": "2026-10-17T13:21:02.164Z",
+  "fetchedAt": "2026-10-17T14:55:17.985Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -185,18 +185,18 @@
       "id": "6acc331a9878872a9639eaf8",
       "date": "2026-10-17T12:30:00.000Z",
       "round": 1,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68ccd70a1b7b720e589fa019",
         "pid": 6639,
         "name": "הפועל מטה אשר 2",
-        "goals": null
+        "goals": 2
       },
       "away": {
         "id": "6ab9c8e2068ef07a1cafbba4",
         "pid": 2029,
         "name": "הפ' רמות מנשה מגידו 2",
-        "goals": null
+        "goals": 0
       }
     },
     {
@@ -2338,6 +2338,19 @@
     },
     {
       "rank": 3,
+      "id": "68ccd70a1b7b720e589fa019",
+      "name": "הפועל מטה אשר 2",
+      "games": 1,
+      "wins": 1,
+      "draws": 0,
+      "losses": 0,
+      "gf": 2,
+      "ga": 0,
+      "gd": 2,
+      "points": 3
+    },
+    {
+      "rank": 4,
       "id": "68ccd70e1b7b720e589fa325",
       "name": "מ.ס. כפר קמא",
       "games": 1,
@@ -2350,7 +2363,7 @@
       "points": 3
     },
     {
-      "rank": 4,
+      "rank": 5,
       "id": "68b5d99c1348fa686c13b831",
       "name": "מועדון הכדורגל מרום הגליל",
       "games": 1,
@@ -2363,7 +2376,7 @@
       "points": 3
     },
     {
-      "rank": 5,
+      "rank": 6,
       "id": "68ccd7081b7b720e589f9f0f",
       "name": "הפ' בני אעבלין",
       "games": 1,
@@ -2376,7 +2389,7 @@
       "points": 3
     },
     {
-      "rank": 6,
+      "rank": 7,
       "id": "68b5d99c1348fa686c13b864",
       "name": "איחוד הפועל ביר אל מכסור",
       "games": 1,
@@ -2389,7 +2402,7 @@
       "points": 1
     },
     {
-      "rank": 7,
+      "rank": 8,
       "id": "68ccd70a1b7b720e589fa01c",
       "name": "מכבי עירוני קרית אתא 3",
       "games": 1,
@@ -2402,33 +2415,7 @@
       "points": 1
     },
     {
-      "rank": 8,
-      "id": "6ab9c8e2068ef07a1cafbba4",
-      "name": "הפ' רמות מנשה מגידו 2",
-      "games": 0,
-      "wins": 0,
-      "draws": 0,
-      "losses": 0,
-      "gf": 0,
-      "ga": 0,
-      "gd": 0,
-      "points": 0
-    },
-    {
       "rank": 9,
-      "id": "68ccd70a1b7b720e589fa019",
-      "name": "הפועל מטה אשר 2",
-      "games": 0,
-      "wins": 0,
-      "draws": 0,
-      "losses": 0,
-      "gf": 0,
-      "ga": 0,
-      "gd": 0,
-      "points": 0
-    },
-    {
-      "rank": 10,
       "id": "68b5d99c1348fa686c13b8c4",
       "name": "מ.כ קרית חיים שמשון",
       "games": 0,
@@ -2441,7 +2428,7 @@
       "points": 0
     },
     {
-      "rank": 11,
+      "rank": 10,
       "id": "6ab9c8e2068ef07a1cafbb23",
       "name": "מ.כ.גליל גולן דרום צו פיוס",
       "games": 0,
@@ -2454,7 +2441,7 @@
       "points": 0
     },
     {
-      "rank": 12,
+      "rank": 11,
       "id": "68b5d99c1348fa686c13b7aa",
       "name": "מכבי סקציה מעלות תרשיחא",
       "games": 1,
@@ -2464,6 +2451,19 @@
       "gf": 1,
       "ga": 2,
       "gd": -1,
+      "points": 0
+    },
+    {
+      "rank": 12,
+      "id": "6ab9c8e2068ef07a1cafbba4",
+      "name": "הפ' רמות מנשה מגידו 2",
+      "games": 1,
+      "wins": 0,
+      "draws": 0,
+      "losses": 1,
+      "gf": 0,
+      "ga": 2,
+      "gd": -2,
       "points": 0
     },
     {
