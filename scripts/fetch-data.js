@@ -190,7 +190,22 @@ async function main() {
   }
   if (!standings.length && previous?.standings?.length) standings = previous.standings;
 
+  // our place in the table, compared with the previous data.json (notify.js turns a change into a push)
+
+  let rankChange = previous0?.rankChange || null;
+
+  try {
+
+    const mineRow = standings.find((r) => nameIsMe(r.name)), prevRow = (previous0?.standings || []).find((r) => nameIsMe(r.name));
+
+    if (mineRow && prevRow && mineRow.games > 0 && prevRow.games > 0 && mineRow.rank !== prevRow.rank) rankChange = { from: prevRow.rank, to: mineRow.rank, points: mineRow.points, round: Math.max(0, ...list.filter((g) => g.home.goals !== null).map((g) => g.round)), at: new Date().toISOString() };
+
+  } catch {}
+
+
   const out = {
+
+    rankChange,
     league: {
       id: LEAGUE_ID,
       name: cleanName(league?.name) || CONFIG.leagueName || "",

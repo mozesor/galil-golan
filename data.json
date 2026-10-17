@@ -1,10 +1,11 @@
 {
+  "rankChange": null,
   "league": {
     "id": 1247,
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 1
   },
-  "fetchedAt": "2026-10-17T10:45:18.355Z",
+  "fetchedAt": "2026-10-17T13:21:02.164Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",

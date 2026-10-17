@@ -404,6 +404,20 @@ svg{display:block}
 .tour .bubble .row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:12px}
 .tour .bubble .btn{height:42px;font-size:15px;padding:0 16px}
 .tour .bubble .btn.accent{min-width:92px}
+.prefs{display:grid;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-strong)}
+.pref{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;min-height:30px}
+.pref input{appearance:none;width:40px;height:22px;border-radius:999px;background:var(--line-strong);position:relative;flex:none;transition:background 200ms;cursor:pointer;margin:0}
+.pref input::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 200ms}
+.pref input:checked{background:var(--club)}
+.pref input:checked::after{transform:translateX(-18px)}
+.pref .d{font-size:12px;color:var(--muted);display:block}
+.prefs{display:grid;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-strong)}
+.pref{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;min-height:30px}
+.pref input{appearance:none;width:40px;height:22px;border-radius:999px;background:var(--line-strong);position:relative;flex:none;transition:background 200ms;cursor:pointer;margin:0}
+.pref input::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 200ms}
+.pref input:checked{background:var(--club)}
+.pref input:checked::after{transform:translateX(-18px)}
+.pref .d{font-size:12px;color:var(--muted);display:block}
 .tourLink{font-size:12px;color:var(--muted);text-decoration:underline;margin-inline-start:8px}
 @media (prefers-reduced-motion: reduce){ .tour .spot,.tour .bubble{transition:none} }
 @media (min-width:900px){ .app{max-width:720px} }
@@ -743,11 +757,39 @@ async function pushStatus(){
   const sub = await reg.pushManager.getSubscription();
   return sub ? "on" : "off";
 }
+const PUSH_TYPES=[
+  {k:"result",n:"תוצאות",d:"בסיום כל משחק שלנו"},
+  {k:"time",n:"שעה ומגרש",d:"כשנקבעים או משתנים"},
+  {k:"reminder",n:"תזכורת",d:"יום לפני משחק"},
+  {k:"cup",n:"גביע",d:"הגרלה חדשה"},
+  {k:"league",n:"סיכום מחזור",d:"כל התוצאות בליגה, הודעה אחת"},
+  {k:"rank",n:"מקום בטבלה",d:"כשעולים או יורדים"},
+];
+function pushPrefs(){ let p={}; try{ p=JSON.parse(LS.get("gd-push-prefs")||"{}")||{}; }catch{} const o={}; for(const t of PUSH_TYPES) o[t.k]=p[t.k]!==false; return o; }
+async function pushSavePrefs(p){
+  LS.set("gd-push-prefs",JSON.stringify(p));
+  const reg=await swReady(); const sub=reg&&await reg.pushManager.getSubscription(); if(!sub) return;
+  try{ await fetch(CFG.push.server+"/prefs",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({endpoint:sub.endpoint,prefs:p})}); }catch{}
+}
+const PUSH_TYPES=[
+  {k:"result",n:"תוצאות",d:"בסיום כל משחק שלנו"},
+  {k:"time",n:"שעה ומגרש",d:"כשנקבעים או משתנים"},
+  {k:"reminder",n:"תזכורת",d:"יום לפני משחק"},
+  {k:"cup",n:"גביע",d:"הגרלה חדשה"},
+  {k:"league",n:"סיכום מחזור",d:"כל התוצאות בליגה, הודעה אחת"},
+  {k:"rank",n:"מקום בטבלה",d:"כשעולים או יורדים"},
+];
+function pushPrefs(){ let p={}; try{ p=JSON.parse(LS.get("gd-push-prefs")||"{}")||{}; }catch{} const o={}; for(const t of PUSH_TYPES) o[t.k]=p[t.k]!==false; return o; }
+async function pushSavePrefs(p){
+  LS.set("gd-push-prefs",JSON.stringify(p));
+  const reg=await swReady(); const sub=reg&&await reg.pushManager.getSubscription(); if(!sub) return;
+  try{ await fetch(CFG.push.server+"/prefs",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({endpoint:sub.endpoint,prefs:p})}); }catch{}
+}
 async function pushSubscribe(){
   const reg = await swReady(); if(!reg) return;
   const perm = await Notification.requestPermission(); if(perm !== "granted") return renderPush();
   const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64url(CFG.push.vapidPublicKey) });
-  const r = await fetch(CFG.push.server + "/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON() }) });
+  const r = await fetch(CFG.push.server + "/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON(), prefs: pushPrefs() }) });
   if(!r.ok){ await sub.unsubscribe(); throw new Error("subscribe " + r.status); }
   LS.set("gd-push", "on");
 }
@@ -763,13 +805,15 @@ async function renderPush(){
   if(st === "unsupported" || (st !== "on" && hidden)){ slot.innerHTML = ""; return; }
   const bell = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></svg>`;
   const rows = {
-    "on":           ["התראות פועלות", "תקבלו הודעה על תוצאה, שעה או מגרש חדשים, ותזכורת יום לפני משחק.", `<button class="linkBtn" data-act="push-off">ביטול</button>`],
+    "on":           ["התראות פועלות", "בחרו מה לקבל. השינוי נשמר מיד.", `<button class="linkBtn" data-act="push-off">ביטול</button>`],
     "off":          ["קבלו התראות", "תוצאה, שעה או מגרש חדשים, ותזכורת יום לפני משחק. מספר על האייקון כשיש חדש.", `<button class="btn accent press" data-act="push-on">הפעלה</button><button class="linkBtn" data-act="push-x">לא עכשיו</button>`],
     "needs-install":["התראות על המשחקים", "באייפון זה עובד רק אחרי הוספה למסך הבית: שיתוף, ואז ׳הוספה למסך הבית׳. אחר כך פותחים מהאייקון ולוחצים הפעלה.", `<button class="linkBtn" data-act="push-x">הבנתי</button>`],
     "denied":       ["ההתראות חסומות", "אישרתם בעבר לחסום. אפשר לשנות בהגדרות הטלפון תחת ההתראות של האתר.", `<button class="linkBtn" data-act="push-x">הבנתי</button>`],
   }[st];
-  slot.innerHTML = `<h2 class="h2">התראות</h2><div class="tk install"><div class="dt">${bell}</div><div class="mid"><div class="ln"><span class="n">${rows[0]}</span></div><div class="m" style="white-space:normal">${rows[1]}</div></div><div class="stub">${rows[2]}</div></div>`;
+  slot.innerHTML = `<h2 class="h2">התראות</h2><div class="tk install"><div class="dt">${bell}</div><div class="mid"><div class="ln"><span class="n">${rows[0]}</span></div><div class="m" style="white-space:normal">${rows[1]}</div></div><div class="stub">${rows[2]}</div></div>${st==="on"?prefsHtml():""}`;
 }
+function prefsHtml(){ const p=pushPrefs(); return `<div class="prefs">${PUSH_TYPES.map(t=>`<label class="pref"><input type="checkbox" data-pref="${t.k}" ${p[t.k]?"checked":""}><span><b>${t.n}</b><span class="d">${t.d}</span></span></label>`).join("")}</div>`; }
+document.addEventListener("change",e=>{ const i=e.target.closest("[data-pref]"); if(!i) return; const p=pushPrefs(); p[i.dataset.pref]=i.checked; pushSavePrefs(p); });
 if(PUSH_OK){ swReady(); if(STANDALONE) clearBadge(); }
 
 /* ---------- install card ---------- */
