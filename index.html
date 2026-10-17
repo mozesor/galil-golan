@@ -758,8 +758,9 @@ const PUSH_TYPES=[
   {k:"cup",n:"גביע",d:"הגרלה חדשה"},
   {k:"league",n:"סיכום מחזור",d:"כל התוצאות בליגה, הודעה אחת"},
   {k:"rank",n:"מקום בטבלה",d:"כשעולים או יורדים"},
+  {k:"all",n:"כל משחק בליגה",d:"תוצאה של כל משחק, גם לא שלנו. כבוי כברירת מחדל",off:true},
 ];
-function pushPrefs(){ let p={}; try{ p=JSON.parse(LS.get("gd-push-prefs")||"{}")||{}; }catch{} const o={}; for(const t of PUSH_TYPES) o[t.k]=p[t.k]!==false; return o; }
+function pushPrefs(){ let p={}; try{ p=JSON.parse(LS.get("gd-push-prefs")||"{}")||{}; }catch{} const o={}; for(const t of PUSH_TYPES) o[t.k]=t.off?p[t.k]===true:p[t.k]!==false; return o; }
 async function pushSavePrefs(p){
   LS.set("gd-push-prefs",JSON.stringify(p));
   const reg=await swReady(); const sub=reg&&await reg.pushManager.getSubscription(); if(!sub) return;

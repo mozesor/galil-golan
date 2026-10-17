@@ -31,7 +31,7 @@ const keyFor = async (endpoint) => {
 };
 
 const cleanPrefs = (p) => { const o = {}; if (p && typeof p === "object") for (const [k, v] of Object.entries(p)) if (/^[a-z]{1,16}$/.test(k)) o[k] = !!v; return o; };
-const wants = (sub, it) => { const t = it.type || String(it.key).split(":")[0]; return !(sub.prefs && sub.prefs[t] === false); };
+const wants = (sub, it) => { const t = it.type || String(it.key).split(":")[0]; if (t === "all") return !!(sub.prefs && sub.prefs.all === true); return !(sub.prefs && sub.prefs[t] === false); };
 
 const validSub = (s) =>
   s && typeof s.endpoint === "string" && /^https:\/\//.test(s.endpoint) && s.endpoint.length < 2000 &&

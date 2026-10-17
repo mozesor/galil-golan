@@ -65,6 +65,12 @@ for (const g of mine) {
   if (t.iso === tomorrow) items.push({ type: "reminder", key: `reminder:${g.id}`, title: `מחר משחק מול ${opp}`, body: `${t.time ? "בשעה " + t.time : "השעה טרם פורסמה"}${venue ? ", " + heb(venue) : ""}. ${home ? "משחק בית" : "משחק חוץ"}. בהצלחה!`, url });
 }
 
+// every finished league game (not ours), as it ends: off by default in the site, parents opt in
+for (const g of data.games) {
+  if (!g.round || g.home.goals === null || g.away.goals === null || isMe(g.home) || isMe(g.away)) continue;
+  const iso = isoOf(new Date(g.date)); if (iso < addDays(today, -1)) continue;
+  items.push({ type: "all", key: `all:${g.id}`, title: `${heTeam(g.home.name)} ${g.home.goals}:${g.away.goals} ${heTeam(g.away.name)}`, body: `מחזור ${g.round}, ${heDate(iso)}.`, url: url + "#games" });
+}
 // league round digest: once every game of the round has a score (and the last of them was played recently)
 const byRound = new Map();
 for (const g of data.games) { if (!byRound.has(g.round)) byRound.set(g.round, []); byRound.get(g.round).push(g); }
