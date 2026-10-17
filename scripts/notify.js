@@ -46,6 +46,8 @@ const today = isoOf(new Date()), tomorrow = addDays(today, 1);
 const url = cfg.push?.url || cfg.site?.url || "https://mozesor.github.io/galil-golan/";
 const items = [];
 const heTeam = (n) => heb(shortName(n));
+// a score in running Hebrew text: "X ניצחה 2:0 את Y" / "תיקו 1:1 בין X ל-Y" (a bare "X 2:0 Y" reads backwards in RTL)
+const scoreLine = (g) => { const h = heTeam(g.home.name), a = heTeam(g.away.name), hg = g.home.goals, ag = g.away.goals; if (hg === ag) return `תיקו ${hg}:${ag} בין ${h} ל${a}`; return hg > ag ? `${h} ניצחה ${hg}:${ag} את ${a}` : `${a} ניצחה ${ag}:${hg} את ${h}`; };
 
 for (const g of mine) {
   const home = isMe(g.home), opp = shortName((home ? g.away : g.home).name), played = g.home.goals !== null && g.away.goals !== null;
@@ -69,7 +71,7 @@ for (const g of mine) {
 for (const g of data.games) {
   if (!g.round || g.home.goals === null || g.away.goals === null || isMe(g.home) || isMe(g.away)) continue;
   const iso = isoOf(new Date(g.date)); if (iso < addDays(today, -1)) continue;
-  items.push({ type: "all", key: `all:${g.id}`, title: `${heTeam(g.home.name)} ${g.home.goals}:${g.away.goals} ${heTeam(g.away.name)}`, body: `מחזור ${g.round}, ${heDate(iso)}.`, url: url + "#games" });
+  items.push({ type: "all", key: `all:${g.id}`, title: scoreLine(g), body: `מחזור ${g.round}, ${heDate(iso)}.`, url: url + "#games" });
 }
 // league round digest: once every game of the round has a score (and the last of them was played recently)
 const byRound = new Map();
@@ -79,7 +81,7 @@ for (const [round, gs] of byRound) {
   const done = gs.every((g) => g.home.goals !== null && g.away.goals !== null);
   const last = gs.map((g) => isoOf(new Date(g.date))).sort().pop();
   if (!done || last < addDays(today, -2)) continue;
-  const lines = gs.slice().sort((a, b) => a.date.localeCompare(b.date)).map((g) => `${heTeam(g.home.name)} ${g.home.goals}:${g.away.goals} ${heTeam(g.away.name)}`);
+  const lines = gs.slice().sort((a, b) => a.date.localeCompare(b.date)).map(scoreLine);
   const me = (data.standings || []).find((r) => isMe(r));
   items.push({ type: "league", key: `league:${round}`, title: `סיכום מחזור ${round}`, body: lines.join("\n").slice(0, 900) + (me ? `\nאנחנו במקום ${me.rank} עם ${me.points} נק׳.` : ""), url: url + "#table" });
 }
