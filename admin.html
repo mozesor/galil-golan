@@ -66,6 +66,11 @@ a.btn{text-decoration:none}
   <h1>ניהול לוח המשחקים</h1>
   <p class="sub">כאן ממלאים את מה שההתאחדות לא מפרסמת: שעת שריקה, מגרש, ניווט והערות להורים. השמירה נכנסת לאתר תוך כדקה.</p>
 
+  <div class="card" id="usage">
+    <h2>כניסות לאתר</h2>
+    <div class="status" id="usageBody">טוען…</div>
+  </div>
+
   <div class="card" id="setup">
     <h2>חיבור ל-GitHub</h2>
     <ol class="steps">
@@ -249,6 +254,20 @@ $("#runFetch").addEventListener("click",async()=>{
   }catch(e){ toast(e.message,true); }
 });
 if($("#repo").value && $("#token").value) load();
+})();
+
+/* usage card: public numbers from the push server, no token needed */
+(async()=>{
+  const el=document.getElementById("usageBody"); if(!el) return;
+  try{
+    const cfg=await (await fetch("config.json",{cache:"no-store"})).json();
+    const st=await (await fetch(cfg.push.server+"/stats",{cache:"no-store"})).json();
+    const he=d=>new Intl.DateTimeFormat("he-IL",{timeZone:"Asia/Jerusalem",weekday:"short",day:"numeric",month:"numeric"}).format(new Date(d+"T12:00:00Z"));
+    const rows=st.days.map((x,i)=>`<tr><td>${i===0?"היום":i===1?"אתמול":he(x.day)}</td><td>${x.devices}</td><td>${x.home}</td></tr>`).join("");
+    el.innerHTML=`<p style="margin:0 0 8px">ב-7 הימים האחרונים: <b>${st.week}</b> מכשירים שונים · <b>${st.subscribers}</b> עם התראות פעילות</p>
+      <table style="border-collapse:collapse;font-size:14px"><thead><tr><th style="text-align:right;padding:4px 10px 4px 0">יום</th><th style="text-align:right;padding:4px 10px 4px 0">מכשירים</th><th style="text-align:right;padding:4px 0">מתוכם ממסך הבית</th></tr></thead><tbody>${rows}</tbody></table>
+      <p class="muted" style="margin:8px 0 0;font-size:12px">ספירה אנונימית: כל מכשיר נספר פעם ביום, בלי שמות ובלי פרטים.</p>`;
+  }catch(e){ el.textContent="אין חיבור לשרת הסטטיסטיקה."; }
 })();
 </script>
 </body>

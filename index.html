@@ -834,6 +834,17 @@ async function renderWeather(next){
   el.hidden=false;
 }
 
+/* ---------- anonymous visit ping (numbers only: how many devices, how many from the home screen) ---------- */
+function ping(){
+  try{
+    if(!CFG?.push?.server) return;
+    if(Date.now()-(+LS.get("gd-ping")||0)<3600000) return;
+    LS.set("gd-ping",String(Date.now()));
+    let id=LS.get("gd-did"); if(!id){ id=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now()); LS.set("gd-did",id); }
+    fetch(CFG.push.server+"/hit",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id,standalone:STANDALONE}),keepalive:true}).catch(()=>{});
+  }catch{}
+}
+
 /* ---------- install card ---------- */
 addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); installEvt=e; renderInstall(); });
 function renderInstall(){
@@ -1147,6 +1158,7 @@ document.addEventListener("visibilitychange",()=>{
   seen.add("home");
   if(["games","table","cal"].includes(hash)) showView(hash);
   await load();
+  ping();
   maybeTour();
 })();
 })();

@@ -5,7 +5,9 @@
 //   POST /notify       {items:[{key,type,title,body,url?,badge?}]}   from GitHub Actions (Bearer PUSH_SECRET)
 //                      type (or the key prefix) is matched against each subscriber's prefs; a type set to false is skipped
 //                      each key is sent at most once, ever (dedup in KV), so the Action can resend candidates freely
-//   GET  /stats                                  subscriber count (public, numbers only)
+//   POST /hit          {id, standalone}          from the site, at most once an hour per device: anonymous visit counter
+//                      stored as hit:<day>:<s|w>:<hash(id)> for 40 days; no names, no addresses
+//   GET  /stats                                  subscriber count + visits per day for the last 7 days (public, numbers only)
 import { buildPushPayload } from "@block65/webcrypto-web-push";
 
 const json = (data, status = 200, extra = {}) =>
@@ -37,6 +39,29 @@ const validSub = (s) =>
   s && typeof s.endpoint === "string" && /^https:\/\//.test(s.endpoint) && s.endpoint.length < 2000 &&
   s.keys && typeof s.keys.p256dh === "string" && typeof s.keys.auth === "string";
 
+const hashId = async (id) => {
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("hit|" + id));
+  return [...new Uint8Array(d)].slice(0, 12).map((b) => b.toString(16).padStart(2, "0")).join("");
+};
+const dayIL = (d = new Date()) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jerusalem" }).format(d);
+async function listPrefix(env, prefix) {
+  const out = []; let cursor;
+  do { const page = await env.SUBS.list({ prefix, cursor }); out.push(...page.keys.map((k) => k.name)); cursor = page.list_complete ? undefined : page.cursor; } while (cursor);
+  return out;
+}
+async function visitStats(env) {
+  const days = [];
+  const all = new Set();
+  for (let i = 0; i < 7; i++) {
+    const day = dayIL(new Date(Date.now() - i * 86400000));
+    const keys = await listPrefix(env, `hit:${day}:`);
+    let home = 0;
+    for (const k of keys) { const [, , mode, h] = k.split(":"); if (mode === "s") home++; all.add(h); }
+    days.push({ day, devices: keys.length, home });
+  }
+  return { days, week: all.size };
+}
+
 async function listAll(env) {
   const out = [];
   let cursor;
@@ -67,7 +92,17 @@ export default {
 
     if (url.pathname === "/stats" && req.method === "GET") {
       const n = (await listAll(env)).length;
-      return json({ subscribers: n }, 200, c.headers);
+      const visits = await visitStats(env);
+      return json({ subscribers: n, ...visits }, 200, c.headers);
+    }
+
+    if (url.pathname === "/hit" && req.method === "POST") {
+      if (!c.ok) return json({ error: "origin" }, 403, c.headers);
+      let body; try { body = await req.json(); } catch { return json({ error: "json" }, 400, c.headers); }
+      if (typeof body?.id !== "string" || !body.id || body.id.length > 64) return json({ error: "id" }, 400, c.headers);
+      const k = `hit:${dayIL()}:${body.standalone ? "s" : "w"}:${await hashId(body.id)}`;
+      await env.SUBS.put(k, "1", { expirationTtl: 40 * 86400 });
+      return json({ ok: true }, 200, c.headers);
     }
 
     if (url.pathname === "/subscribe" && req.method === "POST") {
