@@ -12,7 +12,7 @@ const BASE = "https://vole.one.co.il";
 const ROUNDS_API = `${BASE}/api/leagues/rounds?league_id=${LEAGUE_ID}`;
 const STANDINGS_API = `${BASE}/api/leagues/standings?league_id=${LEAGUE_ID}`;
 
-// ONE occasionally times out for a few seconds; three attempts with a pause so one hiccup does not fail the whole run
+// ONE is sometimes unreachable from GitHub for a minute or two (mostly on the hour); five attempts over ~2 minutes so one hiccup does not fail the whole run
 async function fetchJson(url, attempt = 1) {
   let res;
   try {
@@ -24,11 +24,11 @@ async function fetchJson(url, attempt = 1) {
       },
       signal: AbortSignal.timeout(15000),
     });
-    if (res.status >= 500 && attempt < 3) throw new Error(`HTTP ${res.status}`);
+    if (res.status >= 500 && attempt < 5) throw new Error(`HTTP ${res.status}`);
   } catch (e) {
-    if (attempt >= 3) throw e;
+    if (attempt >= 5) throw e;
     console.warn(`fetch attempt ${attempt} failed (${String(e.cause?.code || e.message || e)}), retrying`);
-    await new Promise((r) => setTimeout(r, attempt * 4000));
+    await new Promise((r) => setTimeout(r, attempt * 8000));
     return fetchJson(url, attempt + 1);
   }
   const text = await res.text();
