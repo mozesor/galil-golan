@@ -702,7 +702,7 @@ function startCountdown(next){
       if(diff<=0) nm=now<kick+100*60000?"live":"done";
       else { const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
         if(d>0){nm="dhm";vals={a:two(d),b:two(h),c:two(m)};}
-        else if(h>0){nm="hms";vals={a:two(h),b:two(m),c:two(s)};}
+        else if(h>0){nm=t.iso===todayIso()?"hms":"hms-tm";vals={a:two(h),b:two(m),c:two(s)};}
         else {nm="ms";vals={a:two(m),b:two(s)};label=m>0?`בעוד ${m} דק׳`:"פחות מדקה";} }
     }
     if(nm!==mode){
@@ -714,7 +714,7 @@ function startCountdown(next){
         :nm==="live"?big("המשחק בעיצומו")
         :nm==="done"?big("המשחק הסתיים")+`<div class="lab c">התוצאה תתעדכן כשתפורסם</div>`
         :nm==="dhm"?cell("a","ימים")+cell("b","שעות")+cell("c","דקות")
-        :nm==="hms"?big("היום")+cell("a","שעות")+cell("b","דקות")+cell("c","שניות")
+        :nm.startsWith("hms")?big(nm==="hms"?"היום":"מחר")+cell("a","שעות")+cell("b","דקות")+cell("c","שניות")
         :big(label)+cell("a","דקות")+cell("b","שניות");
       if(!first&&!REDUCED) el.animate([{opacity:0},{opacity:1}],{duration:160,easing:"ease-out"});
     }
