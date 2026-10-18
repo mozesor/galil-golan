@@ -12,14 +12,25 @@ const BASE = "https://vole.one.co.il";
 const ROUNDS_API = `${BASE}/api/leagues/rounds?league_id=${LEAGUE_ID}`;
 const STANDINGS_API = `${BASE}/api/leagues/standings?league_id=${LEAGUE_ID}`;
 
-async function fetchJson(url) {
-  const res = await fetch(url, {
-    headers: {
-      "user-agent": "Mozilla/5.0",
-      accept: "application/json,text/plain,*/*",
-      referer: `${BASE}/league/${LEAGUE_ID}`,
-    },
-  });
+// ONE occasionally times out for a few seconds; three attempts with a pause so one hiccup does not fail the whole run
+async function fetchJson(url, attempt = 1) {
+  let res;
+  try {
+    res = await fetch(url, {
+      headers: {
+        "user-agent": "Mozilla/5.0",
+        accept: "application/json,text/plain,*/*",
+        referer: `${BASE}/league/${LEAGUE_ID}`,
+      },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (res.status >= 500 && attempt < 3) throw new Error(`HTTP ${res.status}`);
+  } catch (e) {
+    if (attempt >= 3) throw e;
+    console.warn(`fetch attempt ${attempt} failed (${String(e.cause?.code || e.message || e)}), retrying`);
+    await new Promise((r) => setTimeout(r, attempt * 4000));
+    return fetchJson(url, attempt + 1);
+  }
   const text = await res.text();
   if (!res.ok) throw new Error(`HTTP ${res.status} ${url} | ${text.slice(0, 160)}`);
   return JSON.parse(text);
