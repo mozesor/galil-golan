@@ -5,7 +5,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 1
   },
-  "fetchedAt": "2026-10-18T19:15:22.130Z",
+  "fetchedAt": "2026-10-19T04:03:20.008Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -2544,24 +2544,22 @@
         "roundName": "סיבוב א"
       },
       {
-        "id": "manual-cup-r2",
+        "id": "6ad56e475239c8925a114ca5",
         "date": "2026-10-23T21:00:00.000Z",
         "round": 2,
         "finished": false,
         "home": {
-          "id": "manual:מ.כ.גליל גולן דרום",
-          "pid": null,
-          "name": "מ.כ.גליל גולן דרום",
+          "id": "6ab9c8e2068ef07a1cafbb23",
+          "pid": 8657,
+          "name": "מ.כ.גליל גולן דרום צו פיוס",
           "goals": null
         },
         "away": {
-          "id": "manual:מ.ס. צעירי כפר קנא",
-          "pid": null,
+          "id": "68ccd70e1b7b720e589fa321",
+          "pid": 1354,
           "name": "מ.ס. צעירי כפר קנא",
           "goals": null
         },
-        "manual": true,
-        "note": "לפי הגרלת ההתאחדות מ-16/10. השעה והמגרש יפורסמו בהמשך.",
         "cup": true,
         "roundName": "סיבוב ב"
       }
