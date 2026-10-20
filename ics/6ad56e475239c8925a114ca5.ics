@@ -11,11 +11,14 @@ BEGIN:VEVENT
 UID:6ad56e475239c8925a114ca5@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:🏆 גביע: גליל גולן דרום נגד צעירי כפר 
- קנא (בית) | מועד משוער
-DTSTART;VALUE=DATE:20261024
-DTEND;VALUE=DATE:20261025
-DESCRIPTION:גביע\, סיבוב ב\nמועד משוער: השעה טרם 
- פורסמה והיום עוד יכול לזוז. היומן יתעדכן 
- לבד
+ קנא (בית)
+DTSTART:20261025T173000Z
+DTEND:20261025T190000Z
+DESCRIPTION:גביע\, סיבוב ב
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:משחק בעוד שעתיים
+TRIGGER:-PT2H
+END:VALARM
 END:VEVENT
 END:VCALENDAR
