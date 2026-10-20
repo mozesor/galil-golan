@@ -42,5 +42,10 @@ jobs:
           git add data.json season.ics ics
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
           git commit -m "עדכון תוצאות"
-          git pull --rebase origin ${GITHUB_REF_NAME}
-          git push
+          # another run may have pushed meanwhile: replay our commit on top of it, our freshly generated files win
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin ${GITHUB_REF_NAME} && git push && exit 0
+            git rebase --abort 2>/dev/null || true
+            sleep 5
+          done
+          exit 1
