@@ -10,7 +10,7 @@ on:
     # off the top of the hour, when GitHub queues are least busy
     - cron: "7,37 * * * *"
     # match days (Fri/Sat/Sun, 10:00 to 22:00 Israel): every 15 minutes, as a fallback to the Home Assistant trigger
-    - cron: "22,52 7-19 * * 0,5,6"
+    - cron: "22,52 7-20 * * 0,5,6"
 
 permissions:
   contents: write
@@ -39,7 +39,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json season.ics ics
+          git add data.json season.ics ics overrides.json
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
           git commit -m "עדכון תוצאות"
           # another run may have pushed meanwhile: replay our commit on top of it, our freshly generated files win

@@ -102,7 +102,7 @@ function calendar(events, cfg, name) {
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//galil-golan-darom//he",
+    `PRODID:-//${cfg.site?.icsId || "galil-golan-darom"}//he`,
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `X-WR-CALNAME:${esc(name)}`,

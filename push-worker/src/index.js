@@ -55,9 +55,9 @@ async function visitStats(env) {
   for (let i = 0; i < 7; i++) {
     const day = dayIL(new Date(Date.now() - i * 86400000));
     const keys = await listPrefix(env, `hit:${day}:`);
-    let home = 0;
-    for (const k of keys) { const [, , mode, h] = k.split(":"); if (mode === "s") home++; all.add(h); }
-    days.push({ day, devices: keys.length, home });
+    const devices = new Set(), homeSet = new Set();
+    for (const k of keys) { const [, , mode, h] = k.split(":"); devices.add(h); if (mode === "s") homeSet.add(h); all.add(h); }
+    days.push({ day, devices: devices.size, home: homeSet.size });
   }
   return { days, week: all.size };
 }
@@ -141,20 +141,24 @@ export default {
       const auth = req.headers.get("authorization") || "";
       if (!env.PUSH_SECRET || auth !== `Bearer ${env.PUSH_SECRET}`) return json({ error: "auth" }, 401);
       let body; try { body = await req.json(); } catch { return json({ error: "json" }, 400); }
-      const items = Array.isArray(body?.items) ? body.items.slice(0, 20) : [];
+      const items = Array.isArray(body?.items) ? body.items : [];
       const keys = await listAll(env);
-      const fresh = [];
+      const fresh = [], seen = new Set();
       for (const it of items) {
+        if (fresh.length >= 40) break;
         if (!it || typeof it.key !== "string" || typeof it.title !== "string" || typeof it.body !== "string") continue;
+        if (seen.has(it.key)) continue; seen.add(it.key);
         if (await env.SUBS.get("sent:" + it.key, { cacheTtl: 60 })) continue;
-        // claim the key before sending: two runs a minute apart can no longer send the same item twice
-        if (keys.length) await env.SUBS.put("sent:" + it.key, String(Date.now()), { expirationTtl: 180 * 24 * 3600 });
+        // claim the key before sending so two runs a minute apart cannot both send it; the claim is short until
+        // at least one device accepted the message, so a failed delivery is retried by a later run
+        if (keys.length) await env.SUBS.put("sent:" + it.key, String(Date.now()), { expirationTtl: 15 * 60 });
         fresh.push(it);
       }
       if (!fresh.length) return json({ sent: 0, items: 0, subscribers: keys.length });
       // with nobody subscribed yet, keep the items unsent so the first subscribers still get them
       if (!keys.length) return json({ sent: 0, items: fresh.length, subscribers: 0, deferred: true });
       let sent = 0, dropped = 0, failed = 0, skipped = 0;
+      const okItems = new Set(), failedItems = new Set();
       for (const k of keys) {
         const sub = await env.SUBS.get(k, "json");
         if (!sub) continue;
@@ -163,9 +167,13 @@ export default {
           try {
             const status = await sendOne(env, sub, it);
             if (status === 404 || status === 410) { await env.SUBS.delete(k); dropped++; break; }
-            if (status >= 200 && status < 300) sent++; else failed++;
-          } catch { failed++; }
+            if (status >= 200 && status < 300) { sent++; okItems.add(it.key); } else { failed++; failedItems.add(it.key); }
+          } catch { failed++; failedItems.add(it.key); }
         }
+      }
+      // settle the claims: delivered (or wanted by nobody) -> remember for 180 days; failed everywhere -> let a later run retry
+      for (const it of fresh) {
+        if (okItems.has(it.key) || !failedItems.has(it.key)) await env.SUBS.put("sent:" + it.key, String(Date.now()), { expirationTtl: 180 * 24 * 3600 });
       }
       return json({ sent, failed, dropped, skipped, items: fresh.length, subscribers: keys.length });
     }

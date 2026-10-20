@@ -14,6 +14,7 @@ SUMMARY:🏆 גביע: גליל גולן דרום נגד אהלי טמרה
  קלאסיקו 23:0 (בית)
 DTSTART:20261009T060000Z
 DTEND:20261009T073000Z
+LOCATION:צפת
 DESCRIPTION:גביע\, סיבוב א
 END:VEVENT
 BEGIN:VEVENT
@@ -33,6 +34,7 @@ SUMMARY:🏆 גביע: גליל גולן דרום נגד צעירי כפר
  קנא (בית)
 DTSTART:20261025T173000Z
 DTEND:20261025T190000Z
+LOCATION:צפת
 DESCRIPTION:גביע\, סיבוב ב
 BEGIN:VALARM
 ACTION:DISPLAY
@@ -57,6 +59,7 @@ SUMMARY:⚽ גליל גולן דרום נגד הפועל עכו 2 (בית)
  | מועד משוער
 DTSTART;VALUE=DATE:20261031
 DTEND;VALUE=DATE:20261101
+LOCATION:צפת
 DESCRIPTION:מחזור 3\nמועד משוער: השעה טרם פורסמה
   והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
@@ -67,6 +70,7 @@ SUMMARY:⚽ גליל גולן דרום נגד הפועל מטה אשר 2 (
  בית) | מועד משוער
 DTSTART;VALUE=DATE:20261114
 DTEND;VALUE=DATE:20261115
+LOCATION:צפת
 DESCRIPTION:מחזור 4\nמועד משוער: השעה טרם פורסמה
   והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
@@ -87,6 +91,7 @@ SUMMARY:⚽ גליל גולן דרום נגד הפועל עמק הירדן
  (בית) | מועד משוער
 DTSTART;VALUE=DATE:20261205
 DTEND;VALUE=DATE:20261206
+LOCATION:צפת
 DESCRIPTION:מחזור 6\nמועד משוער: השעה טרם פורסמה
   והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
@@ -107,6 +112,7 @@ SUMMARY:⚽ גליל גולן דרום נגד קרית חיים (בית) |
  מועד משוער
 DTSTART;VALUE=DATE:20261226
 DTEND;VALUE=DATE:20261227
+LOCATION:צפת
 DESCRIPTION:מחזור 8\nמועד משוער: השעה טרם פורסמה
   והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
@@ -127,6 +133,7 @@ SUMMARY:⚽ גליל גולן דרום נגד מכבי סקציה מעלו
  ת תרשיחא (בית) | מועד משוער
 DTSTART;VALUE=DATE:20270116
 DTEND;VALUE=DATE:20270117
+LOCATION:צפת
 DESCRIPTION:מחזור 10\nמועד משוער: השעה טרם פורסמ
  ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
@@ -147,6 +154,7 @@ SUMMARY:⚽ גליל גולן דרום נגד גולן קצרין (בית)
  | מועד משוער
 DTSTART;VALUE=DATE:20270130
 DTEND;VALUE=DATE:20270131
+LOCATION:צפת
 DESCRIPTION:מחזור 12\nמועד משוער: השעה טרם פורסמ
  ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT
@@ -167,6 +175,7 @@ SUMMARY:⚽ גליל גולן דרום נגד מכבי עירוני קרי
  ת אתא 3 (בית) | מועד משוער
 DTSTART;VALUE=DATE:20270213
 DTEND;VALUE=DATE:20270214
+LOCATION:צפת
 DESCRIPTION:מחזור 14\nמועד משוער: השעה טרם פורסמ
  ה והיום עוד יכול לזוז. היומן יתעדכן לבד
 END:VEVENT

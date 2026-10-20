@@ -263,7 +263,7 @@ svg{display:block}
 .tk .dt span{font-size:12px;font-weight:600;color:var(--muted);margin-top:2px;text-align:center;line-height:1.25}
 .tk .mid{padding:10px 12px;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:2px}
 .tk .ln{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px}
-.tk .n{font-weight:600;font-size:15px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;unicode-bidi:isolate}
+.tk .n{font-weight:600;font-size:15px;line-height:1.2;overflow-wrap:anywhere;unicode-bidi:isolate}
 .tk .n.me{color:var(--accent)}
 .tk .g{font-family:var(--display);font-weight:700;font-size:28px;line-height:.95;min-width:18px;text-align:center}
 .tk .g.lo{color:var(--muted)}
@@ -515,9 +515,9 @@ const seen=new Set(), scrollPos={};
 function applyTheme(t){ if(t) root.dataset.theme=t; else delete root.dataset.theme; }
 applyTheme(LS.get("gd-theme")||"");
 $("#themeBtn").addEventListener("click",()=>{
-  const next=getComputedStyle(root).colorScheme.includes("dark")?"light":"dark";
+  const cur=root.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"), next=cur==="dark"?"light":"dark";
   const go=()=>applyTheme(next);
-  if(document.startViewTransition&&!REDUCED) document.startViewTransition(go); else go();
+  if(document.startViewTransition&&!REDUCED){ try{ const vt=document.startViewTransition(go); for(const k of ["ready","finished","updateCallbackDone"]) vt[k]?.catch?.(()=>{}); }catch{ go(); } } else go();
   LS.set("gd-theme",next);
 });
 if(!SS.get("gd-scarf")){ $("#scarf").classList.add("enter"); SS.set("gd-scarf","1"); }
@@ -560,9 +560,10 @@ const mine=g=>isMe(g.home)||isMe(g.away);
 const played=g=>g.home.goals!==null&&g.away.goals!==null;
 function outcome(g,id){ if(!played(g)||!id||(g.home.id!==id&&g.away.id!==id)) return null; const h=g.home.id===id; const a=h?g.home.goals:g.away.goals,b=h?g.away.goals:g.home.goals; return a>b?"W":a<b?"L":"D"; }
 const OUT_US={W:"ניצחנו",D:"תיקו",L:"הפסדנו"}, OUT={W:"ניצחון",D:"תיקו",L:"הפסד"}, OUTC={W:"win",D:"draw",L:"loss"};
-const teamGames=id=>DATA.games.filter(g=>g.home.id===id||g.away.id===id).sort((a,b)=>a.date.localeCompare(b.date));
+const effTime=g=>{ try{ return gameTime(g).date.getTime(); }catch{ return new Date(g.date).getTime(); } };
+const teamGames=id=>DATA.games.filter(g=>g.home.id===id||g.away.id===id).sort((a,b)=>effTime(a)-effTime(b));
 const findGame=id=>DATA.games.find(g=>g.id===id)||CUP.find(g=>g.id===id);
-const myGames=()=>teamGames(ME.id).concat(CUP).sort((a,b)=>a.date.localeCompare(b.date));
+const myGames=()=>teamGames(ME.id).concat(CUP).sort((a,b)=>effTime(a)-effTime(b));
 const roundLabel=g=>g.cup?`גביע · ${heb(g.roundName||"")}`:`מחזור ${g.round}`;
 const formOf=(id,n=5)=>teamGames(id).filter(played).slice(-n).map(g=>outcome(g,id));
 function computeTable(maxRound=Infinity){
@@ -580,6 +581,7 @@ const venueOf=(g,home)=>{ const ov=OVR?.games?.[g.id]||{}; const hv=OVR?.venues?
 const scoreLtr=g=>`<span class="n">${g.away.goals}</span><i>:</i><span class="n">${g.home.goals}</span>`; // home sits on the right in RTL
 // league position box (replaces initials). Before a team has played, the rank is meaningless, so say so.
 const rankBox=(row,me=false)=>`<div class="mark rank ${me?"me":""}" aria-label="${row?.games?`מקום ${row.rank} בטבלה`:"טרם שיחקו"}">${row?.games?`<b>${row.rank}</b><small>מקום</small>`:`<small class="na">טרם<br>שיחקו</small>`}</div>`;
+let bootView=false;
 const computeNext=()=>myGames().find(g=>!played(g)&&expiresAt(g)>Date.now())||null;
 function fit(el){ const max=+el.dataset.fit,min=+el.dataset.min||max*.6; let s=max; el.style.fontSize=s+"px"; while(el.scrollHeight>s*.95*2+6&&s>min){ s-=2; el.style.fontSize=s+"px"; } }
 const fitAll=(r=document)=>r.querySelectorAll("[data-fit]").forEach(fit);
@@ -599,7 +601,7 @@ const ICONS={
 const siteUrl=()=>location.href.split("#")[0];
 function gameText(g){
   const t=gameTime(g),home=isMe(g.home),opp=home?g.away:g.home,v=venueOf(g,home);
-  const l=[`⚽ ${CFG.team.displayName} נגד ${shortName(opp.name)}`,`${longDate(t.date)}${t.tbd?" (מועד משוער, השעה תפורסם)":" בשעה "+t.timeStr}`,`${home?"משחק בית":"משחק חוץ"} | ${roundLabel(g)}`];
+  const l=[`${g.cup?"🏆 גביע: ":"⚽ "}${CFG.team.displayName} נגד ${shortName(opp.name)}`,`${longDate(t.date)}${t.tbd?" (מועד משוער, השעה תפורסם)":" בשעה "+t.timeStr}`,`${home?"משחק בית":"משחק חוץ"} | ${roundLabel(g)}`];
   if(v.venue) l.push(`📍 ${v.venue}`); if(v.waze) l.push(v.waze); if(v.note) l.push(v.note);
   return l.join("\n");
 }
@@ -638,10 +640,10 @@ function renderHome(){
     const shareWide=`<button class="btn accent press" data-act="share" data-id="${next.id}">${ICONS.share}<span>שתפו את המשחק</span></button>`;
     const acts=today&&v.waze
       ? `<a class="btn accent press" href="${esc(v.waze)}" target="_blank" rel="noopener">${ICONS.pin}<span>נווטו למגרש</span></a><button class="btn sq press" data-act="share" data-id="${next.id}" aria-label="שיתוף">${ICONS.share}</button>${icsBtn}`
-      : `${shareWide}${icsBtn}${v.waze?`<a class="btn sq press" href="${esc(v.waze)}" target="_blank" rel="noopener" aria-label="ניווט למגרש">${ICONS.pin}</a>`:`<button class="btn sq press" data-act="opp" data-id="${opp.id}" aria-label="על היריבה">${ICONS.info}</button>`}`;
+      : `${shareWide}${icsBtn}${v.waze?`<a class="btn sq press" href="${esc(v.waze)}" target="_blank" rel="noopener" aria-label="ניווט למגרש">${ICONS.pin}</a>`:(next.cup?`<button class="btn sq press" data-act="game" data-id="${next.id}" aria-label="פרטי המשחק">${ICONS.info}</button>`:`<button class="btn sq press" data-act="opp" data-id="${opp.id}" aria-label="על היריבה">${ICONS.info}</button>`)}`;
     html+=`<div class="hero">
       <div class="hero-top rise" style="--i:0"><span class="eyebrow"><b>${next.cup?"משחק גביע":"המשחק הבא"}</b>${next.cup?esc(heb(next.roundName||"")):`מחזור ${next.round}`}</span>${stamp}</div>
-      <div class="opp rise" style="--i:1">${rankBox(oppRow)}<div class="who"><div class="pre">${home?"מארחים את":"נוסעים אל"}</div><div class="name fit" data-fit="56" data-min="34">${esc(shortName(opp.name))}</div></div></div>
+      <div class="opp rise" style="--i:1">${next.cup&&!oppRow?`<div class="mark rank" aria-label="משחק גביע"><small class="na">גביע</small></div>`:rankBox(oppRow)}<div class="who"><div class="pre">${home?"מארחים את":"נוסעים אל"}</div><div class="name fit" data-fit="56" data-min="34">${esc(shortName(opp.name))}</div></div></div>
       <div class="chalk"></div>
       <div class="details rise" style="--i:1">
         <div><div class="when">${today?"היום, ":""}${esc(longDate(t.date))}${t.est?` <span class="est">מועד משוער</span>`:""}</div><div class="where">${ICONS.pin}<span class="iso">${home?"משחק בית":"משחק חוץ"}${v.venue?" · "+esc(v.venue):""}</span></div></div>
@@ -674,7 +676,7 @@ function renderHome(){
       <div class="tile"><b class="ltr ${gd>0?"W":gd<0?"L":""}">${gd>0?"+":""}${gd}</b><span>הפרש שערים</span></div>
     </div>
     <div class="formRow rise" style="--i:4"><span>כושר אחרון</span>${formStrip(formOf(ME.id))}</div>${CUP.length?`<button class="formRow cupRow rise" style="--i:4;width:100%" data-cup="1"><span>${esc(cupShortName())}</span><span class="cupSt">${esc(cupStatus())}</span></button>`:""}</div>`;
-  const upcoming=my.filter(g=>!played(g)&&g!==next).slice(0,3);
+  const upcoming=my.filter(g=>!played(g)&&g!==next&&expiresAt(g)>Date.now()).slice(0,3);
   if(upcoming.length) html+=`<div class="pad"><h2 class="h2 rise" style="--i:4">בהמשך</h2><div class="list">${upcoming.map(g=>ticket(g,4)).join("")}</div></div>`;
   html+=`<div class="pad" id="pushSlot"></div><div class="pad" id="installSlot"></div>`+tickerHtml();
   $("#homeBody").innerHTML=html;
@@ -774,7 +776,7 @@ async function pushSubscribe(){
   const reg = await swReady(); if(!reg) return;
   const perm = await Notification.requestPermission(); if(perm !== "granted") return renderPush();
   const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64url(CFG.push.vapidPublicKey) });
-  const r = await fetch(CFG.push.server + "/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON(), prefs: pushPrefs() }) });
+  let r; try{ r = await fetch(CFG.push.server + "/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON(), prefs: pushPrefs() }) }); }catch(e){ await sub.unsubscribe(); throw e; }
   if(!r.ok){ await sub.unsubscribe(); throw new Error("subscribe " + r.status); }
   LS.set("gd-push", "on"); prefsOpen=true;
 }
@@ -879,7 +881,7 @@ function renderGames(first){
     if(first){ const nx=body.querySelector(".tk.next"); if(nx) nx.scrollIntoView({block:"center",behavior:"instant"}); }
   } else {
     bar.hidden=false; const rounds=[...new Set(DATA.games.map(g=>g.round))].sort((a,b)=>a-b);
-    if(state.round===null) state.round=NEXT?NEXT.round:(lastPlayedRound()||rounds[0]);
+    if(state.round===null){ const nl=myGames().find(g=>!g.cup&&!played(g)&&expiresAt(g)>Date.now()); state.round=nl?nl.round:(NEXT&&!NEXT.cup?NEXT.round:(lastPlayedRound()||rounds[0])); }
     bar.innerHTML=rounds.map(r=>`<button aria-selected="${r===state.round}" data-round="${r}">מחזור ${r}</button>`).join("");
     const sel=bar.querySelector('[aria-selected="true"]'); if(sel) sel.scrollIntoView({inline:"center",block:"nearest",behavior:"instant"});
     body.innerHTML=DATA.games.filter(g=>g.round===state.round).sort((a,b)=>a.date.localeCompare(b.date)).map((g,i)=>ticket(g,i,null)).join("");
@@ -889,7 +891,7 @@ function renderGames(first){
 /* ---------- cup ---------- */
 const cupShortName=()=>{ const n=heb(DATA.cup?.name||"גביע"); return n.replace(/\s+ע״?ש.*$/,"")||n; };
 function cupStatus(){
-  const last=[...CUP].reverse().find(played), next=CUP.find(g=>!played(g));
+  const last=[...CUP].reverse().find(played), next=CUP.find(g=>!played(g)&&expiresAt(g)>Date.now());
   if(next) return `${heb(next.roundName||"")}: נגד ${shortName((isMe(next.home)?next.away:next.home).name)}`;
   if(!last) return "טרם התחיל";
   if(outcome(last,ME.id)==="L") return `הודחנו ב${heb(last.roundName||"גביע")}`;
@@ -960,7 +962,7 @@ scrim.addEventListener("click",closeSheet);
 function teamSheet(id){
   const tm=DATA.teams.find(t=>t.id===id); if(!tm) return;
   const row=computeTable().find(r=>r.id===id),gs=teamGames(id),recent=gs.filter(played).slice(-5).reverse(),form=formOf(id);
-  const me=id===ME.id,h2h=gs.filter(mine),h2hDone=h2h.filter(played),nextVs=h2h.find(g=>!played(g));
+  const me=id===ME.id,h2h=gs.filter(mine),h2hDone=h2h.filter(played),nextVs=h2h.find(g=>!played(g)&&expiresAt(g)>Date.now());
   const avg=(n,d)=>d?(n/d).toFixed(1):"0.0";
   let html=`<div class="sheet-h">${rankBox(row,me)}<div><h3 class="fit" data-fit="38" data-min="24">${esc(me?CFG.team.displayName:heb(tm.name))}</h3><div class="sub">${row?.games?`מקום ${row.rank} · ${row.points} נק׳ · ${row.games} משחקים`:"עוד לא שיחקו העונה"}</div></div></div>
     <div class="tiles"><div class="tile"><b>${row?.wins??0}</b><span>ניצחונות</span></div><div class="tile"><b>${row?.draws??0}</b><span>תיקו</span></div><div class="tile"><b>${row?.losses??0}</b><span>הפסדים</span></div><div class="tile"><b>${avg(row?.gf,row?.games)}</b><span>שערים למשחק</span></div></div>
@@ -969,7 +971,7 @@ function teamSheet(id){
     if(h2hDone.length) html+=`<div class="list">${h2hDone.slice().reverse().map(g=>ticket(g,0)).join("")}</div>`;
     else if(nextVs){ const t=gameTime(nextVs); html+=`<div class="emptyLine">עוד לא נפגשנו העונה. המפגש הראשון: ${esc(longDate(t.date))}, ${isMe(nextVs.home)?"אצלנו":"אצלם"}.</div>`; } }
   html+=`<div class="h3">המשחקים האחרונים ${me?"שלנו":"שלהם"}</div>`+(recent.length?`<div class="list">${recent.map(g=>ticket(g,0,id)).join("")}</div>`:`<div class="emptyLine">עוד לא שוחקו משחקים העונה.</div>`);
-  const up=gs.filter(g=>!played(g)).slice(0,3); if(up.length) html+=`<div class="h3">המשחקים הבאים ${me?"שלנו":"שלהם"}</div><div class="list">${up.map(g=>ticket(g,0,id)).join("")}</div>`;
+  const up=gs.filter(g=>!played(g)&&expiresAt(g)>Date.now()).slice(0,3); if(up.length) html+=`<div class="h3">המשחקים הבאים ${me?"שלנו":"שלהם"}</div><div class="list">${up.map(g=>ticket(g,0,id)).join("")}</div>`;
   openSheet(html);
 }
 function gameSheet(id){
@@ -997,7 +999,7 @@ function confetti(x,y){
 const TOUR_STEPS=[
   {sel:".hero",title:"המשחק הבא",text:"כאן תמיד המשחק הקרוב: מול מי, מתי, בית או חוץ, והמגרש כשהוא מתפרסם."},
   {sel:"#cd",title:"ספירה לאחור",text:"כמה זמן נשאר עד השריקה. כשאין שעה רשמית תראו 'מועד משוער', והיא תתעדכן לבד."},
-  {sel:".actions .btn.accent",title:"שיתוף",text:"שולח את פרטי המשחק מוכנים לקבוצת הוואטסאפ של ההורים."},
+  {sel:'.actions [data-act="share"]',title:"שיתוף",text:"שולח את פרטי המשחק מוכנים לקבוצת הוואטסאפ של ההורים."},
   {sel:'.actions a[href*=".ics"]',title:"ליומן",text:"מוסיף את המשחק ליומן של הטלפון. בלשונית 'יומן' אפשר לחבר את כל העונה בבת אחת."},
   {sel:"#pushSlot .tk",title:"התראות",text:"הפעילו כדי לקבל הודעה על תוצאה, שעה חדשה ותזכורת יום לפני משחק.",when:()=>STANDALONE||!IOS},
   {sel:"#pushSlot .tk",title:"כדאי להוסיף למסך הבית",text:"באייפון ההתראות עובדות רק מהאפליקציה: לחצו על שיתוף בספארי, ואז ׳הוספה למסך הבית׳. פתחו מהאייקון, חזרו לכאן ולחצו הפעלה.",when:()=>IOS&&!STANDALONE},
@@ -1011,7 +1013,7 @@ let tourI=0, tourSteps=[];
 const tourEl=$("#tour");
 function tourRect(el){ const r=el.getBoundingClientRect(); const pad=8; return {top:r.top-pad,left:r.left-pad,width:r.width+pad*2,height:r.height+pad*2}; }
 function tourPlace(){
-  const st=tourSteps[tourI]; const el=document.querySelector(st.sel); if(!el){ tourNext(); return; }
+  const st=tourSteps[tourI]; const el=document.querySelector(st.sel); if(!el) return;
   const r=tourRect(el); const spot=tourEl.querySelector(".spot"), b=tourEl.querySelector(".bubble");
   Object.assign(spot.style,{top:r.top+"px",left:r.left+"px",width:r.width+"px",height:r.height+"px"});
   b.querySelector(".step").textContent=`${tourI+1} מתוך ${tourSteps.length}`;
@@ -1080,7 +1082,7 @@ document.addEventListener("keydown",e=>{
 });
 $("#shareSeason").addEventListener("click",()=>{ if(!DATA) return; const btn=$("#shareSeason");
   const l=[`⚽ לוח המשחקים של ${CFG.team.displayName}`,""];
-  for(const g of teamGames(ME.id).filter(g=>!played(g))){ const t=gameTime(g),home=isMe(g.home); l.push(`${heDate(t.date,{day:"2-digit",month:"2-digit"})} ${t.tbd?"":t.timeStr+" "}${home?"🏠":"🚌"} ${shortName(home?g.away.name:g.home.name)}`); }
+  for(const g of myGames().filter(g=>!played(g)&&expiresAt(g)>Date.now())){ const t=gameTime(g),home=isMe(g.home); l.push(`${heDate(t.date,{day:"2-digit",month:"2-digit"})} ${t.tbd?"":t.timeStr+" "}${home?"🏠":"🚌"} ${shortName(home?g.away.name:g.home.name)}${g.cup?" (גביע)":""}`); }
   share(l.join("\n")).then(ok=>ok&&flash(btn,"נשלח")); });
 
 /* ---------- pull to refresh (home only) ---------- */
@@ -1124,7 +1126,7 @@ function init(d,c,o){
   const m=d.teams.find(x=>x.name.includes(c.team.match)&&!(c.team.exclude&&x.name.includes(c.team.exclude))); if(!m) throw new Error("הקבוצה לא נמצאה בליגה: "+c.team.match);
   DATA=d; CFG=c; OVR=o||{}; ME=m; CUP=(d.cup?.games||[]).map(g=>({...g,cup:true}));
   $("#teamTitle").textContent=CFG.team.displayName; document.title=heb(CFG.site?.title||document.title);
-  NEXT=computeNext(); renderHome(); if(state.view!=="home") renderView(state.view,false); updateStamp();
+  NEXT=computeNext(); renderHome(); if(state.view!=="home"){ renderView(state.view,!!bootView); bootView=false; } updateStamp();
 }
 async function getJSON(u,ms){
   const c=new AbortController(),tm=setTimeout(()=>c.abort(),ms);
@@ -1156,7 +1158,7 @@ document.addEventListener("visibilitychange",()=>{
   if(!LS.get("gd-snap")){ $("#v-home").classList.add("first"); setTimeout(()=>$("#v-home").classList.remove("first"),1200); }
   try{ const s=JSON.parse(LS.get("gd-snap")||"null"); if(s&&s.d&&s.c){ init(s.d,s.c,s.o); warm=true; } }catch{}
   seen.add("home");
-  if(["games","table","cal"].includes(hash)) showView(hash);
+  if(["games","table","cal"].includes(hash)){ bootView=true; showView(hash); }
   await load();
   ping();
   maybeTour();

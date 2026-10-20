@@ -24,7 +24,7 @@ async function fetchJson(url, attempt = 1) {
       },
       signal: AbortSignal.timeout(15000),
     });
-    if (res.status >= 500 && attempt < 5) throw new Error(`HTTP ${res.status}`);
+    if ((res.status >= 500 || res.status === 429) && attempt < 5) throw new Error(`HTTP ${res.status}`);
   } catch (e) {
     if (attempt >= 5) throw e;
     console.warn(`fetch attempt ${attempt} failed (${String(e.cause?.code || e.message || e)}), retrying`);
@@ -75,6 +75,10 @@ function normalizeGameBase(g) {
 }
 
 async function main() {
+  let previous0 = null;
+  try { previous0 = JSON.parse(await fs.readFile(path.join(ROOT, "data.json"), "utf8")); } catch {}
+  const prevByRound = new Map();
+  for (const g of previous0?.games || []) { if (g.manual) continue; if (!prevByRound.has(g.round)) prevByRound.set(g.round, []); prevByRound.get(g.round).push(g); }
   const base = await fetchJson(ROUNDS_API);
   const league = base?.league || {};
   const maxRound = 60;
@@ -85,15 +89,17 @@ async function main() {
       const j = await fetchJson(`${ROUNDS_API}&round=${n}`);
       const gs = games(j);
       if (!gs.length) {
-        emptyStreak++;
-        if (emptyStreak >= 5 && all.length) break;
+        // a round that had games last time and is suddenly empty is a hiccup on ONE's side, not a cancelled round
+        if (prevByRound.has(n + 1)) { console.warn("round", n + 1, "came back empty, keeping previous games"); all.push(...prevByRound.get(n + 1)); emptyStreak = 0; }
+        else { emptyStreak++; if (emptyStreak >= 5 && all.length) break; }
       } else {
         emptyStreak = 0;
         all.push(...gs.map(normalizeGame));
       }
       await new Promise((r) => setTimeout(r, 100));
     } catch (e) {
-      console.warn("round", n, String(e));
+      console.warn("round", n + 1, String(e));
+      if (prevByRound.has(n + 1)) { console.warn("round", n + 1, "fetch failed, keeping previous games"); all.push(...prevByRound.get(n + 1)); emptyStreak = 0; }
     }
   }
 
@@ -123,8 +129,6 @@ async function main() {
   }
 
   // IFA: venue + kickoff time for our games (ONE does not publish venues)
-  let previous0 = null;
-  try { previous0 = JSON.parse(await fs.readFile(path.join(ROOT, "data.json"), "utf8")); } catch {}
   const nameIsMe = (n) => !!n && n.includes(CONFIG.team.match) && !(CONFIG.team.exclude && n.includes(CONFIG.team.exclude));
   const ours = (g) => nameIsMe(g.home.name) || nameIsMe(g.away.name);
   const ourPid = list.find(ours) ? (nameIsMe(list.find(ours).home.name) ? list.find(ours).home.pid : list.find(ours).away.pid) : null;
@@ -134,6 +138,8 @@ async function main() {
     const rows = await fetchIfaGames(ifaTeam, season);
     const n = attachIfa(list, rows, ours);
     console.log(`IFA: ${rows.length} rows, matched ${n} of our games`);
+    const prevIfa = new Map((previous0?.games || []).filter((g) => g.ifa).map((g) => [g.id, g.ifa]));
+    for (const g of list) if (!g.ifa && prevIfa.has(g.id)) g.ifa = prevIfa.get(g.id);
   } catch (e) {
     console.warn("IFA fetch failed, keeping previous IFA data:", String(e));
     const prev = new Map((previous0?.games || []).filter((g) => g.ifa).map((g) => [g.id, g.ifa]));
@@ -161,11 +167,13 @@ async function main() {
         }
         await new Promise((r) => setTimeout(r, 100));
       }
-      cup = { id: CONFIG.cupLeagueId, name: String(cupBase?.league?.name || "גביע").replace(/\s+/g, " ").trim(), games: cg.sort((a, b) => a.date.localeCompare(b.date)) };
+      const prevCup = (previous0?.cup?.games || []).filter((g) => !g.manual);
+      if (!cg.length && prevCup.length) { console.warn("cup came back empty, keeping previous cup games"); cg.push(...prevCup); }
+      cup = { id: CONFIG.cupLeagueId, name: String(cupBase?.league?.name || previous0?.cup?.name || "גביע").replace(/\s+/g, " ").trim(), games: cg.sort((a, b) => a.date.localeCompare(b.date)) };
       console.log(`cup: ${cg.length} of our games`);
     } catch (e) {
       console.warn("cup fetch failed, keeping previous cup data:", String(e));
-      cup = previous0?.cup || null;
+      cup = previous0?.cup ? { ...previous0.cup, games: (previous0.cup.games || []).filter((g) => !g.manual) } : null;
     }
   }
 
@@ -174,20 +182,30 @@ async function main() {
   try {
     const ovr = JSON.parse(await fs.readFile(path.join(ROOT, "overrides.json"), "utf8"));
     const extras = Array.isArray(ovr?.extraGames) ? ovr.extraGames : [];
-    const core = (n) => cleanName(n).replace(/^(מ\.כ\.?|מ\.ס\.?|ה\.|מועדון הכדורגל|מרכז קהילתי|איחוד|הפועל|הפ'|מכבי|בית"ר|ביתר|בני|עירוני|צעירי)\s*/g, "").replace(/\s*צו פיוס\s*$/, "").trim();
+    const superseded = new Set();
+    const gdFIX = /^(?:מ\.כ\.?|מ\.ס\.?|מ\.ס|מ\.כ|ה\.|מועדון הכדורגל|מועדון כדורגל|מרכז קהילתי|איחוד|הפועל|הפ'|הפ׳|מכבי|בית"ר|בית״ר|ביתר|בני|עירוני|צעירי|מ\.א\.?)\s*/;
+    const core = (n) => { let s = cleanName(n).replace(/\s*["״]?צו פיוס["״]?\s*$/, "").trim(); for (let i = 0; i < 5; i++) { const t = s.replace(gdFIX, "").trim(); if (t === s || !t) break; s = t; } return s; };
     const isoOf = (d) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jerusalem" }).format(new Date(d));
-    const midnightIsrael = (iso) => { const g = new Date(`${iso}T00:00:00Z`); const p = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Jerusalem", hour12: false, hour: "2-digit" }).formatToParts(g); const h = +p.find((x) => x.type === "hour").value % 24; return new Date(g.getTime() - h * 3600000).toISOString(); };
+    const midnightIsrael = (iso) => { const noon = new Date(`${iso}T12:00:00Z`); const p = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Jerusalem", hour12: false, hour: "2-digit" }).formatToParts(noon); const offset = (+p.find((x) => x.type === "hour").value % 24) - 12; return new Date(new Date(`${iso}T00:00:00Z`).getTime() - offset * 3600000).toISOString(); };
     for (const x of extras) {
       if (!x?.date || !x?.home || !x?.away) continue;
       const pool = x.cup ? (cup?.games || []) : list.filter(ours);
       const opp = ours({ home: { name: x.home }, away: { name: x.away } }) ? (nameIsMe(x.home) ? x.away : x.home) : null;
+      if (!opp) { console.warn("manual game skipped, neither side is our team:", x.id || x.date); continue; }
       // same opponent within 10 days counts as the same fixture (the official date or time may differ from the draw)
       const dup = pool.some((g) => Math.abs(new Date(isoOf(g.date) + "T12:00:00Z") - new Date(x.date + "T12:00:00Z")) <= 10 * 86400000 && [g.home.name, g.away.name].some((n) => opp && core(n) === core(opp)));
-      if (dup) { console.log("manual game superseded by ONE:", x.id); continue; }
+      if (dup) { console.log("manual game superseded by ONE:", x.id); superseded.add(x); continue; }
       const mk = (n) => ({ id: "manual:" + cleanName(n), pid: null, name: cleanName(n) });
       const g = { id: x.id || `manual-${x.date}`, date: midnightIsrael(x.date), round: x.round ?? 0, finished: false, home: { ...mk(x.home), goals: null }, away: { ...mk(x.away), goals: null }, manual: true, note: x.note || "" };
+      if (x.time || x.venue) g.ifa = { date: x.date, time: x.time || null, venue: x.venue || null };
       if (x.cup) { g.cup = true; g.roundName = x.roundName || "גביע"; if (!cup) cup = { id: CONFIG.cupLeagueId || null, name: "גביע", games: [] }; cup.games.push(g); cup.games.sort((a, b) => a.date.localeCompare(b.date)); }
       else list.push(g);
+    }
+    if (superseded.size) {
+      ovr.extraGames = extras.filter((x) => !superseded.has(x));
+      if (!ovr.extraGames.length) delete ovr.extraGames;
+      await fs.writeFile(path.join(ROOT, "overrides.json"), JSON.stringify(ovr, null, 2) + "\n", "utf8");
+      console.log("overrides.json: removed", superseded.size, "superseded manual game(s)");
     }
   } catch (e) { console.warn("manual games:", String(e)); }
 

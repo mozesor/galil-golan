@@ -198,13 +198,13 @@ async function load(){
 function render(){
   $("#displayName").value=CFG.team.displayName||""; $("#shortName").value=CFG.team.short||""; $("#siteTitle").value=CFG.site?.title||"";
   $("#homeVenue").value=OVR.venues.home.name||""; $("#homeWaze").value=OVR.venues.home.waze||""; $("#homeNote").value=OVR.venues.home.note||"";
-  const my=DATA.games.filter(g=>nameIsMe(g.home.name)||nameIsMe(g.away.name)).sort((a,b)=>a.date.localeCompare(b.date));
+  const my=DATA.games.filter(g=>nameIsMe(g.home.name)||nameIsMe(g.away.name)).concat((DATA.cup?.games||[]).map(g=>({...g,cup:true}))).sort((a,b)=>a.date.localeCompare(b.date));
   $("#games").innerHTML=my.map(g=>{
     const home=nameIsMe(g.home.name); const opp=home?g.away.name:g.home.name; const ov=OVR.games[g.id]||{};
     const done=g.home.goals!==null&&g.away.goals!==null;
     const d=new Date(g.date);
     return `<div class="game" data-id="${g.id}">
-      <div class="t"><b>${esc(opp)}<span class="chip ${home?"":"away"}">${home?"בית":"חוץ"}</span>${done?`<span class="chip done">${g.home.goals}:${g.away.goals}</span>`:""}</b><span>${esc(heDate(d,{weekday:"short",day:"numeric",month:"short"}))} · מחזור ${g.round}</span></div>
+      <div class="t"><b>${esc(opp)}<span class="chip ${home?"":"away"}">${home?"בית":"חוץ"}</span>${done?`<span class="chip done">${g.home.goals}:${g.away.goals}</span>`:""}</b><span>${esc(heDate(d,{weekday:"short",day:"numeric",month:"short"}))} · ${g.cup?"גביע, "+esc(g.roundName||""):"מחזור "+g.round}</span></div>
       <div class="row">
         <div><label>שעה</label><input data-f="time" inputmode="text" placeholder="${apiTime(g.date)||"לא פורסמה"}" value="${esc(ov.time||"")}" /></div>
         <div><label>מגרש</label><input data-f="venue" placeholder="${home?esc(OVR.venues.home.name||"מגרש הבית"):"מגרש היריבה"}" value="${esc(ov.venue||"")}" /></div>
@@ -228,7 +228,10 @@ function collect(){
     if(o.time){ const m=/^(\d{1,2}):(\d{2})$/.exec(o.time); if(!m||+m[1]>23||+m[2]>59) throw new Error("שעה לא תקינה: "+o.time+" (לדוגמה 10:30)"); o.time=`${m[1].padStart(2,"0")}:${m[2]}`; }
     if(Object.keys(o).length) games[el.dataset.id]=o;
   });
-  OVR.games=games;
+  // keep overrides of games that are not on this screen (e.g. older seasons); replace only the rendered ones
+  const shown=new Set([...document.querySelectorAll("#games .game")].map(el=>el.dataset.id));
+  OVR.games=Object.fromEntries(Object.entries(OVR.games||{}).filter(([id])=>!shown.has(id)));
+  Object.assign(OVR.games,games);
   OVR._help="מידע ידני שההתאחדות לא מפרסמת. נערך מתוך admin.html";
 }
 
