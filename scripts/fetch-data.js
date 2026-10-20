@@ -181,7 +181,8 @@ async function main() {
       if (!x?.date || !x?.home || !x?.away) continue;
       const pool = x.cup ? (cup?.games || []) : list.filter(ours);
       const opp = ours({ home: { name: x.home }, away: { name: x.away } }) ? (nameIsMe(x.home) ? x.away : x.home) : null;
-      const dup = pool.some((g) => isoOf(g.date) === x.date && [g.home.name, g.away.name].some((n) => opp && core(n) === core(opp)));
+      // same opponent within 10 days counts as the same fixture (the official date or time may differ from the draw)
+      const dup = pool.some((g) => Math.abs(new Date(isoOf(g.date) + "T12:00:00Z") - new Date(x.date + "T12:00:00Z")) <= 10 * 86400000 && [g.home.name, g.away.name].some((n) => opp && core(n) === core(opp)));
       if (dup) { console.log("manual game superseded by ONE:", x.id); continue; }
       const mk = (n) => ({ id: "manual:" + cleanName(n), pid: null, name: cleanName(n) });
       const g = { id: x.id || `manual-${x.date}`, date: midnightIsrael(x.date), round: x.round ?? 0, finished: false, home: { ...mk(x.home), goals: null }, away: { ...mk(x.away), goals: null }, manual: true, note: x.note || "" };
