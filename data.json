@@ -5,7 +5,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-20T03:36:36.645Z",
+  "fetchedAt": "2026-10-21T01:55:50.238Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -223,6 +223,24 @@
       }
     },
     {
+      "id": "6acc331a9878872a9639eb0e",
+      "date": "2026-10-24T13:00:00.000Z",
+      "round": 2,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      }
+    },
+    {
       "id": "6acc331a9878872a9639eb06",
       "date": "2026-10-27T22:00:00.000Z",
       "round": 2,
@@ -237,24 +255,6 @@
         "id": "68b5d99c1348fa686c13b83a",
         "pid": 8356,
         "name": "הפועל עכו 2",
-        "goals": null
-      }
-    },
-    {
-      "id": "6acc331a9878872a9639eb08",
-      "date": "2026-10-27T22:00:00.000Z",
-      "round": 2,
-      "finished": false,
-      "home": {
-        "id": "68b5d99c1348fa686c13b80c",
-        "pid": 7769,
-        "name": "ביתר נהריה 2",
-        "goals": null
-      },
-      "away": {
-        "id": "68ccd7081b7b720e589f9f0f",
-        "pid": 5822,
-        "name": "הפ' בני אעבלין",
         "goals": null
       }
     },
@@ -313,42 +313,6 @@
       }
     },
     {
-      "id": "6acc331a9878872a9639eb0e",
-      "date": "2026-10-27T22:00:00.000Z",
-      "round": 2,
-      "finished": false,
-      "home": {
-        "id": "6ab9c8e2068ef07a1cafbba4",
-        "pid": 2029,
-        "name": "הפ' רמות מנשה מגידו 2",
-        "goals": null
-      },
-      "away": {
-        "id": "68b5d99c1348fa686c13b864",
-        "pid": 4180,
-        "name": "איחוד הפועל ביר אל מכסור",
-        "goals": null
-      }
-    },
-    {
-      "id": "6acc331a9878872a9639eb10",
-      "date": "2026-10-27T22:00:00.000Z",
-      "round": 2,
-      "finished": false,
-      "home": {
-        "id": "68b5d99c1348fa686c13b8c4",
-        "pid": 3232,
-        "name": "מ.כ קרית חיים שמשון",
-        "goals": null
-      },
-      "away": {
-        "id": "68ccd70a1b7b720e589fa019",
-        "pid": 6639,
-        "name": "הפועל מטה אשר 2",
-        "goals": null
-      }
-    },
-    {
       "id": "6acc331a9878872a9639eb12",
       "date": "2026-10-27T22:00:00.000Z",
       "round": 2,
@@ -369,6 +333,42 @@
         "date": "2026-10-28",
         "time": null,
         "venue": null
+      }
+    },
+    {
+      "id": "6acc331a9878872a9639eb08",
+      "date": "2026-10-28T16:45:00.000Z",
+      "round": 2,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      }
+    },
+    {
+      "id": "6acc331a9878872a9639eb10",
+      "date": "2026-10-28T17:30:00.000Z",
+      "round": 2,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
       }
     },
     {
