@@ -5,7 +5,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-22T03:50:09.937Z",
+  "fetchedAt": "2026-10-22T03:58:06.067Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -366,9 +366,9 @@
         "goals": null
       },
       "ifa": {
-        "date": "2026-10-28",
-        "time": null,
-        "venue": null
+        "date": "2026-10-30",
+        "time": "11:50",
+        "venue": "כרמיאל"
       }
     },
     {
