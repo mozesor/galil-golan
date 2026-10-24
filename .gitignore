@@ -1,3 +1,6 @@
 node_modules/
 .DS_Store
 Thumbs.db
+
+push-worker/.wrangler/
+push-worker/node_modules/
