@@ -179,6 +179,8 @@ export default {
           if (!wants(sub, it)) { skipped++; continue; }
           try {
             const status = await sendOne(env, sub, it);
+            // delivery log per device (7 days), so "I did not get it" can be checked against the push service's answer
+            await env.SUBS.put(`log:${new Date().toISOString().slice(0, 16)}:${k.slice(4, 10)}:${it.key}`, String(status), { expirationTtl: 7 * 86400 });
             if (status === 404 || status === 410) { await env.SUBS.delete(k); dropped++; break; }
             if (status >= 200 && status < 300) { sent++; okItems.add(it.key); } else { failed++; failedItems.add(it.key); }
           } catch { failed++; failedItems.add(it.key); }
