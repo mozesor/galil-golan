@@ -113,8 +113,8 @@ export default {
       const k = await keyFor(sub.endpoint);
       const old = await env.SUBS.get(k, "json");
       const prefs = body.prefs ? cleanPrefs(body.prefs) : old?.prefs || {};
-      await env.SUBS.put(k, JSON.stringify({ endpoint: sub.endpoint, keys: sub.keys, expirationTime: sub.expirationTime ?? null, ua: (req.headers.get("user-agent") || "").slice(0, 120), at: old?.at || Date.now(), prefs }));
-      return json({ ok: true, prefs }, 200, c.headers);
+      await env.SUBS.put(k, JSON.stringify({ endpoint: sub.endpoint, keys: sub.keys, expirationTime: sub.expirationTime ?? null, ua: (req.headers.get("user-agent") || "").slice(0, 120), at: old?.at || Date.now(), updatedAt: Date.now(), prefs }));
+      return json({ ok: true, prefs, id: k.slice(4, 10) }, 200, c.headers);
     }
 
     if (url.pathname === "/unsubscribe" && req.method === "POST") {
@@ -132,9 +132,22 @@ export default {
       const k = await keyFor(body.endpoint);
       const sub = await env.SUBS.get(k, "json");
       if (!sub) return json({ error: "unknown" }, 404, c.headers);
-      sub.prefs = cleanPrefs(body.prefs);
+      sub.prefs = cleanPrefs(body.prefs); sub.updatedAt = Date.now();
       await env.SUBS.put(k, JSON.stringify(sub));
-      return json({ ok: true, prefs: sub.prefs }, 200, c.headers);
+      return json({ ok: true, prefs: sub.prefs, id: k.slice(4, 10) }, 200, c.headers);
+    }
+
+    // a test message to one device only (the caller's own subscription), for checking that notifications arrive
+    if (url.pathname === "/test" && req.method === "POST") {
+      if (!c.ok) return json({ error: "origin" }, 403, c.headers);
+      let body; try { body = await req.json(); } catch { return json({ error: "json" }, 400, c.headers); }
+      if (typeof body?.endpoint !== "string") return json({ error: "endpoint" }, 400, c.headers);
+      const k = await keyFor(body.endpoint);
+      const sub = await env.SUBS.get(k, "json");
+      if (!sub) return json({ error: "unknown" }, 404, c.headers);
+      let status = 0;
+      try { status = await sendOne(env, sub, { key: "test:" + Date.now(), title: "בדיקת התראות", body: "ההתראות מגיעות למכשיר הזה. מזהה: " + k.slice(4, 10) }); } catch (e) { return json({ error: String(e) }, 500, c.headers); }
+      return json({ ok: status >= 200 && status < 300, status, id: k.slice(4, 10) }, 200, c.headers);
     }
 
     if (url.pathname === "/notify" && req.method === "POST") {

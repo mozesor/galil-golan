@@ -798,8 +798,12 @@ async function renderPush(){
     "denied":       ["ההתראות חסומות", "אישרתם בעבר לחסום. אפשר לשנות בהגדרות הטלפון תחת ההתראות של האתר.", `<button class="linkBtn" data-act="push-x">הבנתי</button>`],
   }[st];
   slot.innerHTML = `<h2 class="h2">התראות</h2><div class="tk install"><div class="dt">${bell}</div><div class="mid"><div class="ln"><span class="n">${rows[0]}</span></div><div class="m" style="white-space:normal">${rows[1]}</div></div><div class="stub">${rows[2]}</div></div>${st==="on"&&prefsOpen?prefsHtml():""}`;
+  if(st==="on"&&prefsOpen) pushDeviceId().then(id=>{ const el=$("#pushId"); if(el) el.textContent="מזהה מכשיר: "+(id||"לא ידוע"); });
 }
-function prefsHtml(){ const p=pushPrefs(); return `<div class="prefs">${PUSH_TYPES.map(t=>`<label class="pref"><input type="checkbox" data-pref="${t.k}" ${p[t.k]?"checked":""}><span><b>${t.n}</b><span class="d">${t.d}</span></span></label>`).join("")}</div>`; }
+function prefsHtml(){ const p=pushPrefs(); return `<div class="prefs">${PUSH_TYPES.map(t=>`<label class="pref"><input type="checkbox" data-pref="${t.k}" ${p[t.k]?"checked":""}><span><b>${t.n}</b><span class="d">${t.d}</span></span></label>`).join("")}<div class="pref" style="justify-content:space-between"><span class="d" id="pushId">מזהה מכשיר: …</span><button class="linkBtn" data-act="push-test">שלחו לי התראת בדיקה</button></div></div>`; }
+async function pushDeviceId(){ try{ const reg=await swReady(); const sub=reg&&await reg.pushManager.getSubscription(); if(!sub) return null; const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(sub.endpoint)); return [...new Uint8Array(d)].slice(0,3).map(b=>b.toString(16).padStart(2,"0")).join(""); }catch{ return null; } }
+async function pushTest(btn){ const reg=await swReady(); const sub=reg&&await reg.pushManager.getSubscription(); if(!sub){ flash(btn,"אין מנוי"); return; } try{ const r=await fetch(CFG.push.server+"/test",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({endpoint:sub.endpoint})}); const j=await r.json().catch(()=>({})); flash(btn, j.ok?"נשלחה":j.error==="unknown"?"המכשיר לא רשום בשרת, לחצו ביטול ואז הפעלה":"נכשל "+(j.status||r.status)); }catch{ flash(btn,"אין חיבור"); } }
+document.addEventListener("click",e=>{ const b=e.target.closest('[data-act="push-test"]'); if(b){ e.preventDefault(); pushTest(b); } });
 document.addEventListener("change",e=>{ const i=e.target.closest("[data-pref]"); if(!i) return; const p=pushPrefs(); p[i.dataset.pref]=i.checked; pushSavePrefs(p); });
 if(PUSH_OK){ swReady(); if(STANDALONE) clearBadge(); }
 
