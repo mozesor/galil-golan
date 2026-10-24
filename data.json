@@ -5,7 +5,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-24T16:18:19.612Z",
+  "fetchedAt": "2026-10-24T18:52:04.732Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -244,18 +244,18 @@
       "id": "6acc331a9878872a9639eb10",
       "date": "2026-10-24T16:30:00.000Z",
       "round": 2,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68ccd70a1b7b720e589fa019",
         "pid": 6639,
         "name": "הפועל מטה אשר 2",
-        "goals": null
+        "goals": 3
       },
       "away": {
         "id": "68b5d99c1348fa686c13b8c4",
         "pid": 3232,
         "name": "מ.כ קרית חיים שמשון צו פיוס",
-        "goals": null
+        "goals": 1
       }
     },
     {
