@@ -980,10 +980,11 @@ function teamSheet(id){
 }
 function gameSheet(id){
   const g=findGame(id); if(!g) return;
-  if(mine(g)&&DATA.teams.some(t=>t.id===(isMe(g.home)?g.away.id:g.home.id))) return teamSheet(isMe(g.home)?g.away.id:g.home.id);
+  if(mine(g)&&!played(g)&&DATA.teams.some(t=>t.id===(isMe(g.home)?g.away.id:g.home.id))) return teamSheet(isMe(g.home)?g.away.id:g.home.id);
   const t=gameTime(g);
+  const resultBtns=mine(g)&&played(g)?`<div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:16px"><button class="btn accent press" data-act="share-result" data-id="${g.id}">${ICONS.share}<span>שתפו את התוצאה</span></button>${!g.cup&&DATA.teams.some(x=>x.id===(isMe(g.home)?g.away.id:g.home.id))?`<button class="btn press" data-act="opp" data-id="${isMe(g.home)?g.away.id:g.home.id}"><span class="iso">על היריבה</span></button>`:""}</div>`:"";
   openSheet(`<div class="sheet-h"><div><h3 class="fit" data-fit="34" data-min="22"><bdi>${esc(shortName(g.home.name))}</bdi> נגד <bdi>${esc(shortName(g.away.name))}</bdi></h3><div class="sub">${esc(longDate(t.date))}${t.tbd?"":" · "+t.timeStr} · ${esc(roundLabel(g))}</div></div></div>
-    ${played(g)?`<div class="led"><div class="row"><div class="t">${esc(shortName(g.home.name))}</div><div class="sc">${scoreLtr(g)}</div><div class="t">${esc(shortName(g.away.name))}</div></div></div>`:""}
+    ${played(g)?`<div class="led"><div class="row"><div class="t">${esc(shortName(g.home.name))}</div><div class="sc">${scoreLtr(g)}</div><div class="t">${esc(shortName(g.away.name))}</div></div></div>`:""}${resultBtns}
     ${g.cup?`<p class="emptyLine" style="margin-top:12px">${esc(heb(DATA.cup?.name||"גביע"))}. היריבה משחקת בליגה אחרת, ולכן אין לנו את הטבלה שלה.</p>`:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button class="btn press" data-act="opp" data-id="${g.home.id}"><span class="iso">${esc(shortName(g.home.name))}</span></button><button class="btn press" data-act="opp" data-id="${g.away.id}"><span class="iso">${esc(shortName(g.away.name))}</span></button></div>`}`);
 }
 
@@ -1073,6 +1074,10 @@ document.addEventListener("click",e=>{
   if(act==="share") share(gameText(findGame(id))).then(ok=>ok&&flash(a,"נשלח"));
   else if(act==="opp") teamSheet(id);
   else if(act==="game") gameSheet(id);
+  else if(act==="share-result"){ const g=findGame(id); if(!g||!played(g)) return; const home=isMe(g.home),opp=shortName((home?g.away:g.home).name),my=home?g.home.goals:g.away.goals,op=home?g.away.goals:g.home.goals,t=gameTime(g);
+    const line=my>op?`ניצחנו ${my}:${op} את ${opp}!`:my<op?`הפסדנו ${op}:${my} ל${opp}`:`תיקו ${my}:${op} מול ${opp}`;
+    const l=[`${g.cup?"🏆 "+heb(DATA.cup?.name||"גביע")+", "+heb(g.roundName||""):"⚽ "+heb(DATA.league.name)+", מחזור "+g.round}`,`${CFG.team.displayName}: ${line}`,`${longDate(t.date)} · ${home?"משחק בית":"משחק חוץ"}`,"",siteUrl()];
+    share(l.join("\n")).then(ok=>ok&&flash(a,"נשלח")); }
   else if(act==="install"&&installEvt){ installEvt.prompt(); installEvt.userChoice.finally(()=>{ installEvt=null; renderInstall(); }); }
   else if(act==="install-x"){ LS.set("gd-install-x",String(Date.now())); renderInstall(); }
   else if(act==="push-on"){ a.disabled=true; pushSubscribe().catch(()=>{}).finally(()=>{ a.disabled=false; renderPush(); }); }
