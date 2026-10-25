@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-25T05:03:20.255Z",
+  "fetchedAt": "2026-10-25T19:47:12.726Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -2553,18 +2553,18 @@
         "id": "6ad56e475239c8925a114ca5",
         "date": "2026-10-25T17:30:00.000Z",
         "round": 2,
-        "finished": false,
+        "finished": true,
         "home": {
           "id": "6ab9c8e2068ef07a1cafbb23",
           "pid": 8657,
           "name": "מ.כ.גליל גולן דרום צו פיוס",
-          "goals": null
+          "goals": 12
         },
         "away": {
           "id": "68ccd70e1b7b720e589fa321",
           "pid": 1354,
           "name": "מ.ס. צעירי כפר קנא",
-          "goals": null
+          "goals": 1
         },
         "cup": true,
         "roundName": "סיבוב ב"
