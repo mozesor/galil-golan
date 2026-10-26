@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-26T04:32:54.046Z",
+  "fetchedAt": "2026-10-26T19:48:22.751Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -268,18 +268,18 @@
       "id": "6acc331a9878872a9639eb08",
       "date": "2026-10-26T18:00:00.000Z",
       "round": 2,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68b5d99c1348fa686c13b80c",
         "pid": 7769,
         "name": "ביתר נהריה 2 צו פיוס",
-        "goals": null
+        "goals": 5
       },
       "away": {
         "id": "68ccd7081b7b720e589f9f0f",
         "pid": 5822,
         "name": "הפ' בני אעבלין",
-        "goals": null
+        "goals": 2
       }
     },
     {
@@ -2318,6 +2318,19 @@
   "standings": [
     {
       "rank": 1,
+      "id": "68b5d99c1348fa686c13b80c",
+      "name": "ביתר נהריה 2 צו פיוס",
+      "games": 2,
+      "wins": 2,
+      "draws": 0,
+      "losses": 0,
+      "gf": 18,
+      "ga": 2,
+      "gd": 16,
+      "points": 6
+    },
+    {
+      "rank": 2,
       "id": "68ccd70a1b7b720e589fa019",
       "name": "הפועל מטה אשר 2",
       "games": 2,
@@ -2330,7 +2343,7 @@
       "points": 6
     },
     {
-      "rank": 2,
+      "rank": 3,
       "id": "68b5d99c1348fa686c13b864",
       "name": "איחוד הפועל ביר אל מכסור",
       "games": 2,
@@ -2341,19 +2354,6 @@
       "ga": 1,
       "gd": 8,
       "points": 4
-    },
-    {
-      "rank": 3,
-      "id": "68b5d99c1348fa686c13b80c",
-      "name": "ביתר נהריה 2 צו פיוס",
-      "games": 1,
-      "wins": 1,
-      "draws": 0,
-      "losses": 0,
-      "gf": 13,
-      "ga": 0,
-      "gd": 13,
-      "points": 3
     },
     {
       "rank": 4,
@@ -2411,13 +2411,13 @@
       "rank": 8,
       "id": "68ccd7081b7b720e589f9f0f",
       "name": "הפ' בני אעבלין",
-      "games": 1,
+      "games": 2,
       "wins": 1,
       "draws": 0,
-      "losses": 0,
-      "gf": 2,
-      "ga": 1,
-      "gd": 1,
+      "losses": 1,
+      "gf": 4,
+      "ga": 6,
+      "gd": -2,
       "points": 3
     },
     {
