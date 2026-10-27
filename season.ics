@@ -55,13 +55,16 @@ END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb14@galil-golan-darom
 DTSTAMP:20260101T000000Z
-SUMMARY:⚽ גליל גולן דרום נגד הפועל עכו 2 (בית) 
- | מועד משוער
-DTSTART;VALUE=DATE:20261031
-DTEND;VALUE=DATE:20261101
+SUMMARY:⚽ גליל גולן דרום נגד הפועל עכו 2 (בית)
+DTSTART:20261101T164000Z
+DTEND:20261101T181000Z
 LOCATION:צפת
-DESCRIPTION:מחזור 3\nמועד משוער: השעה טרם פורסמה
-  והיום עוד יכול לזוז. היומן יתעדכן לבד
+DESCRIPTION:מחזור 3
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:משחק בעוד שעתיים
+TRIGGER:-PT2H
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb31@galil-golan-darom
