@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-27T05:03:20.561Z",
+  "fetchedAt": "2026-10-28T13:51:29.718Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -2568,6 +2568,28 @@
         },
         "cup": true,
         "roundName": "סיבוב ב"
+      },
+      {
+        "id": "manual-cup-r3",
+        "date": "2026-11-06T22:00:00.000Z",
+        "round": 3,
+        "finished": false,
+        "home": {
+          "id": "manual:הפ' מרמורק רחובות מערב",
+          "pid": null,
+          "name": "הפ' מרמורק רחובות מערב",
+          "goals": null
+        },
+        "away": {
+          "id": "manual:מ.כ.גליל גולן דרום",
+          "pid": null,
+          "name": "מ.כ.גליל גולן דרום",
+          "goals": null
+        },
+        "manual": true,
+        "note": "לפי הגרלת ההתאחדות מ-28/10. השעה והמגרש יפורסמו בהמשך.",
+        "cup": true,
+        "roundName": "סיבוב ג"
       }
     ]
   }
