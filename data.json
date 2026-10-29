@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-29T05:03:23.827Z",
+  "fetchedAt": "2026-10-29T19:18:22.184Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -286,18 +286,18 @@
       "id": "6acc331a9878872a9639eb06",
       "date": "2026-10-28T15:20:00.000Z",
       "round": 2,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68b5d99c1348fa686c13b7aa",
         "pid": 5104,
         "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
-        "goals": null
+        "goals": 4
       },
       "away": {
         "id": "68b5d99c1348fa686c13b83a",
         "pid": 8356,
         "name": "הפועל עכו 2",
-        "goals": null
+        "goals": 3
       }
     },
     {
@@ -2409,6 +2409,19 @@
     },
     {
       "rank": 8,
+      "id": "68b5d99c1348fa686c13b7aa",
+      "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+      "games": 2,
+      "wins": 1,
+      "draws": 0,
+      "losses": 1,
+      "gf": 5,
+      "ga": 5,
+      "gd": 0,
+      "points": 3
+    },
+    {
+      "rank": 9,
       "id": "68ccd7081b7b720e589f9f0f",
       "name": "הפ' בני אעבלין",
       "games": 2,
@@ -2421,7 +2434,7 @@
       "points": 3
     },
     {
-      "rank": 9,
+      "rank": 10,
       "id": "68ccd70a1b7b720e589fa01c",
       "name": "מכבי עירוני קרית אתא 3",
       "games": 1,
@@ -2432,19 +2445,6 @@
       "ga": 1,
       "gd": 0,
       "points": 1
-    },
-    {
-      "rank": 10,
-      "id": "68b5d99c1348fa686c13b7aa",
-      "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
-      "games": 1,
-      "wins": 0,
-      "draws": 0,
-      "losses": 1,
-      "gf": 1,
-      "ga": 2,
-      "gd": -1,
-      "points": 0
     },
     {
       "rank": 11,
@@ -2476,13 +2476,13 @@
       "rank": 13,
       "id": "68b5d99c1348fa686c13b83a",
       "name": "הפועל עכו 2",
-      "games": 1,
+      "games": 2,
       "wins": 0,
       "draws": 0,
-      "losses": 1,
-      "gf": 1,
-      "ga": 4,
-      "gd": -3,
+      "losses": 2,
+      "gf": 4,
+      "ga": 8,
+      "gd": -4,
       "points": 0
     },
     {
