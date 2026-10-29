@@ -1,17 +1,17 @@
 {
   "rankChange": {
-    "from": 2,
-    "to": 4,
+    "from": 4,
+    "to": 5,
     "points": 3,
     "round": 2,
-    "at": "2026-10-25T05:03:20.255Z"
+    "at": "2026-10-29T20:03:23.507Z"
   },
   "league": {
     "id": 1247,
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-29T19:18:22.184Z",
+  "fetchedAt": "2026-10-29T20:03:23.508Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -304,18 +304,18 @@
       "id": "6acc331a9878872a9639eb0c",
       "date": "2026-10-29T15:20:00.000Z",
       "round": 2,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68ccd70e1b7b720e589fa325",
         "pid": 5942,
         "name": "מ.ס. כפר קמא",
-        "goals": null
+        "goals": 3
       },
       "away": {
         "id": "68b5d99c1348fa686c13b831",
         "pid": 8483,
         "name": "מועדון הכדורגל מרום הגליל צו פיוס",
-        "goals": null
+        "goals": 2
       }
     },
     {
@@ -2344,6 +2344,19 @@
     },
     {
       "rank": 3,
+      "id": "68ccd70e1b7b720e589fa325",
+      "name": "מ.ס. כפר קמא",
+      "games": 2,
+      "wins": 2,
+      "draws": 0,
+      "losses": 0,
+      "gf": 5,
+      "ga": 2,
+      "gd": 3,
+      "points": 6
+    },
+    {
+      "rank": 4,
       "id": "68b5d99c1348fa686c13b864",
       "name": "איחוד הפועל ביר אל מכסור",
       "games": 2,
@@ -2356,7 +2369,7 @@
       "points": 4
     },
     {
-      "rank": 4,
+      "rank": 5,
       "id": "6ab9c8e2068ef07a1cafbb23",
       "name": "מ.כ.גליל גולן דרום צו פיוס",
       "games": 1,
@@ -2369,7 +2382,7 @@
       "points": 3
     },
     {
-      "rank": 5,
+      "rank": 6,
       "id": "68b5d99c1348fa686c13b7df",
       "name": "הפועל עירוני כרמיאל 2 צו פיוס",
       "games": 1,
@@ -2382,29 +2395,16 @@
       "points": 3
     },
     {
-      "rank": 6,
-      "id": "68ccd70e1b7b720e589fa325",
-      "name": "מ.ס. כפר קמא",
-      "games": 1,
-      "wins": 1,
-      "draws": 0,
-      "losses": 0,
-      "gf": 2,
-      "ga": 0,
-      "gd": 2,
-      "points": 3
-    },
-    {
       "rank": 7,
       "id": "68b5d99c1348fa686c13b831",
       "name": "מועדון הכדורגל מרום הגליל צו פיוס",
-      "games": 1,
+      "games": 2,
       "wins": 1,
       "draws": 0,
-      "losses": 0,
-      "gf": 2,
-      "ga": 0,
-      "gd": 2,
+      "losses": 1,
+      "gf": 4,
+      "ga": 3,
+      "gd": 1,
       "points": 3
     },
     {
