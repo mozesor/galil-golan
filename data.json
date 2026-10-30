@@ -1,17 +1,17 @@
 {
   "rankChange": {
-    "from": 4,
-    "to": 5,
-    "points": 3,
-    "round": 2,
-    "at": "2026-10-29T20:03:23.507Z"
+    "from": 5,
+    "to": 4,
+    "points": 4,
+    "round": 3,
+    "at": "2026-10-30T11:53:19.599Z"
   },
   "league": {
     "id": 1247,
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-30T11:48:21.931Z",
+  "fetchedAt": "2026-10-30T11:53:19.599Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -2357,6 +2357,19 @@
     },
     {
       "rank": 4,
+      "id": "6ab9c8e2068ef07a1cafbb23",
+      "name": "מ.כ.גליל גולן דרום צו פיוס",
+      "games": 2,
+      "wins": 1,
+      "draws": 1,
+      "losses": 0,
+      "gf": 15,
+      "ga": 3,
+      "gd": 12,
+      "points": 4
+    },
+    {
+      "rank": 5,
       "id": "68b5d99c1348fa686c13b864",
       "name": "איחוד הפועל ביר אל מכסור",
       "games": 2,
@@ -2369,20 +2382,20 @@
       "points": 4
     },
     {
-      "rank": 5,
-      "id": "6ab9c8e2068ef07a1cafbb23",
-      "name": "מ.כ.גליל גולן דרום צו פיוס",
-      "games": 1,
+      "rank": 6,
+      "id": "68b5d99c1348fa686c13b7df",
+      "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+      "games": 2,
       "wins": 1,
-      "draws": 0,
+      "draws": 1,
       "losses": 0,
-      "gf": 13,
-      "ga": 1,
-      "gd": 12,
-      "points": 3
+      "gf": 6,
+      "ga": 3,
+      "gd": 3,
+      "points": 4
     },
     {
-      "rank": 6,
+      "rank": 7,
       "id": "68b5d99c1348fa686c13b82d",
       "name": "הפועל עמק הירדן",
       "games": 2,
@@ -2392,19 +2405,6 @@
       "gf": 9,
       "ga": 2,
       "gd": 7,
-      "points": 3
-    },
-    {
-      "rank": 7,
-      "id": "68b5d99c1348fa686c13b7df",
-      "name": "הפועל עירוני כרמיאל 2 צו פיוס",
-      "games": 1,
-      "wins": 1,
-      "draws": 0,
-      "losses": 0,
-      "gf": 4,
-      "ga": 1,
-      "gd": 3,
       "points": 3
     },
     {
