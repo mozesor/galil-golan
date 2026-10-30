@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-30T11:53:19.599Z",
+  "fetchedAt": "2026-10-30T13:08:21.904Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -363,18 +363,18 @@
       "id": "6acc331a9878872a9639eb22",
       "date": "2026-10-30T10:15:00.000Z",
       "round": 3,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68b5d99c1348fa686c13b7aa",
         "pid": 5104,
         "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
-        "goals": null
+        "goals": 7
       },
       "away": {
         "id": "68b5d99c1348fa686c13b80c",
         "pid": 7769,
         "name": "ביתר נהריה 2 צו פיוס",
-        "goals": null
+        "goals": 5
       }
     },
     {
