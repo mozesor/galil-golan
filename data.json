@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 2
   },
-  "fetchedAt": "2026-10-30T11:18:19.997Z",
+  "fetchedAt": "2026-10-30T11:48:21.931Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -340,18 +340,18 @@
       "id": "6acc331a9878872a9639eb12",
       "date": "2026-10-30T09:50:00.000Z",
       "round": 2,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68b5d99c1348fa686c13b7df",
         "pid": 7575,
         "name": "הפועל עירוני כרמיאל 2 צו פיוס",
-        "goals": null
+        "goals": 2
       },
       "away": {
         "id": "6ab9c8e2068ef07a1cafbb23",
         "pid": 8657,
         "name": "מ.כ.גליל גולן דרום צו פיוס",
-        "goals": null
+        "goals": 2
       },
       "ifa": {
         "date": "2026-10-30",
