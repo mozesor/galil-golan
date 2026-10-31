@@ -300,6 +300,17 @@ svg{display:block}
 .cupHead{border:2px solid var(--ink);background:var(--surface);padding:14px;margin-bottom:12px}
 .cupHead b{display:block;font-family:var(--display);font-weight:700;font-size:30px;line-height:1}
 .cupHead span{display:block;font-size:13px;color:var(--muted);margin-top:4px}
+.cgList{border:2px solid var(--ink);background:var(--surface)}
+.cg{display:grid;grid-template-columns:40px minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;width:100%;padding:9px 10px;border-top:1px solid var(--line-strong);text-align:start;color:var(--ink)}
+.cg:first-child{border-top:0}
+.cg.me{background:color-mix(in srgb,var(--accent) 10%,var(--surface));box-shadow:inset 3px 0 0 var(--accent)}
+.cg .d{font-size:11px;font-weight:600;color:var(--muted);line-height:1.2;text-align:center}
+.cg .t{font-weight:600;font-size:14px;line-height:1.2;overflow-wrap:anywhere;unicode-bidi:isolate}
+.cg .t.a{text-align:end}
+.cg .t.l{color:var(--muted);font-weight:500}
+.cg .t.me{color:var(--accent)}
+.cg .sc{font-family:var(--display);font-weight:700;font-size:22px;line-height:1;min-width:48px;text-align:center}
+.cg .sc.tb{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
 .rounds{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 12px;margin:0 -16px;scroll-snap-type:x proximity;scrollbar-width:none}
 .rounds[hidden]{display:none}
 .rounds::-webkit-scrollbar{display:none}
@@ -507,8 +518,8 @@ const STANDALONE=matchMedia("(display-mode: standalone)").matches||navigator.sta
 const LS={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
 const SS={get(k){try{return sessionStorage.getItem(k)}catch{return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch{}}};
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
-let DATA=null,CFG=null,OVR=null,ME=null,NEXT=null,lastFetch=0,installEvt=null,CUP=[];
-const state={view:"home",gamesMode:0,round:null};
+let DATA=null,CFG=null,OVR=null,ME=null,NEXT=null,lastFetch=0,installEvt=null,CUP=[],CUPALL=[];
+const state={view:"home",gamesMode:0,round:null,cupRound:null};
 const seen=new Set(), scrollPos={};
 
 /* ---------- theme ---------- */
@@ -902,8 +913,29 @@ function cupStatus(){
   return `עלינו מ${heb(last.roundName||"הסיבוב")}. ההגרלה הבאה טרם פורסמה`;
 }
 function cupHtml(){
-  if(!CUP.length) return `<div class="empty"><b>אין משחקי גביע</b>הקבוצה עוד לא שובצה בגביע העונה.</div>`;
-  return `<div class="cupHead"><b>${esc(heb(DATA.cup?.name||"גביע"))}</b><span>${esc(cupStatus())}</span></div><div class="list">${CUP.map((g,i)=>ticket(g,i)).join("")}</div>`;
+  if(!CUP.length&&!CUPALL.length) return `<div class="empty"><b>אין משחקי גביע</b>הקבוצה עוד לא שובצה בגביע העונה.</div>`;
+  const ours=CUP.length?`<div class="cupHead"><b>${esc(heb(DATA.cup?.name||"גביע"))}</b><span>${esc(cupStatus())}</span></div><div class="list">${CUP.map((g,i)=>ticket(g,i)).join("")}</div>`:"";
+  return ours+cupAllHtml();
+}
+/* every game of the competition, one round at a time (compact rows; our game is highlighted) */
+function cupAllHtml(){
+  if(!CUPALL.length) return "";
+  const rounds=[...new Set(CUPALL.map(g=>g.round))].sort((a,b)=>a-b);
+  const nameOf=r=>heb(CUPALL.find(g=>g.round===r)?.roundName||`סיבוב ${r}`);
+  if(state.cupRound===null||!rounds.includes(state.cupRound)){
+    const nx=CUP.find(g=>!played(g)&&expiresAt(g)>Date.now()), last=[...CUP].reverse().find(played);
+    state.cupRound=nx?.round??last?.round??rounds[rounds.length-1];
+  }
+  const gs=CUPALL.filter(g=>g.round===state.cupRound).sort((a,b)=>effTime(a)-effTime(b)),done=gs.filter(played).length;
+  const row=g=>{
+    const p=played(g),t=gameTime(g),me=mine(g),home=p&&g.home.goals>g.away.goals,away=p&&g.away.goals>g.home.goals;
+    const mid=p?`<span class="sc" dir="ltr">${g.away.goals}:${g.home.goals}</span>`:`<span class="sc tb">${t.tbd?"—":esc(t.timeStr)}</span>`;
+    const inner=`<span class="d">${esc(heDate(t.date,{weekday:"short"}).replace("יום ",""))}<br>${esc(heDate(t.date,{day:"numeric",month:"numeric"}))}</span><span class="t h ${p&&!home?"l":""} ${isMe(g.home)?"me":""}">${esc(tname(g.home))}</span>${mid}<span class="t a ${p&&!away?"l":""} ${isMe(g.away)?"me":""}">${esc(tname(g.away))}</span>`;
+    return me&&findGame(g.id)?`<button class="cg me press" data-act="game" data-id="${g.id}">${inner}</button>`:`<div class="cg">${inner}</div>`;
+  };
+  return `<h2 class="h2">כל משחקי הגביע<small>${gs.length} משחקים${done?` · ${done} הוכרעו`:""}</small></h2>
+    <div class="rounds">${rounds.map(r=>`<button aria-selected="${r===state.cupRound}" data-cupround="${r}">${esc(nameOf(r))}</button>`).join("")}</div>
+    <div class="cgList">${gs.map(row).join("")}</div>`;
 }
 /* ---------- table ---------- */
 function renderTable(first){
@@ -1068,6 +1100,7 @@ document.addEventListener("click",e=>{
   const fl=e.target.closest("[data-flash]"); if(fl){ flash(fl,fl.dataset.flash); return; }
   const nv=e.target.closest("[data-view]"); if(nv){ showView(nv.dataset.view); return; }
   const rb=e.target.closest("[data-round]"); if(rb){ state.round=Number(rb.dataset.round); renderGames(false); return; }
+  const cb=e.target.closest("[data-cupround]"); if(cb){ state.cupRound=Number(cb.dataset.cupround); const top=cb.closest(".rounds")?.getBoundingClientRect().top; renderGames(false); if(top!==undefined){ const nb=$("#gamesBody .rounds"); if(nb) scrollBy({top:nb.getBoundingClientRect().top-top,behavior:"instant"}); } return; }
   const cr=e.target.closest("[data-cup]"); if(cr){ state.gamesMode=2; $("#gamesSeg").dataset.i=2; $("#gamesSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.i==="2")); if(state.view==="games") renderGames(false); else showView("games"); return; }
   const sg=e.target.closest("#gamesSeg button"); if(sg){ state.gamesMode=Number(sg.dataset.i); $("#gamesSeg").dataset.i=state.gamesMode; $("#gamesSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b===sg)); renderGames(false); return; }
   const a=e.target.closest("[data-act]"); if(!a||!DATA) return; const id=a.dataset.id,act=a.dataset.act;
@@ -1133,7 +1166,7 @@ function updateStamp(){
 }
 function init(d,c,o){
   const m=d.teams.find(x=>x.name.includes(c.team.match)&&!(c.team.exclude&&x.name.includes(c.team.exclude))); if(!m) throw new Error("הקבוצה לא נמצאה בליגה: "+c.team.match);
-  DATA=d; CFG=c; OVR=o||{}; ME=m; CUP=(d.cup?.games||[]).map(g=>({...g,cup:true}));
+  DATA=d; CFG=c; OVR=o||{}; ME=m; CUP=(d.cup?.games||[]).map(g=>({...g,cup:true})); CUPALL=(d.cup?.all||[]).map(g=>({...g,cup:true}));
   $("#teamTitle").textContent=CFG.team.displayName; document.title=heb(CFG.site?.title||document.title);
   NEXT=computeNext(); renderHome(); if(state.view!=="home"){ renderView(state.view,!!bootView); bootView=false; } updateStamp();
 }
