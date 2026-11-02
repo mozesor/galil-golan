@@ -10,6 +10,7 @@
      כ-extraGames דרך GitHub Contents API. ה-workflow של המאגר נדלק על הדחיפה, בונה את האתר
      ושולח להורים התראת "הגרלת הגביע". כש-ONE טוען את המשחק, fetch-data.js מוחק את הרשומה.
   3. רשומה ידנית שכבר קיימת מתעדכנת אם ההתאחדות פרסמה שעה או מגרש.
+  4. משחק ש-ONE כבר מכיר: שעה/מגרש/תאריך מההתאחדות נכתבים ל-overrides.games[<id>] (האתר, היומן וההתראות מכבדים אותם).
 
 שימוש:  python3 galil_cup_sync.py [--dry] [--token TOKEN]
 הטוקן: --token, או משתנה הסביבה GITHUB_GALIL_TOKEN, או github_galil_token מתוך /config/secrets.yaml.
@@ -108,6 +109,14 @@ def fetch_ifa():
     return round_no, rows
 
 
+def one_local_date(iso_utc):
+    """תאריך מקומי (ישראל) של timestamp מ-ONE. ONE כותב 22:00Z (חורף) / 21:00Z (קיץ) = חצות מקומית של היום הבא."""
+    from datetime import datetime, timezone
+    dt = datetime.fromisoformat(iso_utc.replace("Z", "+00:00")).astimezone(timezone.utc)
+    off = 2 if (dt.month < 3 or dt.month > 10) else 3   # קירוב מספיק לתאריך (שעון חורף/קיץ)
+    return (dt + timedelta(hours=off)).date().isoformat()
+
+
 def near(a, b, days=10):
     return abs(date.fromisoformat(a) - date.fromisoformat(b)) <= timedelta(days=days)
 
@@ -133,6 +142,7 @@ def sync_site(site, round_no, rows, token):
     meta = json.loads(http(api, token=token, accept="application/vnd.github+json"))
     ovr = json.loads(base64.b64decode(meta["content"]).decode("utf-8"))
     extras = ovr.get("extraGames") or []
+    games_ovr = ovr.setdefault("games", {})
     one_games = [g for g in (data.get("cup") or {}).get("games", []) if not g.get("manual")]
     changed = False
     for r in ours:
@@ -142,9 +152,28 @@ def sync_site(site, round_no, rows, token):
         if opp_id < 0:
             out["skipped"].append(label + " (יריבה עוד לא ידועה)")
             continue
-        # ONE כבר מכיר את המשחק → אין מה להוסיף (fetch-data.js מוחק רשומות ידניות כאלה בעצמו)
-        if any(near(g["date"][:10], r["date"]) and (opp_id in (g["home"].get("pid"), g["away"].get("pid")) or core(opp) in (core(g["home"]["name"]), core(g["away"]["name"]))) for g in one_games):
-            out["skipped"].append(label + " (כבר ב-ONE)")
+        # ONE כבר מכיר את המשחק → לא מוסיפים רשומה ידנית, אבל כן מסנכרנים תאריך/שעה/מגרש מההתאחדות
+        # לתוך overrides.games[<id>] (ONE לא מפרסם מגרש, ולפעמים מציג תאריך ישן בלי שעה; GitHub חסום באתר ההתאחדות).
+        one = next((g for g in one_games if near(g["date"][:10], r["date"]) and (opp_id in (g["home"].get("pid"), g["away"].get("pid")) or core(opp) in (core(g["home"]["name"]), core(g["away"]["name"])))), None)
+        if one:
+            cur = games_ovr.get(one["id"]) or {}
+            upd = {}
+            if r["time"] and r["time"] != (cur.get("time") or ""):
+                upd["time"] = r["time"]
+            if r["venue"] and r["venue"] != (cur.get("venue") or ""):
+                upd["venue"] = r["venue"]
+            # תאריך: רק כשההתאחדות שונה מ-ONE (ONE מציג את יום ההגרלה המקורי עם 00:00 עד שמעדכנים)
+            if r["date"] != one_local_date(one["date"]) and r["date"] != cur.get("date"):
+                upd["date"] = r["date"]
+            elif r["date"] == one_local_date(one["date"]) and cur.get("date"):
+                upd["date"] = None   # ONE התיישר, אין צורך בדריסה
+            if upd:
+                cur.update(upd)
+                games_ovr[one["id"]] = {k: v for k, v in cur.items() if v}
+                changed = True
+                out["updated"].append(label + " (ONE) " + json.dumps(upd, ensure_ascii=False))
+            else:
+                out["skipped"].append(label + " (כבר ב-ONE)")
             continue
         ex = next((x for x in extras if x.get("cup") and x.get("date") and near(x["date"], r["date"]) and core(opp) in (core(x.get("home")), core(x.get("away")))), None)
         if ex:

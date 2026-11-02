@@ -33,7 +33,7 @@ input,textarea{width:100%;font:inherit;font-size:16px;color:var(--text);backgrou
 input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 textarea{min-height:64px;resize:vertical}
 .help{font-size:12.5px;color:var(--text-3);margin-top:4px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
 .btn{font:inherit;font-weight:600;font-size:15px;height:44px;padding:0 16px;border-radius:0;border:2px solid var(--text);background:var(--surface-2);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s var(--ease)}
 .btn:active{transform:scale(.97)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
@@ -206,6 +206,7 @@ function render(){
     return `<div class="game" data-id="${g.id}">
       <div class="t"><b>${esc(opp)}<span class="chip ${home?"":"away"}">${home?"בית":"חוץ"}</span>${done?`<span class="chip done">${g.home.goals}:${g.away.goals}</span>`:""}</b><span>${esc(heDate(d,{weekday:"short",day:"numeric",month:"short"}))} · ${g.cup?"גביע, "+esc(g.roundName||""):"מחזור "+g.round}</span></div>
       <div class="row">
+        <div><label>תאריך (אם זז)</label><input data-f="date" inputmode="numeric" placeholder="YYYY-MM-DD" value="${esc(ov.date||"")}" /></div>
         <div><label>שעה</label><input data-f="time" inputmode="text" placeholder="${apiTime(g.date)||"לא פורסמה"}" value="${esc(ov.time||"")}" /></div>
         <div><label>מגרש</label><input data-f="venue" placeholder="${home?esc(OVR.venues.home.name||"מגרש הבית"):"מגרש היריבה"}" value="${esc(ov.venue||"")}" /></div>
       </div>
@@ -225,6 +226,7 @@ function collect(){
   document.querySelectorAll("#games .game").forEach(el=>{
     const o={}; el.querySelectorAll("[data-f]").forEach(i=>{ const v=i.value.trim(); if(v) o[i.dataset.f]=v; });
     if(o.waze) okUrl(o.waze, el.querySelector(".t b")?.childNodes[0]?.textContent||"משחק");
+    if(o.date&&!/^\d{4}-\d{2}-\d{2}$/.test(o.date)) throw new Error("תאריך לא תקין: "+o.date+" (לדוגמה 2026-11-08)");
     if(o.time){ const m=/^(\d{1,2}):(\d{2})$/.exec(o.time); if(!m||+m[1]>23||+m[2]>59) throw new Error("שעה לא תקינה: "+o.time+" (לדוגמה 10:30)"); o.time=`${m[1].padStart(2,"0")}:${m[2]}`; }
     if(Object.keys(o).length) games[el.dataset.id]=o;
   });

@@ -34,7 +34,8 @@ function gameTime(g, ovr) {
   const d = new Date(g.date);
   const p = parts(d);
   const oneIso = `${p.year}-${p.month}-${p.day}`;
-  const iso = /^\d{4}-\d{2}-\d{2}$/.test(g.ifa?.date || "") ? g.ifa.date : oneIso;
+  const isoOk = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s || "");
+  const iso = isoOk(ovr?.games?.[g.id]?.date) ? ovr.games[g.id].date : isoOk(g.ifa?.date) ? g.ifa.date : oneIso;
   const t = validTime(ovr?.games?.[g.id]?.time);
   if (t) return { date: israelDate(iso, t[0], t[1]), tbd: false, iso };
   const oneTbd = (p.hour === "00" || p.hour === "01") && p.minute === "00";
