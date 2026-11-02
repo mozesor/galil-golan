@@ -784,9 +784,10 @@ async function pushSavePrefs(p){
   try{ await fetch(CFG.push.server+"/prefs",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({endpoint:sub.endpoint,prefs:p})}); }catch{}
 }
 async function pushSubscribe(){
-  const reg = await swReady(); if(!reg) return;
-  const perm = await Notification.requestPermission(); if(perm !== "granted") return renderPush();
-  const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64url(CFG.push.vapidPublicKey) });
+  // permission first, while the tap is still a "user gesture" (Safari drops the prompt after a long await)
+  const perm = await Notification.requestPermission(); if(perm !== "granted") throw new Error(perm === "denied" ? "ההתראות חסומות בהגדרות הטלפון לאתר/לדפדפן" : "לא אושר");
+  const reg = await swReady(); if(!reg) throw new Error("service worker לא נטען, נסו לרענן");
+  let sub; try{ sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64url(CFG.push.vapidPublicKey) }); }catch(e){ throw new Error("הדפדפן סירב לרשום: " + (e?.name || e)); }
   let r; try{ r = await fetch(CFG.push.server + "/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON(), prefs: pushPrefs() }) }); }catch(e){ await sub.unsubscribe(); throw e; }
   if(!r.ok){ await sub.unsubscribe(); throw new Error("subscribe " + r.status); }
   LS.set("gd-push", "on"); prefsOpen=true;
@@ -1113,7 +1114,7 @@ document.addEventListener("click",e=>{
     share(l.join("\n")).then(ok=>ok&&flash(a,"נשלח")); }
   else if(act==="install"&&installEvt){ installEvt.prompt(); installEvt.userChoice.finally(()=>{ installEvt=null; renderInstall(); }); }
   else if(act==="install-x"){ LS.set("gd-install-x",String(Date.now())); renderInstall(); }
-  else if(act==="push-on"){ a.disabled=true; pushSubscribe().catch(()=>{}).finally(()=>{ a.disabled=false; renderPush(); }); }
+  else if(act==="push-on"){ a.disabled=true; pushSubscribe().then(()=>renderPush()).catch(e=>{ a.disabled=false; const m=$("#pushSlot .m"); if(m){ m.textContent="לא הצליח: " + (e?.message || e) + ". אפשר לנסות שוב."; m.style.color="#C0392B"; } }); }
   else if(act==="push-prefs"){ prefsOpen=!prefsOpen; renderPush(); }
   else if(act==="push-off"){ pushUnsubscribe().finally(renderPush); }
   else if(act==="push-x"){ LS.set("gd-push-x",String(Date.now())); renderPush(); }
