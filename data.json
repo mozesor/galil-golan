@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 3
   },
-  "fetchedAt": "2026-11-03T12:33:21.531Z",
+  "fetchedAt": "2026-11-03T19:48:32.262Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -5527,12 +5527,12 @@
         "home": {
           "pid": 6161,
           "name": "ביתר נהריה צו פיוס",
-          "goals": null
+          "goals": 0
         },
         "away": {
           "pid": 1117,
           "name": "מכבי חיפה אפרים",
-          "goals": null
+          "goals": 13
         }
       },
       {
