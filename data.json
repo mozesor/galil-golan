@@ -1,17 +1,17 @@
 {
   "rankChange": {
-    "from": 5,
-    "to": 1,
+    "from": 1,
+    "to": 2,
     "points": 7,
     "round": 3,
-    "at": "2026-11-01T19:23:23.095Z"
+    "at": "2026-11-04T19:03:20.441Z"
   },
   "league": {
     "id": 1247,
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 3
   },
-  "fetchedAt": "2026-11-04T12:33:22.469Z",
+  "fetchedAt": "2026-11-04T19:03:20.442Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -422,18 +422,18 @@
       "id": "6acc331a9878872a9639eb1d",
       "date": "2026-11-04T16:00:00.000Z",
       "round": 3,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68ccd70e1b7b720e589fa325",
         "pid": 5942,
         "name": "מ.ס. כפר קמא",
-        "goals": null
+        "goals": 13
       },
       "away": {
         "id": "6acc331a9878872a9639eaff",
         "pid": 8403,
         "name": "מ.ס. קרית חיים צו פיוס",
-        "goals": null
+        "goals": 1
       }
     },
     {
@@ -2318,6 +2318,19 @@
   "standings": [
     {
       "rank": 1,
+      "id": "68ccd70e1b7b720e589fa325",
+      "name": "מ.ס. כפר קמא",
+      "games": 3,
+      "wins": 3,
+      "draws": 0,
+      "losses": 0,
+      "gf": 18,
+      "ga": 3,
+      "gd": 15,
+      "points": 9
+    },
+    {
+      "rank": 2,
       "id": "6ab9c8e2068ef07a1cafbb23",
       "name": "מ.כ.גליל גולן דרום צו פיוס",
       "games": 3,
@@ -2330,7 +2343,7 @@
       "points": 7
     },
     {
-      "rank": 2,
+      "rank": 3,
       "id": "68b5d99c1348fa686c13b7df",
       "name": "הפועל עירוני כרמיאל 2 צו פיוס",
       "games": 3,
@@ -2343,7 +2356,7 @@
       "points": 7
     },
     {
-      "rank": 3,
+      "rank": 4,
       "id": "68b5d99c1348fa686c13b80c",
       "name": "ביתר נהריה 2 צו פיוס",
       "games": 3,
@@ -2353,19 +2366,6 @@
       "gf": 23,
       "ga": 9,
       "gd": 14,
-      "points": 6
-    },
-    {
-      "rank": 4,
-      "id": "68ccd70e1b7b720e589fa325",
-      "name": "מ.ס. כפר קמא",
-      "games": 2,
-      "wins": 2,
-      "draws": 0,
-      "losses": 0,
-      "gf": 5,
-      "ga": 2,
-      "gd": 3,
       "points": 6
     },
     {
@@ -2487,19 +2487,6 @@
     },
     {
       "rank": 14,
-      "id": "6acc331a9878872a9639eaff",
-      "name": "מ.ס. קרית חיים צו פיוס",
-      "games": 1,
-      "wins": 0,
-      "draws": 0,
-      "losses": 1,
-      "gf": 0,
-      "ga": 13,
-      "gd": -13,
-      "points": 0
-    },
-    {
-      "rank": 15,
       "id": "68b5d99c1348fa686c13b8c4",
       "name": "מ.כ קרית חיים שמשון צו פיוס",
       "games": 2,
@@ -2512,7 +2499,7 @@
       "points": 0
     },
     {
-      "rank": 16,
+      "rank": 15,
       "id": "6ab9c8e2068ef07a1cafbba4",
       "name": "הפ' רמות מנשה מגידו 2",
       "games": 3,
@@ -2522,6 +2509,19 @@
       "gf": 0,
       "ga": 19,
       "gd": -19,
+      "points": 0
+    },
+    {
+      "rank": 16,
+      "id": "6acc331a9878872a9639eaff",
+      "name": "מ.ס. קרית חיים צו פיוס",
+      "games": 2,
+      "wins": 0,
+      "draws": 0,
+      "losses": 2,
+      "gf": 1,
+      "ga": 26,
+      "gd": -25,
       "points": 0
     }
   ],
