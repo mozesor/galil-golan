@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 3
   },
-  "fetchedAt": "2026-11-06T11:38:23.920Z",
+  "fetchedAt": "2026-11-06T11:53:19.004Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -5559,12 +5559,12 @@
         "home": {
           "pid": 7919,
           "name": "הפועל עמק הירדן 2",
-          "goals": null
+          "goals": 0
         },
         "away": {
           "pid": 8138,
           "name": "ה.מ יהודה ד' צו פיוס",
-          "goals": null
+          "goals": 13
         }
       },
       {
