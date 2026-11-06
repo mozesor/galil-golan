@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 3
   },
-  "fetchedAt": "2026-11-06T02:13:08.558Z",
+  "fetchedAt": "2026-11-06T11:38:23.920Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -5575,12 +5575,12 @@
         "home": {
           "pid": 3502,
           "name": "איחוד צעירי איכסל סמיר",
-          "goals": null
+          "goals": 3
         },
         "away": {
           "pid": 5873,
           "name": "הפ' הוד השרון 2",
-          "goals": null
+          "goals": 2
         }
       },
       {
