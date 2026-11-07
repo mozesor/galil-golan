@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 3
   },
-  "fetchedAt": "2026-11-07T11:43:22.053Z",
+  "fetchedAt": "2026-11-07T15:28:20.470Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -5751,12 +5751,12 @@
         "home": {
           "pid": 1850,
           "name": "מכבי חיפה שמואל",
-          "goals": null
+          "goals": 13
         },
         "away": {
           "pid": 5942,
           "name": "מ.ס. כפר קמא",
-          "goals": null
+          "goals": 0
         }
       },
       {
@@ -5767,12 +5767,12 @@
         "home": {
           "pid": 6932,
           "name": "הפועל רג צפון",
-          "goals": null
+          "goals": 1
         },
         "away": {
           "pid": 1243,
           "name": "מ.ס. אשדוד סילבן",
-          "goals": null
+          "goals": 0
         }
       },
       {
