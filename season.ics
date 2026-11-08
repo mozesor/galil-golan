@@ -61,7 +61,7 @@ BEGIN:VEVENT
 UID:6ae2ab77e10656c9d244d217@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:🏆 גביע: גליל גולן דרום נגד הפ׳ מרמור
- ק רחובות מערב (חוץ)
+ ק רחובות מערב 2:1 (חוץ)
 DTSTART:20261108T140000Z
 DTEND:20261108T153000Z
 LOCATION:רחובות שעריים וייסגל סינטטי
@@ -70,11 +70,6 @@ DESCRIPTION:גביע\, סיבוב ג\nלפי אתר ההתאחדות: המ
  ן דובנוב 47\, רחובות\nhttps://waze.com/ul?q=%D7%A9%D7%9E%D7%A
  2%D7%95%D7%9F%20%D7%93%D7%95%D7%91%D7%A0%D7%95%D7%91%2047%20%D7%A8%D7%97%D
  7%95%D7%91%D7%95%D7%AA&navigate=yes
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:משחק בעוד שעתיים
-TRIGGER:-PT2H
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:6acc331a9878872a9639eb31@galil-golan-darom

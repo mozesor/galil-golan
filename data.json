@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 3
   },
-  "fetchedAt": "2026-11-08T12:28:23.145Z",
+  "fetchedAt": "2026-11-08T17:28:22.615Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -2573,18 +2573,18 @@
         "id": "6ae2ab77e10656c9d244d217",
         "date": "2026-11-08T14:00:00.000Z",
         "round": 3,
-        "finished": false,
+        "finished": true,
         "home": {
           "id": "6ab9c8e2068ef07a1cafbb0e",
           "pid": 4860,
           "name": "הפ' מרמורק רחובות מערב צו פיוס",
-          "goals": null
+          "goals": 1
         },
         "away": {
           "id": "6ab9c8e2068ef07a1cafbb23",
           "pid": 8657,
           "name": "מ.כ.גליל גולן דרום צו פיוס",
-          "goals": null
+          "goals": 2
         },
         "roundName": "סיבוב ג",
         "cup": true
@@ -5847,12 +5847,12 @@
         "home": {
           "pid": 4860,
           "name": "הפ' מרמורק רחובות מערב צו פיוס",
-          "goals": null
+          "goals": 1
         },
         "away": {
           "pid": 8657,
           "name": "מ.כ.גליל גולן דרום צו פיוס",
-          "goals": null
+          "goals": 2
         }
       },
       {
