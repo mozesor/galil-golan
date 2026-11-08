@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 28/10/2026: גשר בין אתר ההתאחדות לאתרי ההורים של גליל גולן (דרום + צפון).
+08/11/2026: גם אתר שלישי, הפועל פ"ת צפון ילדים ג׳ (גביע ילדים ג׳, national_cup_id=592). לכל אתר מזהה גביע משלו.
 
 ההתאחדות מפרסמת הגרלות גביע (ושעות/מגרשים) ימים לפני ש-ONE טוען אותן, ואתר ההתאחדות
 חוסם את שרתי GitHub. הסקריפט רץ מהבית (Home Assistant, shell_command) פעמיים ביום:
@@ -27,11 +28,12 @@ import urllib.error
 from datetime import date, timedelta
 from html import unescape
 
-CUP_URL = "https://www.football.org.il/national-cup/?national_cup_id=591&season_id=28"
+CUP_URL = "https://www.football.org.il/national-cup/?national_cup_id={cup}&season_id=28"   # 591 ילדים ב׳, 592 ילדים ג׳
 UA = "Mozilla/5.0 (compatible; galil-golan-darom parents site; +https://mozesor.github.io/galil-golan/)"
 SITES = [
-    {"name": "דרום", "repo": "mozesor/galil-golan", "team": 8657},
-    {"name": "צפון", "repo": "mozesor/galil-golan-tzafon", "team": 3674},
+    {"name": "דרום", "repo": "mozesor/galil-golan", "team": 8657, "cup": 591},
+    {"name": "צפון", "repo": "mozesor/galil-golan-tzafon", "team": 3674, "cup": 591},
+    {"name": "הפועל פ\"ת", "repo": "mozesor/hapoel-pt-tzafon", "team": 6174, "cup": 592},
 ]
 LETTERS = {1: "א", 2: "ב", 3: "ג", 4: "ד", 5: "ה", 6: "ו", 7: "ז", 8: "ח", 9: "ט", 10: "י"}
 DRY = "--dry" in sys.argv
@@ -78,8 +80,8 @@ def clean(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
-def fetch_ifa():
-    html = http(CUP_URL)
+def fetch_ifa(cup_id):
+    html = http(CUP_URL.format(cup=cup_id))
     m = re.search(r"id='ddlRoundsLabel'>\s*מחזור\s+(\d+)", html)
     round_no = int(m.group(1)) if m else 0
     rows = []
@@ -225,15 +227,24 @@ def main():
     if not DRY and not token:
         print(json.dumps({"error": "no token"}, ensure_ascii=False))
         return 2
-    try:
-        round_no, rows = fetch_ifa()
-    except Exception as e:  # noqa
-        print(json.dumps({"error": f"ifa: {e}"}, ensure_ascii=False))
-        return 1
-    res = {"round": round_no, "rows": len(rows), "sites": []}
-    for s in SITES:
+    # כל גביע נמשך פעם אחת, גם אם כמה אתרים משתמשים בו
+    cups = {}
+    for cup_id in sorted({s["cup"] for s in SITES}):
         try:
-            res["sites"].append(sync_site(s, round_no, rows, token))
+            cups[cup_id] = fetch_ifa(cup_id)
+        except Exception as e:  # noqa
+            cups[cup_id] = e
+    if all(isinstance(v, Exception) for v in cups.values()):
+        print(json.dumps({"error": "ifa: " + "; ".join(str(v) for v in cups.values())}, ensure_ascii=False))
+        return 1
+    res = {"rounds": {str(k): v[0] for k, v in cups.items() if not isinstance(v, Exception)}, "rows": sum(len(v[1]) for v in cups.values() if not isinstance(v, Exception)), "sites": []}
+    for s in SITES:
+        c = cups[s["cup"]]
+        if isinstance(c, Exception):
+            res["sites"].append({"site": s["name"], "error": f"ifa: {c}"})
+            continue
+        try:
+            res["sites"].append(sync_site(s, c[0], c[1], token))
         except Exception as e:  # noqa
             res["sites"].append({"site": s["name"], "error": str(e)})
     res["changes"] = sum(len(x.get("added", [])) + len(x.get("updated", [])) for x in res["sites"])
