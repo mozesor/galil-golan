@@ -9,9 +9,9 @@
   "league": {
     "id": 1247,
     "name": "ליגת ילדים ב' מפרץ",
-    "currentRound": 3
+    "currentRound": 4
   },
-  "fetchedAt": "2026-11-08T19:18:19.100Z",
+  "fetchedAt": "2026-11-09T05:03:20.151Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -5895,12 +5895,12 @@
         "home": {
           "pid": 1342,
           "name": "מכבי עירוני נתיבות צו פיוס",
-          "goals": null
+          "goals": 1
         },
         "away": {
           "pid": 3756,
           "name": "מ.ס. שפרעם",
-          "goals": null
+          "goals": 2
         }
       },
       {
