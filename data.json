@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-09T12:33:26.245Z",
+  "fetchedAt": "2026-11-09T20:33:28.515Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -8071,12 +8071,12 @@
         "home": {
           "pid": 1106,
           "name": "מכבי עמק חפר צו פיוס",
-          "goals": null
+          "goals": 0
         },
         "away": {
           "pid": 6103,
           "name": "מ.כ. נוה יוסף",
-          "goals": null
+          "goals": 1
         }
       },
       {
@@ -8087,12 +8087,12 @@
         "home": {
           "pid": 5671,
           "name": "מכבי ע. כפר יונה 2 צו פיוס",
-          "goals": null
+          "goals": 1
         },
         "away": {
           "pid": 3377,
           "name": "ביתר י-ם צו פיוס",
-          "goals": null
+          "goals": 3
         }
       },
       {
