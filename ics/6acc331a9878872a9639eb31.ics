@@ -11,11 +11,16 @@ BEGIN:VEVENT
 UID:6acc331a9878872a9639eb31@galil-golan-darom
 DTSTAMP:20260101T000000Z
 SUMMARY:⚽ גליל גולן דרום נגד הפועל מטה אשר 2 (
- בית) | מועד משוער
-DTSTART;VALUE=DATE:20261114
-DTEND;VALUE=DATE:20261115
-LOCATION:צפת
-DESCRIPTION:מחזור 4\nמועד משוער: השעה טרם פורסמה
-  והיום עוד יכול לזוז. היומן יתעדכן לבד
+ בית)
+DTSTART:20261113T080000Z
+DTEND:20261113T093000Z
+LOCATION:אצטדיון צפת
+DESCRIPTION:מחזור 4\nלפי אתר ההתאחדות: המשחק הוק
+ דם ליום שישי 13/11 בשעה 10:00
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:משחק בעוד שעתיים
+TRIGGER:-PT2H
+END:VALARM
 END:VEVENT
 END:VCALENDAR
