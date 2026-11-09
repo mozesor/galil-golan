@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-09T05:03:20.151Z",
+  "fetchedAt": "2026-11-09T12:33:26.245Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -2311,6 +2311,2166 @@
         "id": "68b5d99c1348fa686c13b7df",
         "pid": 7575,
         "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae099",
+      "date": "2027-03-05T22:00:00.000Z",
+      "round": 16,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae09a",
+      "date": "2027-03-05T22:00:00.000Z",
+      "round": 16,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae09b",
+      "date": "2027-03-05T22:00:00.000Z",
+      "round": 16,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae09c",
+      "date": "2027-03-05T22:00:00.000Z",
+      "round": 16,
+      "finished": false,
+      "home": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae09d",
+      "date": "2027-03-05T22:00:00.000Z",
+      "round": 16,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae09e",
+      "date": "2027-03-05T22:00:00.000Z",
+      "round": 16,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0a0",
+      "date": "2027-03-05T22:00:00.000Z",
+      "round": 16,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0a1",
+      "date": "2027-03-05T22:00:00.000Z",
+      "round": 16,
+      "finished": false,
+      "home": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0a3",
+      "date": "2027-03-12T22:00:00.000Z",
+      "round": 17,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0a4",
+      "date": "2027-03-12T22:00:00.000Z",
+      "round": 17,
+      "finished": false,
+      "home": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0a5",
+      "date": "2027-03-12T22:00:00.000Z",
+      "round": 17,
+      "finished": false,
+      "home": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0a6",
+      "date": "2027-03-12T22:00:00.000Z",
+      "round": 17,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0a7",
+      "date": "2027-03-12T22:00:00.000Z",
+      "round": 17,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0a9",
+      "date": "2027-03-12T22:00:00.000Z",
+      "round": 17,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0aa",
+      "date": "2027-03-12T22:00:00.000Z",
+      "round": 17,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0ab",
+      "date": "2027-03-12T22:00:00.000Z",
+      "round": 17,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0ad",
+      "date": "2027-03-19T22:00:00.000Z",
+      "round": 18,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0ae",
+      "date": "2027-03-19T22:00:00.000Z",
+      "round": 18,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0af",
+      "date": "2027-03-19T22:00:00.000Z",
+      "round": 18,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0b0",
+      "date": "2027-03-19T22:00:00.000Z",
+      "round": 18,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0b1",
+      "date": "2027-03-19T22:00:00.000Z",
+      "round": 18,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0b2",
+      "date": "2027-03-19T22:00:00.000Z",
+      "round": 18,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0b3",
+      "date": "2027-03-19T22:00:00.000Z",
+      "round": 18,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0b4",
+      "date": "2027-03-19T22:00:00.000Z",
+      "round": 18,
+      "finished": false,
+      "home": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0b6",
+      "date": "2027-03-26T21:00:00.000Z",
+      "round": 19,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0b7",
+      "date": "2027-03-26T21:00:00.000Z",
+      "round": 19,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0b8",
+      "date": "2027-03-26T21:00:00.000Z",
+      "round": 19,
+      "finished": false,
+      "home": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0b9",
+      "date": "2027-03-26T21:00:00.000Z",
+      "round": 19,
+      "finished": false,
+      "home": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0ba",
+      "date": "2027-03-26T21:00:00.000Z",
+      "round": 19,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0bc",
+      "date": "2027-03-26T21:00:00.000Z",
+      "round": 19,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0bd",
+      "date": "2027-03-26T21:00:00.000Z",
+      "round": 19,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9c9b95b1a6147bae0be",
+      "date": "2027-03-26T21:00:00.000Z",
+      "round": 19,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0c0",
+      "date": "2027-04-02T21:00:00.000Z",
+      "round": 20,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0c1",
+      "date": "2027-04-02T21:00:00.000Z",
+      "round": 20,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0c2",
+      "date": "2027-04-02T21:00:00.000Z",
+      "round": 20,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0c3",
+      "date": "2027-04-02T21:00:00.000Z",
+      "round": 20,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0c4",
+      "date": "2027-04-02T21:00:00.000Z",
+      "round": 20,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0c5",
+      "date": "2027-04-02T21:00:00.000Z",
+      "round": 20,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0c6",
+      "date": "2027-04-02T21:00:00.000Z",
+      "round": 20,
+      "finished": false,
+      "home": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0c7",
+      "date": "2027-04-02T21:00:00.000Z",
+      "round": 20,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0c9",
+      "date": "2027-04-05T21:00:00.000Z",
+      "round": 21,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0ca",
+      "date": "2027-04-05T21:00:00.000Z",
+      "round": 21,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0cb",
+      "date": "2027-04-05T21:00:00.000Z",
+      "round": 21,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0cc",
+      "date": "2027-04-05T21:00:00.000Z",
+      "round": 21,
+      "finished": false,
+      "home": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0cd",
+      "date": "2027-04-05T21:00:00.000Z",
+      "round": 21,
+      "finished": false,
+      "home": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0ce",
+      "date": "2027-04-05T21:00:00.000Z",
+      "round": 21,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0cf",
+      "date": "2027-04-05T21:00:00.000Z",
+      "round": 21,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0d1",
+      "date": "2027-04-05T21:00:00.000Z",
+      "round": 21,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0d3",
+      "date": "2027-04-09T21:00:00.000Z",
+      "round": 22,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0d4",
+      "date": "2027-04-09T21:00:00.000Z",
+      "round": 22,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0d5",
+      "date": "2027-04-09T21:00:00.000Z",
+      "round": 22,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0d6",
+      "date": "2027-04-09T21:00:00.000Z",
+      "round": 22,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0d7",
+      "date": "2027-04-09T21:00:00.000Z",
+      "round": 22,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0d8",
+      "date": "2027-04-09T21:00:00.000Z",
+      "round": 22,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0d9",
+      "date": "2027-04-09T21:00:00.000Z",
+      "round": 22,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0da",
+      "date": "2027-04-09T21:00:00.000Z",
+      "round": 22,
+      "finished": false,
+      "home": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0dc",
+      "date": "2027-04-16T21:00:00.000Z",
+      "round": 23,
+      "finished": false,
+      "home": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0dd",
+      "date": "2027-04-16T21:00:00.000Z",
+      "round": 23,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0de",
+      "date": "2027-04-16T21:00:00.000Z",
+      "round": 23,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0df",
+      "date": "2027-04-16T21:00:00.000Z",
+      "round": 23,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0e0",
+      "date": "2027-04-16T21:00:00.000Z",
+      "round": 23,
+      "finished": false,
+      "home": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0e1",
+      "date": "2027-04-16T21:00:00.000Z",
+      "round": 23,
+      "finished": false,
+      "home": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0e2",
+      "date": "2027-04-16T21:00:00.000Z",
+      "round": 23,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0e3",
+      "date": "2027-04-16T21:00:00.000Z",
+      "round": 23,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0e5",
+      "date": "2027-04-23T21:00:00.000Z",
+      "round": 24,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0e7",
+      "date": "2027-04-23T21:00:00.000Z",
+      "round": 24,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0e8",
+      "date": "2027-04-23T21:00:00.000Z",
+      "round": 24,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      },
+      "away": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0e9",
+      "date": "2027-04-23T21:00:00.000Z",
+      "round": 24,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0ea",
+      "date": "2027-04-23T21:00:00.000Z",
+      "round": 24,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0eb",
+      "date": "2027-04-23T21:00:00.000Z",
+      "round": 24,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0ec",
+      "date": "2027-04-23T21:00:00.000Z",
+      "round": 24,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cab95b1a6147bae0ed",
+      "date": "2027-04-23T21:00:00.000Z",
+      "round": 24,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0ef",
+      "date": "2027-04-30T21:00:00.000Z",
+      "round": 25,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0f0",
+      "date": "2027-04-30T21:00:00.000Z",
+      "round": 25,
+      "finished": false,
+      "home": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0f1",
+      "date": "2027-04-30T21:00:00.000Z",
+      "round": 25,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0f2",
+      "date": "2027-04-30T21:00:00.000Z",
+      "round": 25,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0f3",
+      "date": "2027-04-30T21:00:00.000Z",
+      "round": 25,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0f4",
+      "date": "2027-04-30T21:00:00.000Z",
+      "round": 25,
+      "finished": false,
+      "home": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0f5",
+      "date": "2027-04-30T21:00:00.000Z",
+      "round": 25,
+      "finished": false,
+      "home": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0f6",
+      "date": "2027-04-30T21:00:00.000Z",
+      "round": 25,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0f8",
+      "date": "2027-05-07T21:00:00.000Z",
+      "round": 26,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0f9",
+      "date": "2027-05-07T21:00:00.000Z",
+      "round": 26,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      },
+      "away": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0fb",
+      "date": "2027-05-07T21:00:00.000Z",
+      "round": 26,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0fc",
+      "date": "2027-05-07T21:00:00.000Z",
+      "round": 26,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0fd",
+      "date": "2027-05-07T21:00:00.000Z",
+      "round": 26,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0fe",
+      "date": "2027-05-07T21:00:00.000Z",
+      "round": 26,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae0ff",
+      "date": "2027-05-07T21:00:00.000Z",
+      "round": 26,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae100",
+      "date": "2027-05-07T21:00:00.000Z",
+      "round": 26,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae102",
+      "date": "2027-05-14T21:00:00.000Z",
+      "round": 27,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae103",
+      "date": "2027-05-14T21:00:00.000Z",
+      "round": 27,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae104",
+      "date": "2027-05-14T21:00:00.000Z",
+      "round": 27,
+      "finished": false,
+      "home": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae105",
+      "date": "2027-05-14T21:00:00.000Z",
+      "round": 27,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae106",
+      "date": "2027-05-14T21:00:00.000Z",
+      "round": 27,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae107",
+      "date": "2027-05-14T21:00:00.000Z",
+      "round": 27,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae108",
+      "date": "2027-05-14T21:00:00.000Z",
+      "round": 27,
+      "finished": false,
+      "home": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae109",
+      "date": "2027-05-14T21:00:00.000Z",
+      "round": 27,
+      "finished": false,
+      "home": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae10b",
+      "date": "2027-05-17T21:00:00.000Z",
+      "round": 28,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae10c",
+      "date": "2027-05-17T21:00:00.000Z",
+      "round": 28,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae10d",
+      "date": "2027-05-17T21:00:00.000Z",
+      "round": 28,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae10f",
+      "date": "2027-05-17T21:00:00.000Z",
+      "round": 28,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae110",
+      "date": "2027-05-17T21:00:00.000Z",
+      "round": 28,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae111",
+      "date": "2027-05-17T21:00:00.000Z",
+      "round": 28,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae112",
+      "date": "2027-05-17T21:00:00.000Z",
+      "round": 28,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9cbb95b1a6147bae113",
+      "date": "2027-05-17T21:00:00.000Z",
+      "round": 28,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae115",
+      "date": "2027-05-21T21:00:00.000Z",
+      "round": 29,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae116",
+      "date": "2027-05-21T21:00:00.000Z",
+      "round": 29,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae117",
+      "date": "2027-05-21T21:00:00.000Z",
+      "round": 29,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae118",
+      "date": "2027-05-21T21:00:00.000Z",
+      "round": 29,
+      "finished": false,
+      "home": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae119",
+      "date": "2027-05-21T21:00:00.000Z",
+      "round": 29,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae11a",
+      "date": "2027-05-21T21:00:00.000Z",
+      "round": 29,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae11b",
+      "date": "2027-05-21T21:00:00.000Z",
+      "round": 29,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae11c",
+      "date": "2027-05-21T21:00:00.000Z",
+      "round": 29,
+      "finished": false,
+      "home": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      },
+      "away": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae11e",
+      "date": "2027-05-28T21:00:00.000Z",
+      "round": 30,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae11f",
+      "date": "2027-05-28T21:00:00.000Z",
+      "round": 30,
+      "finished": false,
+      "home": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b7aa",
+        "pid": 5104,
+        "name": "מכבי סקציה מעלות תרשיחא צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae120",
+      "date": "2027-05-28T21:00:00.000Z",
+      "round": 30,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae121",
+      "date": "2027-05-28T21:00:00.000Z",
+      "round": 30,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b87b",
+        "pid": 2410,
+        "name": "מרכז קהילתי גולן קצרין צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae123",
+      "date": "2027-05-28T21:00:00.000Z",
+      "round": 30,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae124",
+      "date": "2027-05-28T21:00:00.000Z",
+      "round": 30,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd70a1b7b720e589fa01c",
+        "pid": 8512,
+        "name": "מכבי עירוני קרית אתא 3",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae125",
+      "date": "2027-05-28T21:00:00.000Z",
+      "round": 30,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
+        "goals": null
+      }
+    },
+    {
+      "id": "6af1b9ccb95b1a6147bae126",
+      "date": "2027-05-28T21:00:00.000Z",
+      "round": 30,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
         "goals": null
       }
     }
@@ -5984,6 +8144,22 @@
         }
       },
       {
+        "id": "6aed3783b95b1a6147ba64a1",
+        "date": "2026-11-11T18:00:00.000Z",
+        "round": 3,
+        "roundName": "סיבוב ג",
+        "home": {
+          "pid": 3030,
+          "name": "הפועל ברנר צו פיוס",
+          "goals": null
+        },
+        "away": {
+          "pid": 2757,
+          "name": "הפ'חולון צפרירים מא",
+          "goals": null
+        }
+      },
+      {
         "id": "6ae2ab77e10656c9d244d215",
         "date": "2026-11-11T18:45:00.000Z",
         "round": 3,
@@ -6012,22 +8188,6 @@
         "away": {
           "pid": 5119,
           "name": "ביתר ע.מעלה אדומים צו פיוס",
-          "goals": null
-        }
-      },
-      {
-        "id": "6aed3783b95b1a6147ba64a1",
-        "date": "2026-11-13T22:00:00.000Z",
-        "round": 3,
-        "roundName": "סיבוב ג",
-        "home": {
-          "pid": 3030,
-          "name": "הפועל ברנר צו פיוס",
-          "goals": null
-        },
-        "away": {
-          "pid": 2757,
-          "name": "הפ'חולון צפרירים מא",
           "goals": null
         }
       },

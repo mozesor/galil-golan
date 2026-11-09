@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//galil-golan-darom//he
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:גליל גולן דרום
+X-WR-TIMEZONE:Asia/Jerusalem
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:6af1b9ccb95b1a6147bae117@galil-golan-darom
+DTSTAMP:20260101T000000Z
+SUMMARY:⚽ גליל גולן דרום נגד מכבי עירוני קרי
+ ת אתא 3 (חוץ) | מועד משוער
+DTSTART;VALUE=DATE:20270522
+DTEND;VALUE=DATE:20270523
+DESCRIPTION:מחזור 29\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
+END:VEVENT
+END:VCALENDAR
