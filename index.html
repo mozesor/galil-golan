@@ -931,8 +931,9 @@ function cupStatus(){
   if(next) return `${heb(next.roundName||"")}: נגד ${shortName((isMe(next.home)?next.away:next.home).name)}`;
   if(!last) return "טרם התחיל";
   if(outcome(last,ME.id)==="L") return `הודחנו ב${heb(last.roundName||"גביע")}`;
-  return `עלינו מ${heb(last.roundName||"הסיבוב")}. ההגרלה הבאה טרם פורסמה`;
+  return `עברנו את ${heb(last.roundName||"הסיבוב")}. ההגרלה ל${heb(nextRoundName(last.roundName))} טרם פורסמה`;
 }
+const nextRoundName=n=>{ const m=/^סיבוב ([א-י])/.exec(String(n||"")), L="אבגדהוזחטי", i=m?L.indexOf(m[1]):-1; return i>=0&&i<L.length-1?`סיבוב ${L[i+1]}`:"הסיבוב הבא"; };
 function cupHtml(){
   if(!CUP.length&&!CUPALL.length) return `<div class="empty"><b>אין משחקי גביע</b>הקבוצה עוד לא שובצה בגביע העונה.</div>`;
   const ours=CUP.length?`<div class="cupHead"><b>${esc(heb(DATA.cup?.name||"גביע"))}</b><span>${esc(cupStatus())}</span></div><div class="list">${CUP.map((g,i)=>ticket(g,i)).join("")}</div>`:"";
