@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8765", "--bind", "127.0.0.1"],
       "port": 8765
+    },
+    {
+      "name": "hapoel-pt",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8011", "--bind", "127.0.0.1", "--directory", "C:/Users/mozes/OneDrive/שולחן העבודה/HapoelPTTzafon"],
+      "port": 8011
     }
   ]
 }
