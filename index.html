@@ -340,6 +340,29 @@ svg{display:block}
 .tbl tr.me .rkw span{color:var(--ink);font-weight:700}
 .tbl tr.me td.l{font-weight:600}
 .tblNote{font-size:13px;color:var(--muted);margin:12px 0 0;line-height:1.5}
+/* ---------- numbers (stats under the table) ---------- */
+.stats{margin-top:8px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{border:2px solid var(--ink);background:var(--surface);padding:12px 12px 10px;display:flex;flex-direction:column;gap:2px;min-height:96px}
+.kpi.me{background:var(--club);color:#FAFBFE;border-color:var(--club)}
+.kpi .v{font-family:var(--display);font-weight:700;font-size:44px;line-height:.9}
+.kpi .v small{font-size:22px;font-weight:400;margin-inline-start:4px}
+.kpi .k{font-weight:600;font-size:14px}
+.kpi .s{font-size:12px;color:var(--muted);line-height:1.35}
+.kpi.me .s{color:rgba(250,251,254,.8)}
+.rankList{border:2px solid var(--ink);background:var(--surface);margin-bottom:12px}
+.rankList h3{font-family:var(--display);font-weight:700;font-size:24px;line-height:1;margin:0;padding:10px 12px 8px;border-bottom:2px solid var(--ink);display:flex;justify-content:space-between;align-items:baseline}
+.rankList h3 small{font-family:var(--body);font-weight:500;font-size:12px;color:var(--muted)}
+.rankList .r{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:15px}
+.rankList .r:last-child{border-bottom:0}
+.rankList .r.me{background:var(--club);color:#FAFBFE;font-weight:600}
+.rankList .r .i{font-family:var(--display);font-weight:400;font-size:24px;line-height:.9;width:26px;color:var(--muted);text-align:center}
+.rankList .r.me .i{color:#FAFBFE}
+.rankList .r .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rankList .r .x{font-family:var(--display);font-weight:700;font-size:26px;line-height:.9}
+.rankList .gap{padding:4px 12px;font-size:12px;color:var(--muted);text-align:center;border-bottom:1px solid var(--line)}
+.statLine{font-size:14px;line-height:1.5;padding:10px 12px;border:2px solid var(--ink);background:var(--surface);margin-bottom:10px}
+.statLine b{font-weight:600}
 
 /* ---------- ticker ---------- */
 .ticker{display:grid;grid-template-columns:auto 1fr;align-items:center;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);background:var(--surface);margin-top:28px;overflow:hidden;height:48px}
@@ -475,6 +498,8 @@ svg{display:block}
         <tbody id="tblBody"></tbody>
       </table>
       <div class="tblNote" id="tblNote"></div>
+      <h2 class="h2">מספרים<small id="statsSub"></small></h2>
+      <div class="stats" id="stats"></div>
     </section>
 
     <section class="view pad" id="v-cal" aria-label="יומן">
@@ -972,6 +997,55 @@ function renderTable(first){
   $("#tblSub").textContent=meRow&&meRow.games?(meRow.rank===1?"אנחנו בראש הטבלה":gap===0?`מקום ${meRow.rank} · שווים בנקודות למקום הראשון`:`מקום ${meRow.rank} · ${gap} נק׳ מהמקום הראשון`):`${now.length} קבוצות, העונה מתחילה`;
   $("#tblNote").textContent=(before?`החצים מראים שינוי מקום לעומת סוף מחזור ${lr-1}. `:"")+"לחיצה על קבוצה פותחת את הכרטיס שלה.";
   if(first){ const tr=$("#tblBody tr.me"); if(tr&&tr.getBoundingClientRect().bottom>innerHeight-80) tr.scrollIntoView({block:"center",behavior:"instant"}); }
+  renderStats();
+}
+
+/* ---------- numbers: attack/defence ranks in the league, our place among every team in the cup, season records ---------- */
+const f1=n=>(Math.round(n*10)/10).toLocaleString("he-IL");
+function renderStats(){
+  const el=$("#stats"); if(!el) return;
+  const lg=DATA.games.filter(g=>played(g)&&!g.manual);
+  const rows=computeTable().filter(r=>r.games>0);
+  const meRow=rows.find(r=>r.id===ME.id);
+  if(!meRow||lg.length<3){ $("#statsSub").textContent=""; el.innerHTML=`<div class="statLine">המספרים יופיעו אחרי כמה מחזורים, כשיהיה על מה להסתכל.</div>`; return; }
+  $("#statsSub").textContent=`אחרי ${meRow.games} משחקים`;
+  const nm=r=>r.id===ME.id?CFG.team.displayName:shortName(r.name);
+  const rank=(arr,key,desc=true)=>{ const a=[...arr].sort((x,y)=>desc?key(y)-key(x):key(x)-key(y)); return {list:a,pos:a.findIndex(r=>r.id===ME.id)+1}; };
+  const att=rank(rows,r=>r.gf/r.games), def=rank(rows,r=>r.ga/r.games,false), ppg=rank(rows,r=>r.points/r.games);
+  const ord=n=>n===1?"ראשונים":n===2?"שניים":n===3?"שלישיים":`מקום ${n}`;
+  const margin=g=>Math.abs(g.home.goals-g.away.goals), total=g=>g.home.goals+g.away.goals;
+  const myLg=lg.filter(mine), myWins=myLg.filter(g=>outcome(g,ME.id)==="W");
+  const bestWin=myWins.length?myWins.reduce((a,b)=>margin(b)>margin(a)?b:a):null;
+  const biggest=lg.reduce((a,b)=>margin(b)>margin(a)?b:a), highest=lg.reduce((a,b)=>total(b)>total(a)?b:a);
+  const cleanSheets=myLg.filter(g=>(isMe(g.home)?g.away.goals:g.home.goals)===0).length;
+  const res=g=>`${esc(tname(g.home))} ${g.home.goals}:${g.away.goals} ${esc(tname(g.away))}`;
+  const unbeaten=rows.filter(r=>r.losses===0).length;
+  let kpis=`<div class="kpis">
+    <div class="kpi ${att.pos===1?"me":""}"><div class="v">${f1(meRow.gf/meRow.games)}</div><div class="k">שערים למשחק</div><div class="s">${ord(att.pos)} בליגה מתוך ${rows.length}</div></div>
+    <div class="kpi ${def.pos===1?"me":""}"><div class="v">${f1(meRow.ga/meRow.games)}</div><div class="k">ספיגות למשחק</div><div class="s">${ord(def.pos)} בליגה · ${cleanSheets?`${cleanSheets} שערים נקיים`:"עוד בלי שער נקי"}</div></div>
+    <div class="kpi"><div class="v">${f1(meRow.points/meRow.games)}</div><div class="k">נקודות למשחק</div><div class="s">${ord(ppg.pos)} בליגה${meRow.losses===0?` · בלי הפסד (${unbeaten===1?"היחידים":`אחת מ-${unbeaten}`})`:""}</div></div>
+    ${bestWin?`<div class="kpi"><div class="v">${Math.max(bestWin.home.goals,bestWin.away.goals)}:${Math.min(bestWin.home.goals,bestWin.away.goals)}</div><div class="k">הניצחון הגדול שלנו</div><div class="s">נגד ${esc(shortName((isMe(bestWin.home)?bestWin.away:bestWin.home).name))}, מחזור ${bestWin.round}</div></div>`:`<div class="kpi"><div class="v">${meRow.gf}</div><div class="k">שערים העונה</div><div class="s">בליגה בלבד</div></div>`}
+  </div>`;
+  const list=(title,sub,r,fmt)=>{ const top=r.list.slice(0,3), inTop=r.pos&&r.pos<=3, extra=!inTop&&r.pos?r.list[r.pos-1]:null;
+    return `<div class="rankList"><h3>${title}<small>${sub}</small></h3>${top.map((x,i)=>`<div class="r ${x.id===ME.id?"me":""}"><span class="i">${i+1}</span><span class="n">${esc(nm(x))}</span><span class="x">${fmt(x)}</span></div>`).join("")}${extra?`<div class="gap">⋯</div><div class="r me"><span class="i">${r.pos}</span><span class="n">${esc(nm(extra))}</span><span class="x">${fmt(extra)}</span></div>`:""}</div>`; };
+  let lists=list("התקפה","ממוצע שערים למשחק",att,r=>f1(r.gf/r.games))+list("הגנה","ממוצע ספיגות למשחק",def,r=>f1(r.ga/r.games));
+  let lines=`<div class="statLine"><b>שיאי הליגה.</b> הניצחון הגדול: ${res(biggest)} (מחזור ${biggest.round}). הכי הרבה שערים במשחק: ${res(highest)}, ${total(highest)} שערים. ממוצע הליגה: ${f1(lg.reduce((a,g)=>a+total(g),0)/lg.length)} שערים למשחק.</div>`;
+  const cup=CUPALL.filter(g=>played(g));
+  if(cup.length>=20){
+    const t=new Map(); const key=x=>x.pid??x.name;
+    for(const g of cup) for(const [a,b] of [[g.home,g.away],[g.away,g.home]]){ const k=key(a); if(!t.has(k)) t.set(k,{k,name:a.name,me:isMe(a),gp:0,gf:0,ga:0}); const r=t.get(k); r.gp++; r.gf+=a.goals; r.ga+=b.goals; }
+    const all=[...t.values()], my=all.find(r=>r.me);
+    if(my){
+      const byGf=[...all].sort((a,b)=>b.gf-a.gf||a.ga-b.ga), pos=byGf.findIndex(r=>r.me)+1;
+      const bigCup=cup.reduce((a,b)=>margin(b)>margin(a)?b:a);
+      const fewer=all.filter(r=>r.gp>=my.gp&&r.ga<my.ga).length;
+      kpis+=`<div class="kpis"><div class="kpi ${pos<=3?"me":""}"><div class="v">${pos}</div><div class="k">בארץ בשערים בגביע</div><div class="s">${my.gf} שערים ב-${my.gp} משחקים, מתוך ${all.length} קבוצות</div></div><div class="kpi"><div class="v">${my.ga}</div><div class="k">ספיגות בגביע</div><div class="s">${fewer===0?`אף קבוצה עם ${my.gp} משחקים לא ספגה פחות`:`רק ${fewer} קבוצות עם ${my.gp} משחקים ספגו פחות`}</div></div></div>`;
+      const top=byGf.slice(0,5); const inTop=pos<=5;
+      lists+=`<div class="rankList"><h3>מלכות השערים בגביע<small>${all.length} קבוצות מכל הארץ</small></h3>${top.map((x,i)=>`<div class="r ${x.me?"me":""}"><span class="i">${i+1}</span><span class="n">${esc(x.me?CFG.team.displayName:shortName(x.name))}</span><span class="x">${x.gf}</span></div>`).join("")}${inTop?"":`<div class="gap">⋯</div><div class="r me"><span class="i">${pos}</span><span class="n">${esc(CFG.team.displayName)}</span><span class="x">${my.gf}</span></div>`}</div>`;
+      lines+=`<div class="statLine"><b>שיא הגביע.</b> ${esc(tname(bigCup.home))} ${bigCup.home.goals}:${bigCup.away.goals} ${esc(tname(bigCup.away))}, ${heb(bigCup.roundName||"")}.</div>`;
+    }
+  }
+  el.innerHTML=kpis+lists+lines+`<div class="tblNote">מחושב מכל התוצאות ב-ONE, ליגה וגביע. מתעדכן עם כל תוצאה חדשה.</div>`;
 }
 
 /* ---------- calendar ---------- */
@@ -1064,7 +1138,7 @@ const TOUR_STEPS=[
   {sel:"#pushSlot .tk",title:"כדאי להוסיף למסך הבית",text:"באייפון ההתראות עובדות רק מהאפליקציה: לחצו על שיתוף בספארי, ואז ׳הוספה למסך הבית׳. פתחו מהאייקון, חזרו לכאן ולחצו הפעלה.",when:()=>IOS&&!STANDALONE},
   {sel:"#installSlot .tk",title:"כדאי להוסיף למסך הבית",text:"ככה הלוח נפתח כמו אפליקציה, בלי לחפש את הקישור, וההתראות עובדות.",when:()=>!STANDALONE&&!IOS},
   {sel:'.nav [data-view="games"]',title:"משחקים",text:"כל המשחקים שלנו, כל הליגה לפי מחזור, והגביע. לחיצה על משחק פותחת את פרטי היריבה."},
-  {sel:'.nav [data-view="table"]',title:"טבלה",text:"טבלת הליגה המעודכנת. השורה שלנו מסומנת בכחול."},
+  {sel:'.nav [data-view="table"]',title:"טבלה",text:"טבלת הליגה המעודכנת, השורה שלנו מסומנת בכחול. למטה: מספרים, דירוגי התקפה והגנה ושיאי העונה."},
   {sel:'.nav [data-view="cal"]',title:"יומן",text:"לוח העונה לפי חודשים, וחיבור ליומן הטלפון שמתעדכן לבד."},
   {sel:"#themeBtn",title:"יום ולילה",text:"מחליף בין מצב בהיר לכהה. זהו, נהנים מהעונה!"},
 ];
