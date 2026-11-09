@@ -12,6 +12,8 @@
      ושולח להורים התראת "הגרלת הגביע". כש-ONE טוען את המשחק, fetch-data.js מוחק את הרשומה.
   3. רשומה ידנית שכבר קיימת מתעדכנת אם ההתאחדות פרסמה שעה או מגרש.
   4. משחק ש-ONE כבר מכיר: שעה/מגרש/תאריך מההתאחדות נכתבים ל-overrides.games[<id>] (האתר, היומן וההתראות מכבדים אותם).
+  5. 09/11/2026: גם משחקי ליגה. דף המשחקים של הקבוצה בהתאחדות (team-details/team-games) נותן תאריך/שעה/מגרש
+     לכל המשחקים הקרובים; ONE מציג אותם עד אז כ"שבת 00:00". אותו מנגנון של סעיף 4.
 
 שימוש:  python3 galil_cup_sync.py [--dry] [--token TOKEN]
 הטוקן: --token, או משתנה הסביבה GITHUB_GALIL_TOKEN, או github_galil_token מתוך /config/secrets.yaml.
@@ -29,6 +31,7 @@ from datetime import date, timedelta
 from html import unescape
 
 CUP_URL = "https://www.football.org.il/national-cup/?national_cup_id={cup}&season_id=28"   # 591 ילדים ב׳, 592 ילדים ג׳
+TEAM_URL = "https://www.football.org.il/team-details/team-games/?team_id={team}&season_id=28"
 UA = "Mozilla/5.0 (compatible; galil-golan-darom parents site; +https://mozesor.github.io/galil-golan/)"
 SITES = [
     {"name": "דרום", "repo": "mozesor/galil-golan", "team": 8657, "cup": 591},
@@ -111,12 +114,61 @@ def fetch_ifa(cup_id):
     return round_no, rows
 
 
+def fetch_team(team_id):
+    """כל משחקי הקבוצה העונה מדף ההתאחדות (ליגה וגביע), בלי מזהי קבוצות."""
+    html = http(TEAM_URL.format(team=team_id))
+    rows = []
+    for part in re.findall(r'<a class="table_row[^"]*"[^>]*>(.*?)</a>', html, re.S):
+        cols = [clean(c) for c in re.findall(r"<div class=\"table_col[^\"]*\">(.*?)</div>", part, re.S)]
+        if len(cols) < 4:
+            continue
+        d = re.search(r"(\d{2})/(\d{2})/(\d{4})", cols[0])
+        teams = re.split(r"\s+-\s+", cols[1], maxsplit=1)
+        if not d or len(teams) != 2:
+            continue
+        tm = cols[3] if re.match(r"^\d{1,2}:\d{2}$", cols[3]) and cols[3] != "00:00" else ""
+        rows.append({"date": f"{d.group(3)}-{d.group(2)}-{d.group(1)}", "home": clean(teams[0]), "away": clean(teams[1]),
+                     "venue": cols[2], "time": tm, "result": cols[4] if len(cols) > 4 else ""})
+    return rows
+
+
+def apply_ifa(games_ovr, one, r, label, out):
+    """שעה/מגרש/תאריך מההתאחדות → overrides.games[<one id>]. מחזיר True אם השתנה משהו."""
+    cur = games_ovr.get(one["id"]) or {}
+    upd = {}
+    if r["time"] and r["time"] != (cur.get("time") or "") and r["time"] != one_local_time(one["date"]):
+        upd["time"] = r["time"]   # רק אם ONE עצמו עוד לא מציג את השעה הזו
+    if r["venue"] and r["venue"] != (cur.get("venue") or ""):
+        upd["venue"] = r["venue"]
+    # תאריך: רק כשההתאחדות שונה מ-ONE (ONE מציג את התאריך המתוכנן עם 00:00 עד שמעדכנים)
+    if r["date"] != one_local_date(one["date"]) and r["date"] != cur.get("date"):
+        upd["date"] = r["date"]
+    elif r["date"] == one_local_date(one["date"]) and cur.get("date"):
+        upd["date"] = None   # ONE התיישר, אין צורך בדריסה
+    if not upd:
+        out["skipped"].append(label + " (כבר ב-ONE)")
+        return False
+    cur.update(upd)
+    games_ovr[one["id"]] = {k: v for k, v in cur.items() if v}
+    out["updated"].append(label + " (ONE) " + json.dumps(upd, ensure_ascii=False))
+    return True
+
+
 def one_local_date(iso_utc):
     """תאריך מקומי (ישראל) של timestamp מ-ONE. ONE כותב 22:00Z (חורף) / 21:00Z (קיץ) = חצות מקומית של היום הבא."""
     from datetime import datetime, timezone
     dt = datetime.fromisoformat(iso_utc.replace("Z", "+00:00")).astimezone(timezone.utc)
     off = 2 if (dt.month < 3 or dt.month > 10) else 3   # קירוב מספיק לתאריך (שעון חורף/קיץ)
     return (dt + timedelta(hours=off)).date().isoformat()
+
+
+def one_local_time(iso_utc):
+    """שעה מקומית HH:MM של timestamp מ-ONE, או "" כשאין שעה (00:00)."""
+    from datetime import datetime, timezone
+    dt = datetime.fromisoformat(iso_utc.replace("Z", "+00:00")).astimezone(timezone.utc)
+    off = 2 if (dt.month < 3 or dt.month > 10) else 3
+    t = (dt + timedelta(hours=off)).strftime("%H:%M")
+    return "" if t == "00:00" else t
 
 
 def near(a, b, days=10):
@@ -134,10 +186,10 @@ def core(n):
     return s
 
 
-def sync_site(site, round_no, rows, token):
+def sync_site(site, round_no, rows, token, team_rows=None):
     ours = [r for r in rows if site["team"] in (r["home_id"], r["away_id"])]
     out = {"site": site["name"], "ifa_games": len(ours), "added": [], "updated": [], "skipped": []}
-    if not ours:
+    if not ours and not team_rows:
         return out
     data = json.loads(http(f"https://raw.githubusercontent.com/{site['repo']}/main/data.json", accept="application/json"))
     api = f"https://api.github.com/repos/{site['repo']}/contents/overrides.json"
@@ -158,24 +210,8 @@ def sync_site(site, round_no, rows, token):
         # לתוך overrides.games[<id>] (ONE לא מפרסם מגרש, ולפעמים מציג תאריך ישן בלי שעה; GitHub חסום באתר ההתאחדות).
         one = next((g for g in one_games if near(g["date"][:10], r["date"]) and (opp_id in (g["home"].get("pid"), g["away"].get("pid")) or core(opp) in (core(g["home"]["name"]), core(g["away"]["name"])))), None)
         if one:
-            cur = games_ovr.get(one["id"]) or {}
-            upd = {}
-            if r["time"] and r["time"] != (cur.get("time") or ""):
-                upd["time"] = r["time"]
-            if r["venue"] and r["venue"] != (cur.get("venue") or ""):
-                upd["venue"] = r["venue"]
-            # תאריך: רק כשההתאחדות שונה מ-ONE (ONE מציג את יום ההגרלה המקורי עם 00:00 עד שמעדכנים)
-            if r["date"] != one_local_date(one["date"]) and r["date"] != cur.get("date"):
-                upd["date"] = r["date"]
-            elif r["date"] == one_local_date(one["date"]) and cur.get("date"):
-                upd["date"] = None   # ONE התיישר, אין צורך בדריסה
-            if upd:
-                cur.update(upd)
-                games_ovr[one["id"]] = {k: v for k, v in cur.items() if v}
+            if apply_ifa(games_ovr, one, r, label, out):
                 changed = True
-                out["updated"].append(label + " (ONE) " + json.dumps(upd, ensure_ascii=False))
-            else:
-                out["skipped"].append(label + " (כבר ב-ONE)")
             continue
         ex = next((x for x in extras if x.get("cup") and x.get("date") and near(x["date"], r["date"]) and core(opp) in (core(x.get("home")), core(x.get("away")))), None)
         if ex:
@@ -207,11 +243,25 @@ def sync_site(site, round_no, rows, token):
         })
         changed = True
         out["added"].append(label + (f" {r['time']}" if r["time"] else "") + (f" ({r['venue']})" if r["venue"] else ""))
+    # משחקי ליגה קרובים: שעה/מגרש/תאריך מדף הקבוצה בהתאחדות
+    if team_rows:
+        today = date.today().isoformat()
+        league = [g for g in data.get("games", []) if not g.get("cup") and not g.get("manual") and not g.get("finished")]
+        for r in team_rows:
+            if r["date"] < today or r["result"] or not (r["time"] or r["venue"]):
+                continue
+            label = f"{r['date']} {r['home']} - {r['away']}"
+            one = next((g for g in league if near(g["date"][:10], r["date"], 4) and
+                        {core(r["home"]), core(r["away"])} == {core(g["home"]["name"]), core(g["away"]["name"])}), None)
+            if not one:
+                continue   # כנראה משחק גביע (טופל למעלה) או משחק ש-ONE עוד לא מכיר
+            if apply_ifa(games_ovr, one, r, label, out):
+                changed = True
     if changed and not DRY:
         ovr["extraGames"] = extras
         body = json.dumps(ovr, ensure_ascii=False, indent=2) + "\n"
         http(api, token=token, method="PUT", accept="application/vnd.github+json", data={
-            "message": "גביע: עדכון מאתר ההתאחדות (אוטומטי מהבית)",
+            "message": "עדכון מאתר ההתאחדות: שעות ומגרשים (אוטומטי מהבית)",
             "content": base64.b64encode(body.encode("utf-8")).decode("ascii"),
             "sha": meta["sha"],
         })
@@ -244,7 +294,12 @@ def main():
             res["sites"].append({"site": s["name"], "error": f"ifa: {c}"})
             continue
         try:
-            res["sites"].append(sync_site(s, c[0], c[1], token))
+            team_rows = fetch_team(s["team"])
+        except Exception as e:  # noqa
+            team_rows = None
+            res.setdefault("warnings", []).append(f"{s['name']}: team page: {e}")
+        try:
+            res["sites"].append(sync_site(s, c[0], c[1], token, team_rows))
         except Exception as e:  # noqa
             res["sites"].append({"site": s["name"], "error": str(e)})
     res["changes"] = sum(len(x.get("added", [])) + len(x.get("updated", [])) for x in res["sites"])
