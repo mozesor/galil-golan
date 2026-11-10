@@ -248,10 +248,11 @@ def sync_site(site, round_no, rows, token, team_rows=None):
         today = date.today().isoformat()
         league = [g for g in data.get("games", []) if not g.get("cup") and not g.get("manual") and not g.get("finished")]
         for r in team_rows:
-            if r["date"] < today or r["result"] or not (r["time"] or r["venue"]):
-                continue
+            if r["date"] < today or r["result"]:
+                continue   # גם שורה בלי שעה ומגרש חשובה: התאריך עצמו יכול לזוז (כרמיאל: 14.11 → 21.11)
             label = f"{r['date']} {r['home']} - {r['away']}"
-            one = next((g for g in league if near(g["date"][:10], r["date"], 4) and
+            # עד 10 ימים הפרש מהתאריך המתוכנן ב-ONE: משחק שנדחה בשבוע עדיין נתפס, המשחק החוזר (סבב שני) רחוק הרבה יותר
+            one = next((g for g in league if near(g["date"][:10], r["date"], 10) and
                         {core(r["home"]), core(r["away"])} == {core(g["home"]["name"]), core(g["away"]["name"])}), None)
             if not one:
                 continue   # כנראה משחק גביע (טופל למעלה) או משחק ש-ONE עוד לא מכיר
