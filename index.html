@@ -578,7 +578,7 @@ function gameTime(g){
   const d=new Date(g.date); const p=parts(d); const oneIso=`${p.year}-${p.month}-${p.day}`;
   const oneTbd=(p.hour==="00"||p.hour==="01")&&p.minute==="00";
   // תאריך: דריסה ידנית > ONE כשיש בו שעה אמיתית > ההתאחדות (רק כש-ONE עוד מציג 00:00; הנתון מההתאחדות עלול להיות ישן) > ONE
-  const isoOk=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||""); const iso=isoOk(OVR?.games?.[g.id]?.date)?OVR.games[g.id].date:oneTbd&&isoOk(g.ifa?.date)?g.ifa.date:oneIso;
+  const isoOk=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||""); const iso=isoOk(OVR?.games?.[g.id]?.date)?OVR.games[g.id].date:oneIso;
   const mk=(t,src)=>{ const dt=israelDate(iso,t[0],t[1]); return dt?{date:dt,tbd:false,est:false,timeStr:`${String(t[0]).padStart(2,"0")}:${String(t[1]).padStart(2,"0")}`,iso,src}:null; };
   const ov=validTime(OVR?.games?.[g.id]?.time); if(ov){ const r=mk(ov,"admin"); if(r) return r; }
   if(!oneTbd) return {date:d,tbd:false,est:false,timeStr:`${p.hour}:${p.minute}`,iso:oneIso,src:"one"};

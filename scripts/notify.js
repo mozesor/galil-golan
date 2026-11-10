@@ -30,7 +30,7 @@ function gameTime(g) {
   const p = parts(new Date(g.date)); const oneIso = `${p.year}-${p.month}-${p.day}`;
   const isoOk = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s || "");
   const oneTbd = (p.hour === "00" || p.hour === "01") && p.minute === "00";
-  const iso = isoOk(ovr?.games?.[g.id]?.date) ? ovr.games[g.id].date : oneTbd && isoOk(g.ifa?.date) ? g.ifa.date : oneIso;
+  const iso = isoOk(ovr?.games?.[g.id]?.date) ? ovr.games[g.id].date : oneIso;
   const ov = validTime(ovr?.games?.[g.id]?.time); if (ov) return { iso, time: ov };
   if (!oneTbd) return { iso: oneIso, time: `${p.hour}:${p.minute}` };
   const it = validTime(g.ifa?.time); if (it) return { iso, time: it };
