@@ -576,10 +576,11 @@ const validTime=s=>{ const m=/^(\d{1,2}):(\d{2})$/.exec(s||""); return m&&+m[1]<
 // has only the round's planned date ("est"), which can still move to a nearby day.
 function gameTime(g){
   const d=new Date(g.date); const p=parts(d); const oneIso=`${p.year}-${p.month}-${p.day}`;
-  const isoOk=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||""); const iso=isoOk(OVR?.games?.[g.id]?.date)?OVR.games[g.id].date:isoOk(g.ifa?.date)?g.ifa.date:oneIso;
+  const oneTbd=(p.hour==="00"||p.hour==="01")&&p.minute==="00";
+  // תאריך: דריסה ידנית > ONE כשיש בו שעה אמיתית > ההתאחדות (רק כש-ONE עוד מציג 00:00; הנתון מההתאחדות עלול להיות ישן) > ONE
+  const isoOk=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||""); const iso=isoOk(OVR?.games?.[g.id]?.date)?OVR.games[g.id].date:oneTbd&&isoOk(g.ifa?.date)?g.ifa.date:oneIso;
   const mk=(t,src)=>{ const dt=israelDate(iso,t[0],t[1]); return dt?{date:dt,tbd:false,est:false,timeStr:`${String(t[0]).padStart(2,"0")}:${String(t[1]).padStart(2,"0")}`,iso,src}:null; };
   const ov=validTime(OVR?.games?.[g.id]?.time); if(ov){ const r=mk(ov,"admin"); if(r) return r; }
-  const oneTbd=(p.hour==="00"||p.hour==="01")&&p.minute==="00";
   if(!oneTbd) return {date:d,tbd:false,est:false,timeStr:`${p.hour}:${p.minute}`,iso:oneIso,src:"one"};
   const it=validTime(g.ifa?.time); if(it){ const r=mk(it,"ifa"); if(r) return r; }
   return {date:israelDate(iso,12,0)||d,tbd:true,est:true,timeStr:"",iso,src:"none"};
