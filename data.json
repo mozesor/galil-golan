@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-10T02:38:37.609Z",
+  "fetchedAt": "2026-11-10T12:33:28.602Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -496,6 +496,24 @@
       }
     },
     {
+      "id": "6acc331a9878872a9639eb2e",
+      "date": "2026-11-13T09:00:00.000Z",
+      "round": 4,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
       "id": "6acc331a9878872a9639eb2c",
       "date": "2026-11-13T10:00:00.000Z",
       "round": 4,
@@ -515,19 +533,19 @@
     },
     {
       "id": "6acc331a9878872a9639eb25",
-      "date": "2026-11-13T22:00:00.000Z",
+      "date": "2026-11-13T11:30:00.000Z",
       "round": 4,
       "finished": false,
       "home": {
-        "id": "68b5d99c1348fa686c13b83a",
-        "pid": 8356,
-        "name": "הפועל עכו 2",
-        "goals": null
-      },
-      "away": {
         "id": "68b5d99c1348fa686c13b80c",
         "pid": 7769,
         "name": "ביתר נהריה 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
         "goals": null
       }
     },
@@ -564,42 +582,6 @@
         "id": "6acc331a9878872a9639eaff",
         "pid": 8403,
         "name": "מ.ס. קרית חיים צו פיוס",
-        "goals": null
-      }
-    },
-    {
-      "id": "6acc331a9878872a9639eb2e",
-      "date": "2026-11-13T22:00:00.000Z",
-      "round": 4,
-      "finished": false,
-      "home": {
-        "id": "68b5d99c1348fa686c13b8c4",
-        "pid": 3232,
-        "name": "מ.כ קרית חיים שמשון צו פיוס",
-        "goals": null
-      },
-      "away": {
-        "id": "68b5d99c1348fa686c13b82d",
-        "pid": 6751,
-        "name": "הפועל עמק הירדן",
-        "goals": null
-      }
-    },
-    {
-      "id": "6acc331a9878872a9639eb30",
-      "date": "2026-11-13T22:00:00.000Z",
-      "round": 4,
-      "finished": false,
-      "home": {
-        "id": "68b5d99c1348fa686c13b7df",
-        "pid": 7575,
-        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
-        "goals": null
-      },
-      "away": {
-        "id": "68b5d99c1348fa686c13b864",
-        "pid": 4180,
-        "name": "איחוד הפועל ביר אל מכסור",
         "goals": null
       }
     },
@@ -970,6 +952,24 @@
         "id": "68b5d99c1348fa686c13b82d",
         "pid": 6751,
         "name": "הפועל עמק הירדן",
+        "goals": null
+      }
+    },
+    {
+      "id": "6acc331a9878872a9639eb30",
+      "date": "2026-12-13T22:00:00.000Z",
+      "round": 4,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b7df",
+        "pid": 7575,
+        "name": "הפועל עירוני כרמיאל 2 צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b864",
+        "pid": 4180,
+        "name": "איחוד הפועל ביר אל מכסור",
         "goals": null
       }
     },
@@ -2752,15 +2752,15 @@
       "round": 19,
       "finished": false,
       "home": {
-        "id": "68b5d99c1348fa686c13b80c",
-        "pid": 7769,
-        "name": "ביתר נהריה 2 צו פיוס",
-        "goals": null
-      },
-      "away": {
         "id": "68b5d99c1348fa686c13b83a",
         "pid": 8356,
         "name": "הפועל עכו 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b80c",
+        "pid": 7769,
+        "name": "ביתר נהריה 2 צו פיוס",
         "goals": null
       }
     },
