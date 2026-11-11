@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-11T05:03:23.411Z",
+  "fetchedAt": "2026-11-11T12:33:23.101Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -550,24 +550,6 @@
       }
     },
     {
-      "id": "6acc331a9878872a9639eb29",
-      "date": "2026-11-13T22:00:00.000Z",
-      "round": 4,
-      "finished": false,
-      "home": {
-        "id": "68ccd70e1b7b720e589fa325",
-        "pid": 5942,
-        "name": "מ.ס. כפר קמא",
-        "goals": null
-      },
-      "away": {
-        "id": "68ccd7081b7b720e589f9f0f",
-        "pid": 5822,
-        "name": "הפ' בני אעבלין",
-        "goals": null
-      }
-    },
-    {
       "id": "6acc331a9878872a9639eb0a",
       "date": "2026-11-19T22:00:00.000Z",
       "round": 2,
@@ -916,6 +898,24 @@
         "id": "6acc331a9878872a9639eaff",
         "pid": 8403,
         "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6acc331a9878872a9639eb29",
+      "date": "2026-12-10T12:55:00.000Z",
+      "round": 4,
+      "finished": false,
+      "home": {
+        "id": "68ccd70e1b7b720e589fa325",
+        "pid": 5942,
+        "name": "מ.ס. כפר קמא",
+        "goals": null
+      },
+      "away": {
+        "id": "68ccd7081b7b720e589f9f0f",
+        "pid": 5822,
+        "name": "הפ' בני אעבלין",
         "goals": null
       }
     },
