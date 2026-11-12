@@ -155,6 +155,7 @@ async function main() {
       const cg = [];
       // every game of the competition (all rounds), for the "all cup games" list on the cup tab
       const all = [];
+      const pairOf = (o) => (o && Number.isFinite(+o.home) && Number.isFinite(+o.away) && +o.home >= 0 && +o.away >= 0 ? [+o.home, +o.away] : null);
       let empty = 0;
       for (let n = 0; n <= 20; n++) {
         const gs = games(await fetchJson(`${cupApi}&round=${n}`));
@@ -165,7 +166,12 @@ async function main() {
           g.roundName = cleanName(raw?.round?.name) || `סיבוב ${g.round}`;
           // slim copy (no mongo team ids) so data.json stays small on phones
           const slim = (t) => ({ pid: t.pid, name: t.name, goals: t.goals });
-          all.push({ id: g.id, date: g.date, round: g.round, roundName: g.roundName, home: slim(g.home), away: slim(g.away) });
+          const row = { id: g.id, date: g.date, round: g.round, roundName: g.roundName, home: slim(g.home), away: slim(g.away) };
+          // a knockout game level after regular time: ONE carries the score after extra time and the shoot-out separately
+          const et = pairOf(raw?.extra_time), pk = pairOf(raw?.penalties);
+          if (et) row.et = et;
+          if (pk) row.pk = pk;
+          all.push(row);
           if (!ours(g)) continue;
           cg.push({ ...g, cup: true });
         }
@@ -175,6 +181,26 @@ async function main() {
       if (!cg.length && prevCup.length) { console.warn("cup came back empty, keeping previous cup games"); cg.push(...prevCup); }
       const prevAll = previous0?.cup?.all || [];
       if (!all.length && prevAll.length) { console.warn("cup (all games) came back empty, keeping previous list"); all.push(...prevAll); }
+      // Official cup results from the IFA page. The IFA blocks GitHub, so the home sync (scripts/ha/galil_cup_sync.py)
+      // writes them to overrides.cupIfa[<round>] as {"<homePid>-<awayPid>": "h:a[ et h:a][ pk h:a]"}; "" = no official result yet.
+      // The IFA wins over ONE (ONE is sometimes days late or typed by hand); a result ONE shows that the IFA has not confirmed is flagged.
+      try {
+        const ci = JSON.parse(await fs.readFile(path.join(ROOT, "overrides.json"), "utf8"))?.cupIfa || {};
+        const parse = (v) => { const m = /^(\d+):(\d+)(?: et (\d+):(\d+))?(?: pk (\d+):(\d+))?$/.exec(v || ""); return m ? { r: [+m[1], +m[2]], et: m[3] !== undefined ? [+m[3], +m[4]] : null, pk: m[5] !== undefined ? [+m[5], +m[6]] : null } : null; };
+        let fixed = 0, unofficial = 0;
+        for (const g of all) {
+          const rd = ci[String(g.round)], key = `${g.home.pid}-${g.away.pid}`;
+          if (!rd || !(key in rd)) continue;
+          const v = parse(rd[key]);
+          if (v) {
+            if (g.home.goals !== v.r[0] || g.away.goals !== v.r[1]) fixed++;
+            g.home.goals = v.r[0]; g.away.goals = v.r[1];
+            if (v.et) g.et = v.et; else delete g.et;
+            if (v.pk) g.pk = v.pk; else delete g.pk;
+          } else if (g.home.goals !== null && g.away.goals !== null) { g.unofficial = true; unofficial++; }
+        }
+        if (fixed || unofficial) console.log(`cup: ${fixed} result(s) taken from the IFA, ${unofficial} not confirmed by the IFA yet`);
+      } catch (e) { console.warn("cup IFA results:", String(e)); }
       const byDate = (a, b) => a.date.localeCompare(b.date) || String(a.id).localeCompare(String(b.id));
       cup = { id: CONFIG.cupLeagueId, name: String(cupBase?.league?.name || previous0?.cup?.name || "גביע").replace(/\s+/g, " ").trim(), games: cg.sort(byDate), all: all.sort(byDate) };
       console.log(`cup: ${cg.length} of our games, ${all.length} in total`);

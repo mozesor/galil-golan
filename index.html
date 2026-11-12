@@ -311,6 +311,7 @@ svg{display:block}
 .cg .t.me{color:var(--accent)}
 .cg .sc{font-family:var(--display);font-weight:700;font-size:22px;line-height:1;min-width:48px;text-align:center}
 .cg .sc.tb{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.cg .sc small{display:block;font-family:var(--body);font-weight:600;font-size:10px;line-height:1.2;color:var(--muted);margin-top:3px;white-space:nowrap}
 .rounds{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 12px;margin:0 -16px;scroll-snap-type:x proximity;scrollbar-width:none}
 .rounds[hidden]{display:none}
 .rounds::-webkit-scrollbar{display:none}
@@ -965,6 +966,8 @@ function cupHtml(){
   const ours=CUP.length?`<div class="cupHead"><b>${esc(heb(DATA.cup?.name||"גביע"))}</b><span>${esc(cupStatus())}</span></div><div class="list">${CUP.map((g,i)=>ticket(g,i)).join("")}</div>`:"";
   return ours+cupAllHtml();
 }
+/* knockout winner: regular time, then the score after extra time, then the shoot-out. 1 home, -1 away, 0 unknown */
+const cupWinner=g=>{ for(const [h,a] of [[g.home.goals,g.away.goals],g.et||[0,0],g.pk||[0,0]]) if(h!==a) return h>a?1:-1; return 0; };
 /* every game of the competition, one round at a time (compact rows; our game is highlighted) */
 function cupAllHtml(){
   if(!CUPALL.length) return "";
@@ -976,8 +979,9 @@ function cupAllHtml(){
   }
   const gs=CUPALL.filter(g=>g.round===state.cupRound).sort((a,b)=>effTime(a)-effTime(b)),done=gs.filter(played).length;
   const row=g=>{
-    const p=played(g),t=gameTime(g),me=mine(g),home=p&&g.home.goals>g.away.goals,away=p&&g.away.goals>g.home.goals;
-    const mid=p?`<span class="sc" dir="ltr">${g.away.goals}:${g.home.goals}</span>`:`<span class="sc tb">${t.tbd?"—":esc(t.timeStr)}</span>`;
+    const p=played(g),t=gameTime(g),me=mine(g),w=p?cupWinner(g):0,home=w>0,away=w<0;
+    const note=!p?"":g.unofficial?"לא רשמי":g.pk?`פנדלים ${g.pk[1]}:${g.pk[0]}`:(g.et&&g.et[0]!==g.et[1])?`הארכה ${g.et[1]}:${g.et[0]}`:"";
+    const mid=p?`<span class="sc" dir="ltr">${g.away.goals}:${g.home.goals}${note?`<small dir="rtl">${note}</small>`:""}</span>`:`<span class="sc tb">${t.tbd?"—":esc(t.timeStr)}</span>`;
     const inner=`<span class="d">${esc(heDate(t.date,{weekday:"short"}).replace("יום ",""))}<br>${esc(heDate(t.date,{day:"numeric",month:"numeric"}))}</span><span class="t h ${p&&!home?"l":""} ${isMe(g.home)?"me":""}">${esc(tname(g.home))}</span>${mid}<span class="t a ${p&&!away?"l":""} ${isMe(g.away)?"me":""}">${esc(tname(g.away))}</span>`;
     return me&&findGame(g.id)?`<button class="cg me press" data-act="game" data-id="${g.id}">${inner}</button>`:`<div class="cg">${inner}</div>`;
   };

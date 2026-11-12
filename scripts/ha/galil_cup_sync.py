@@ -12,6 +12,9 @@
      ושולח להורים התראת "הגרלת הגביע". כש-ONE טוען את המשחק, fetch-data.js מוחק את הרשומה.
   3. רשומה ידנית שכבר קיימת מתעדכנת אם ההתאחדות פרסמה שעה או מגרש.
   4. משחק ש-ONE כבר מכיר: שעה/מגרש/תאריך מההתאחדות נכתבים ל-overrides.games[<id>] (האתר, היומן וההתראות מכבדים אותם).
+  6. 12/11/2026: תוצאות הגביע. דף הגביע בהתאחדות מציג את כל משחקי הסיבוב עם תוצאה, הארכה ובעיטות הכרעה.
+     ONE מאחר לפעמים בימים (או מזין ידנית), אז התוצאות הרשמיות נכתבות ל-overrides.cupIfa[<סיבוב>]
+     ו-fetch-data.js ממזג אותן לרשימת "כל משחקי הגביע" ומסמן תוצאה שההתאחדות עוד לא אישרה.
   5. 09/11/2026: גם משחקי ליגה. דף המשחקים של הקבוצה בהתאחדות (team-details/team-games) נותן תאריך/שעה/מגרש
      לכל המשחקים הקרובים; ONE מציג אותם עד אז כ"שבת 00:00". אותו מנגנון של סעיף 4.
 
@@ -38,6 +41,10 @@ SITES = [
     {"name": "צפון", "repo": "mozesor/galil-golan-tzafon", "team": 3674, "cup": 591},
     {"name": "הפועל פ\"ת", "repo": "mozesor/hapoel-pt-tzafon", "team": 6174, "cup": 592},
 ]
+ONE_CUP = {591: 1306, 592: 1304}   # מזהה הגביע ב-ONE, לבדיקת הכיוון של עמודת התוצאה
+ONE_URL = "https://vole.one.co.il/api/leagues/rounds?league_id={lid}&round={rnd}"
+RESULTS = {}      # cup_id → תוצאות הסיבוב הנוכחי מדף הגביע
+RESULTS_OK = {}   # cup_id → (תקין, הסבר) מבדיקת הכיוון
 LETTERS = {1: "א", 2: "ב", 3: "ג", 4: "ד", 5: "ה", 6: "ו", 7: "ז", 8: "ח", 9: "ט", 10: "י"}
 DRY = "--dry" in sys.argv
 
@@ -83,8 +90,65 @@ def clean(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
+def pair(txt):
+    m = re.search(r"(\d+)\s*-\s*(\d+)", txt or "")
+    return (int(m.group(2)), int(m.group(1))) if m else None   # בדף ההתאחדות המספר הראשון הוא של האורחת
+
+
+def parse_results(html):
+    """כל משחקי הסיבוב מדף הגביע: {"<בית>-<חוץ>": "h:a" / "h:a et h:a" / "h:a et h:a pk h:a" / ""}. מחרוזת ריקה = אין עדיין תוצאה."""
+    res = {}
+    for part in re.split(r"<(?:a|div) class=['\"]table_row", html)[1:]:
+        t = re.search(r"^[^>]*?data-team1='(-?\d+)' data-team2='(-?\d+)'", part)
+        if not t:
+            continue
+        h, a = int(t.group(1)), int(t.group(2))
+        if h < 0 or a < 0:
+            continue
+        cols = re.findall(r"<div class='table_col[^']*'>(.*?)</div>", part, re.S)
+        if len(cols) < 7:
+            continue
+        txt = [re.sub(r"<span class=.sr-only.>[^<]*</span>", "", c) for c in cols]
+        r, et, pk = pair(txt[4]), pair(txt[5]), pair(txt[6])
+        if not r:
+            res[f"{h}-{a}"] = ""
+            continue
+        v = f"{r[0]}:{r[1]}"
+        if et:
+            v += f" et {et[0]}:{et[1]}"
+        if pk:
+            v += f" pk {pk[0]}:{pk[1]}"
+        res[f"{h}-{a}"] = v
+    return res
+
+
+def check_orientation(cup_id, round_no, results):
+    """משווה מול ONE: אם רוב התוצאות הלא-שוות יוצאות הפוכות, מבנה הדף השתנה ואסור לכתוב. מחזיר (תקין, הסבר)."""
+    try:
+        one = json.loads(http(ONE_URL.format(lid=ONE_CUP[cup_id], rnd=round_no - 1), accept="application/json")).get("games") or []
+    except Exception as e:  # noqa
+        return False, f"ONE לא זמין לבדיקת כיוון: {e}"
+    same = flipped = 0
+    for g in one:
+        hg, ag = g["home"].get("goals"), g["away"].get("goals")
+        v = results.get(f"{g['home']['team']['provider']['id']}-{g['away']['team']['provider']['id']}")
+        if not v or hg is None or ag is None or hg < 0 or ag < 0 or hg == ag:
+            continue
+        ih, ia = (int(x) for x in v.split(" ")[0].split(":"))
+        if (ih, ia) == (hg, ag):
+            same += 1
+        elif (ih, ia) == (ag, hg):
+            flipped += 1
+    if same + flipped < 4:
+        return False, f"אין מספיק משחקים להשוואה מול ONE ({same + flipped})"
+    if flipped > same:
+        return False, f"עמודת התוצאה בהתאחדות נראית הפוכה ({flipped} הפוכות, {same} תואמות)"
+    return True, f"{same} תואמות, {flipped} הפוכות"
+
+
 def fetch_ifa(cup_id):
     html = http(CUP_URL.format(cup=cup_id))
+    RESULTS[cup_id] = parse_results(html)
     m = re.search(r"id='ddlRoundsLabel'>\s*מחזור\s+(\d+)", html)
     round_no = int(m.group(1)) if m else 0
     rows = []
@@ -189,7 +253,8 @@ def core(n):
 def sync_site(site, round_no, rows, token, team_rows=None):
     ours = [r for r in rows if site["team"] in (r["home_id"], r["away_id"])]
     out = {"site": site["name"], "ifa_games": len(ours), "added": [], "updated": [], "skipped": []}
-    if not ours and not team_rows:
+    cup_res = RESULTS.get(site["cup"]) if RESULTS_OK.get(site["cup"], (False,))[0] else None
+    if not ours and not team_rows and not cup_res:
         return out
     data = json.loads(http(f"https://raw.githubusercontent.com/{site['repo']}/main/data.json", accept="application/json"))
     api = f"https://api.github.com/repos/{site['repo']}/contents/overrides.json"
@@ -199,6 +264,18 @@ def sync_site(site, round_no, rows, token, team_rows=None):
     games_ovr = ovr.setdefault("games", {})
     one_games = [g for g in (data.get("cup") or {}).get("games", []) if not g.get("manual")]
     changed = False
+    # תוצאות הגביע מההתאחדות. תוצאה שכבר נרשמה לא נמחקת (רק מתעדכנת), כדי שתקלה רגעית בדף לא תעלים תוצאות מהאתר.
+    if cup_res and round_no:
+        store = ovr.setdefault("cupIfa", {})
+        cur = dict(store.get(str(round_no)) or {})
+        new = dict(cur)
+        for k, v in cup_res.items():
+            if v or k not in new:
+                new[k] = v
+        if new != cur:
+            store[str(round_no)] = new
+            changed = True
+            out["results"] = len([k for k in new if new[k] and new[k] != cur.get(k)])
     for r in ours:
         opp_id = r["away_id"] if r["home_id"] == site["team"] else r["home_id"]
         opp = r["away"] if r["home_id"] == site["team"] else r["home"]
@@ -299,6 +376,10 @@ def main():
         except Exception as e:  # noqa
             team_rows = None
             res.setdefault("warnings", []).append(f"{s['name']}: team page: {e}")
+        if s["cup"] not in RESULTS_OK:
+            RESULTS_OK[s["cup"]] = check_orientation(s["cup"], c[0], RESULTS.get(s["cup"]) or {}) if c[0] else (False, "מספר הסיבוב לא נמצא בדף")
+            if not RESULTS_OK[s["cup"]][0]:
+                res.setdefault("warnings", []).append(f"תוצאות גביע {s['cup']} לא נכתבו: {RESULTS_OK[s['cup']][1]}")
         try:
             res["sites"].append(sync_site(s, c[0], c[1], token, team_rows))
         except Exception as e:  # noqa
