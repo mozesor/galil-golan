@@ -78,7 +78,12 @@ async function main() {
   let previous0 = null;
   try { previous0 = JSON.parse(await fs.readFile(path.join(ROOT, "data.json"), "utf8")); } catch {}
   const prevByRound = new Map();
-  for (const g of previous0?.games || []) { if (g.manual) continue; if (!prevByRound.has(g.round)) prevByRound.set(g.round, []); prevByRound.get(g.round).push(g); }
+  for (let g of previous0?.games || []) {
+    if (g.manual) continue;
+    // a hand-typed score is not ONE's: never carry it over as if it were
+    if (g.unofficial) { g = { ...g, finished: false, home: { ...g.home, goals: null }, away: { ...g.away, goals: null } }; delete g.unofficial; }
+    if (!prevByRound.has(g.round)) prevByRound.set(g.round, []); prevByRound.get(g.round).push(g);
+  }
   const base = await fetchJson(ROUNDS_API);
   const league = base?.league || {};
   const maxRound = 60;
@@ -106,6 +111,27 @@ async function main() {
   const byId = new Map();
   for (const g of all) if (g.id) byId.set(g.id, g);
   const list = Array.from(byId.values()).sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+
+  // Hand-typed league results: overrides.results = {"<gameId>": "home:away"}. Shown flagged as unofficial,
+  // and the entry is removed as soon as ONE carries a score for that game (ONE always wins).
+  try {
+    const ovr = JSON.parse(await fs.readFile(path.join(ROOT, "overrides.json"), "utf8"));
+    const res = ovr?.results && typeof ovr.results === "object" ? ovr.results : {};
+    let dropped = 0;
+    for (const [id, v] of Object.entries(res)) {
+      const g = byId.get(id), m = /^(\d+):(\d+)$/.exec(String(v).trim());
+      if (!g) continue;
+      if (g.home.goals !== null && g.away.goals !== null) { delete res[id]; dropped++; continue; }
+      if (!m) { console.warn("overrides.results: bad score for", id, v); continue; }
+      g.home.goals = +m[1]; g.away.goals = +m[2]; g.finished = true; g.unofficial = true;
+      console.log("manual result (unofficial):", g.home.name, v, g.away.name);
+    }
+    if (dropped) {
+      if (!Object.keys(res).length) delete ovr.results;
+      await fs.writeFile(path.join(ROOT, "overrides.json"), JSON.stringify(ovr, null, 2) + "\n", "utf8");
+      console.log("overrides.json: removed", dropped, "manual result(s) now published by ONE");
+    }
+  } catch (e) { console.warn("manual results:", String(e)); }
 
   let standings = [];
   try {
