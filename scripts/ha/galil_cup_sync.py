@@ -40,6 +40,9 @@ SITES = [
     {"name": "דרום", "repo": "mozesor/galil-golan", "team": 8657, "cup": 591},
     {"name": "צפון", "repo": "mozesor/galil-golan-tzafon", "team": 3674, "cup": 591},
     {"name": "הפועל פ\"ת", "repo": "mozesor/hapoel-pt-tzafon", "team": 6174, "cup": 592},
+    # 13/11/2026: ילדים ג׳ של גליל גולן. בלי גביע באתר (cup None): רק שעות, מגרשים ותאריכים של משחקי הליגה מדף הקבוצה.
+    {"name": "דרום ג׳", "repo": "mozesor/galil-golan-darom-gimel", "team": 3675, "cup": None},
+    {"name": "צפון ג׳", "repo": "mozesor/galil-golan-tzafon-gimel", "team": 8526, "cup": None},
 ]
 ONE_CUP = {591: 1306, 592: 1304}   # מזהה הגביע ב-ONE, לבדיקת הכיוון של עמודת התוצאה
 ONE_URL = "https://vole.one.co.il/api/leagues/rounds?league_id={lid}&round={rnd}"
@@ -357,7 +360,7 @@ def main():
         return 2
     # כל גביע נמשך פעם אחת, גם אם כמה אתרים משתמשים בו
     cups = {}
-    for cup_id in sorted({s["cup"] for s in SITES}):
+    for cup_id in sorted({s["cup"] for s in SITES if s["cup"]}):
         try:
             cups[cup_id] = fetch_ifa(cup_id)
         except Exception as e:  # noqa
@@ -367,7 +370,7 @@ def main():
         return 1
     res = {"rounds": {str(k): v[0] for k, v in cups.items() if not isinstance(v, Exception)}, "rows": sum(len(v[1]) for v in cups.values() if not isinstance(v, Exception)), "sites": []}
     for s in SITES:
-        c = cups[s["cup"]]
+        c = cups[s["cup"]] if s["cup"] else (0, [])
         if isinstance(c, Exception):
             res["sites"].append({"site": s["name"], "error": f"ifa: {c}"})
             continue
@@ -376,7 +379,7 @@ def main():
         except Exception as e:  # noqa
             team_rows = None
             res.setdefault("warnings", []).append(f"{s['name']}: team page: {e}")
-        if s["cup"] not in RESULTS_OK:
+        if s["cup"] and s["cup"] not in RESULTS_OK:
             RESULTS_OK[s["cup"]] = check_orientation(s["cup"], c[0], RESULTS.get(s["cup"]) or {}) if c[0] else (False, "מספר הסיבוב לא נמצא בדף")
             if not RESULTS_OK[s["cup"]][0]:
                 res.setdefault("warnings", []).append(f"תוצאות גביע {s['cup']} לא נכתבו: {RESULTS_OK[s['cup']][1]}")
