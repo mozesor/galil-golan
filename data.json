@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-13T13:18:27.838Z",
+  "fetchedAt": "2026-11-13T13:23:27.171Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -499,18 +499,18 @@
       "id": "6acc331a9878872a9639eb2e",
       "date": "2026-11-13T09:00:00.000Z",
       "round": 4,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68b5d99c1348fa686c13b8c4",
         "pid": 3232,
         "name": "מ.כ קרית חיים שמשון צו פיוס",
-        "goals": null
+        "goals": 0
       },
       "away": {
         "id": "68b5d99c1348fa686c13b82d",
         "pid": 6751,
         "name": "הפועל עמק הירדן",
-        "goals": null
+        "goals": 3
       }
     },
     {
