@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-13T13:23:27.171Z",
+  "fetchedAt": "2026-11-13T13:57:30.471Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -476,19 +476,20 @@
       "id": "6acc331a9878872a9639eb31",
       "date": "2026-11-13T08:00:00.000Z",
       "round": 4,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "6ab9c8e2068ef07a1cafbb23",
         "pid": 8657,
         "name": "מ.כ.גליל גולן דרום צו פיוס",
-        "goals": null
+        "goals": 8
       },
       "away": {
         "id": "68ccd70a1b7b720e589fa019",
         "pid": 6639,
         "name": "הפועל מטה אשר 2",
-        "goals": null
+        "goals": 1
       },
+      "unofficial": true,
       "ifa": {
         "date": "2026-11-14",
         "time": null,
