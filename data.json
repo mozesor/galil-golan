@@ -1,17 +1,17 @@
 {
   "rankChange": {
-    "from": 1,
-    "to": 2,
-    "points": 7,
-    "round": 3,
-    "at": "2026-11-04T19:03:20.441Z"
+    "from": 2,
+    "to": 1,
+    "points": 10,
+    "round": 4,
+    "at": "2026-11-13T14:01:51.869Z"
   },
   "league": {
     "id": 1247,
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-13T13:57:30.471Z",
+  "fetchedAt": "2026-11-13T14:01:51.869Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -4479,6 +4479,19 @@
   "standings": [
     {
       "rank": 1,
+      "id": "6ab9c8e2068ef07a1cafbb23",
+      "name": "מ.כ.גליל גולן דרום צו פיוס",
+      "games": 4,
+      "wins": 3,
+      "draws": 1,
+      "losses": 0,
+      "gf": 27,
+      "ga": 6,
+      "gd": 21,
+      "points": 10
+    },
+    {
+      "rank": 2,
       "id": "68ccd70e1b7b720e589fa325",
       "name": "מ.ס. כפר קמא",
       "games": 3,
@@ -4489,19 +4502,6 @@
       "ga": 3,
       "gd": 15,
       "points": 9
-    },
-    {
-      "rank": 2,
-      "id": "6ab9c8e2068ef07a1cafbb23",
-      "name": "מ.כ.גליל גולן דרום צו פיוס",
-      "games": 3,
-      "wins": 2,
-      "draws": 1,
-      "losses": 0,
-      "gf": 19,
-      "ga": 5,
-      "gd": 14,
-      "points": 7
     },
     {
       "rank": 3,
@@ -4572,13 +4572,13 @@
       "rank": 8,
       "id": "68ccd70a1b7b720e589fa019",
       "name": "הפועל מטה אשר 2",
-      "games": 3,
+      "games": 4,
       "wins": 2,
       "draws": 0,
-      "losses": 1,
-      "gf": 5,
-      "ga": 5,
-      "gd": 0,
+      "losses": 2,
+      "gf": 6,
+      "ga": 13,
+      "gd": -7,
       "points": 6
     },
     {
