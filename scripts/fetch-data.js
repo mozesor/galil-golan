@@ -154,6 +154,26 @@ async function main() {
     console.warn("standings failed:", String(e));
   }
 
+  // A hand-typed result is not in ONE's table yet: add it, and re-rank (points, goal difference, goals for).
+  // Only when ONE's own game count for both teams equals their officially scored games, so a table that
+  // ONE already updated ahead of the score is never counted twice. Runs on the fresh table only.
+  try {
+    const official = (id) => list.filter((g) => !g.unofficial && g.home.goals !== null && g.away.goals !== null && (g.home.id === id || g.away.id === id)).length;
+    let added = 0;
+    for (const g of list.filter((x) => x.unofficial)) {
+      const h = standings.find((r) => r.id === g.home.id), a = standings.find((r) => r.id === g.away.id);
+      if (!h || !a) continue;
+      if (h.games !== official(h.id) || a.games !== official(a.id)) { console.warn("manual result not added to the table (ONE's game count differs):", g.id); continue; }
+      const put = (r, f, ag) => { r.games++; r.gf += f; r.ga += ag; r.gd = r.gf - r.ga; if (f > ag) { r.wins++; r.points += 3; } else if (f === ag) { r.draws++; r.points += 1; } else r.losses++; };
+      put(h, g.home.goals, g.away.goals); put(a, g.away.goals, g.home.goals);
+      added++;
+    }
+    if (added) {
+      standings = standings.map((r, i) => ({ r, i })).sort((x, y) => y.r.points - x.r.points || y.r.gd - x.r.gd || y.r.gf - x.r.gf || x.i - y.i).map((x, i) => ({ ...x.r, rank: i + 1 }));
+      console.log("table: added", added, "manual result(s)");
+    }
+  } catch (e) { console.warn("manual results in table:", String(e)); }
+
   // IFA: venue + kickoff time for our games (ONE does not publish venues)
   const nameIsMe = (n) => !!n && n.includes(CONFIG.team.match) && !(CONFIG.team.exclude && n.includes(CONFIG.team.exclude));
   const ours = (g) => nameIsMe(g.home.name) || nameIsMe(g.away.name);
