@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-12T16:05:27.645Z",
+  "fetchedAt": "2026-11-13T12:28:25.265Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -8259,13 +8259,18 @@
         "home": {
           "pid": 6170,
           "name": "מ.ס. קרית ים",
-          "goals": null
+          "goals": 1
         },
         "away": {
           "pid": 5119,
           "name": "ביתר ע.מעלה אדומים צו פיוס",
-          "goals": null
-        }
+          "goals": 1
+        },
+        "et": [
+          4,
+          2
+        ],
+        "unofficial": true
       },
       {
         "id": "6ae2ab77e10656c9d244d20f",
