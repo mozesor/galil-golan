@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-13T14:01:51.869Z",
+  "fetchedAt": "2026-11-13T14:13:23.540Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -489,7 +489,6 @@
         "name": "הפועל מטה אשר 2",
         "goals": 1
       },
-      "unofficial": true,
       "ifa": {
         "date": "2026-11-14",
         "time": null,
