@@ -702,7 +702,7 @@ function renderHome(){
       <div class="led rise ${fresh?"reveal":""}" style="--i:3" role="button" tabindex="0" data-act="game" data-id="${last.id}" data-o="${o}">
         <div class="stampWrap"><span class="stamp ${OUTC[o]}">${OUT_US[o]}</span></div>
         <div class="row"><div class="t fit ${isMe(last.home)?"me":""}" data-fit="26" data-min="18">${esc(tname(last.home))}</div><div class="sc ${o}">${scoreLtr(last)}</div><div class="t fit ${isMe(last.away)?"me":""}" data-fit="26" data-min="18">${esc(tname(last.away))}</div></div>
-        <div class="meta">${esc(roundLabel(last))}${last.unofficial?" · תוצאה לא רשמית":""} · לחיצה לפרטי המשחק</div>
+        <div class="meta">${esc(roundLabel(last))} · לחיצה לפרטי המשחק</div>
       </div></div>`;
   }
   const gd=meRow?.gd??0;
@@ -1116,7 +1116,7 @@ function gameSheet(id){
   if(mine(g)&&!played(g)&&DATA.teams.some(t=>t.id===(isMe(g.home)?g.away.id:g.home.id))) return teamSheet(isMe(g.home)?g.away.id:g.home.id);
   const t=gameTime(g);
   const resultBtns=mine(g)&&played(g)?`<div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:16px"><button class="btn accent press" data-act="share-result" data-id="${g.id}">${ICONS.share}<span>שתפו את התוצאה</span></button>${!g.cup&&DATA.teams.some(x=>x.id===(isMe(g.home)?g.away.id:g.home.id))?`<button class="btn press" data-act="opp" data-id="${isMe(g.home)?g.away.id:g.home.id}"><span class="iso">על היריבה</span></button>`:""}</div>`:"";
-  openSheet(`<div class="sheet-h"><div><h3 class="fit" data-fit="34" data-min="22"><bdi>${esc(shortName(g.home.name))}</bdi> נגד <bdi>${esc(shortName(g.away.name))}</bdi></h3><div class="sub">${esc(longDate(t.date))}${t.tbd?"":" · "+t.timeStr} · ${esc(roundLabel(g))}${g.unofficial&&!g.cup?" · תוצאה לא רשמית":""}</div></div></div>
+  openSheet(`<div class="sheet-h"><div><h3 class="fit" data-fit="34" data-min="22"><bdi>${esc(shortName(g.home.name))}</bdi> נגד <bdi>${esc(shortName(g.away.name))}</bdi></h3><div class="sub">${esc(longDate(t.date))}${t.tbd?"":" · "+t.timeStr} · ${esc(roundLabel(g))}</div></div></div>
     ${played(g)?`<div class="led"><div class="row"><div class="t">${esc(shortName(g.home.name))}</div><div class="sc">${scoreLtr(g)}</div><div class="t">${esc(shortName(g.away.name))}</div></div></div>`:""}${resultBtns}
     ${g.cup?`<p class="emptyLine" style="margin-top:12px">${esc(heb(DATA.cup?.name||"גביע"))}. היריבה משחקת בליגה אחרת, ולכן אין לנו את הטבלה שלה.</p>`:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button class="btn press" data-act="opp" data-id="${g.home.id}"><span class="iso">${esc(shortName(g.home.name))}</span></button><button class="btn press" data-act="opp" data-id="${g.away.id}"><span class="iso">${esc(shortName(g.away.name))}</span></button></div>`}`);
 }
