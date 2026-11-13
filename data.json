@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 4
   },
-  "fetchedAt": "2026-11-13T14:29:34.224Z",
+  "fetchedAt": "2026-11-13T16:05:27.583Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -8269,8 +8269,7 @@
         "et": [
           4,
           2
-        ],
-        "unofficial": true
+        ]
       },
       {
         "id": "6ae2ab77e10656c9d244d20f",
