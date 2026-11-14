@@ -112,6 +112,7 @@ export default {
       if (!validSub(sub)) return json({ error: "subscription" }, 400, c.headers);
       const k = await keyFor(sub.endpoint);
       const old = await env.SUBS.get(k, "json");
+      if (!old) await env.SUBS.delete("nosubs");
       const prefs = body.prefs ? cleanPrefs(body.prefs) : old?.prefs || {};
       await env.SUBS.put(k, JSON.stringify({ endpoint: sub.endpoint, keys: sub.keys, expirationTime: sub.expirationTime ?? null, ua: (req.headers.get("user-agent") || "").slice(0, 120), at: old?.at || Date.now(), updatedAt: Date.now(), prefs }));
       return json({ ok: true, prefs, id: k.slice(4, 10) }, 200, c.headers);
@@ -155,21 +156,28 @@ export default {
       if (!env.PUSH_SECRET || auth !== `Bearer ${env.PUSH_SECRET}`) return json({ error: "auth" }, 401);
       let body; try { body = await req.json(); } catch { return json({ error: "json" }, 400); }
       const items = Array.isArray(body?.items) ? body.items : [];
-      const keys = await listAll(env);
+      // 14/11/2026: the subscriber list is read only when there is something new to send. A KV list is the scarce
+      // operation on the free plan (1,000 a day for the whole account) and this endpoint is called every few minutes.
       const fresh = [], seen = new Set();
       for (const it of items) {
         if (fresh.length >= 40) break;
         if (!it || typeof it.key !== "string" || typeof it.title !== "string" || typeof it.body !== "string") continue;
         if (seen.has(it.key)) continue; seen.add(it.key);
         if (await env.SUBS.get("sent:" + it.key, { cacheTtl: 60 })) continue;
-        // claim the key before sending so two runs a minute apart cannot both send it; the claim is short until
-        // at least one device accepted the message, so a failed delivery is retried by a later run
-        if (keys.length) await env.SUBS.put("sent:" + it.key, String(Date.now()), { expirationTtl: 15 * 60 });
         fresh.push(it);
       }
-      if (!fresh.length) return json({ sent: 0, items: 0, subscribers: keys.length });
-      // with nobody subscribed yet, keep the items unsent so the first subscribers still get them
-      if (!keys.length) return json({ sent: 0, items: fresh.length, subscribers: 0, deferred: true });
+      if (!fresh.length) return json({ sent: 0, items: 0 });
+      // with nobody subscribed yet, keep the items unsent so the first subscribers still get them. The "nosubs" marker
+      // remembers that for a few hours (and /subscribe removes it), so an empty site does not list on every call.
+      if (await env.SUBS.get("nosubs")) return json({ sent: 0, items: fresh.length, subscribers: 0, deferred: true });
+      const keys = await listAll(env);
+      if (!keys.length) {
+        await env.SUBS.put("nosubs", "1", { expirationTtl: 6 * 3600 });
+        return json({ sent: 0, items: fresh.length, subscribers: 0, deferred: true });
+      }
+      // claim the keys before sending so two runs a minute apart cannot both send them; the claim is short until
+      // at least one device accepted the message, so a failed delivery is retried by a later run
+      for (const it of fresh) await env.SUBS.put("sent:" + it.key, String(Date.now()), { expirationTtl: 15 * 60 });
       let sent = 0, dropped = 0, failed = 0, skipped = 0;
       const okItems = new Set(), failedItems = new Set();
       for (const k of keys) {
