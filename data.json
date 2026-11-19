@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 3
   },
-  "fetchedAt": "2026-11-17T12:33:29.434Z",
+  "fetchedAt": "2026-11-19T12:33:22.882Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -627,24 +627,6 @@
       }
     },
     {
-      "id": "6acc331a9878872a9639eb3b",
-      "date": "2026-11-27T22:00:00.000Z",
-      "round": 5,
-      "finished": false,
-      "home": {
-        "id": "6acc331a9878872a9639eaff",
-        "pid": 8403,
-        "name": "מ.ס. קרית חיים צו פיוס",
-        "goals": null
-      },
-      "away": {
-        "id": "6ab9c8e2068ef07a1cafbba4",
-        "pid": 2029,
-        "name": "הפ' רמות מנשה מגידו 2",
-        "goals": null
-      }
-    },
-    {
       "id": "6acc331a9878872a9639eb3c",
       "date": "2026-11-27T22:00:00.000Z",
       "round": 5,
@@ -844,6 +826,24 @@
         "id": "68b5d99c1348fa686c13b864",
         "pid": 4180,
         "name": "איחוד הפועל ביר אל מכסור",
+        "goals": null
+      }
+    },
+    {
+      "id": "6acc331a9878872a9639eb3b",
+      "date": "2026-12-07T11:00:00.000Z",
+      "round": 5,
+      "finished": false,
+      "home": {
+        "id": "6acc331a9878872a9639eaff",
+        "pid": 8403,
+        "name": "מ.ס. קרית חיים צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "6ab9c8e2068ef07a1cafbba4",
+        "pid": 2029,
+        "name": "הפ' רמות מנשה מגידו 2",
         "goals": null
       }
     },
