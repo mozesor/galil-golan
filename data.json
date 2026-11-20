@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 3
   },
-  "fetchedAt": "2026-11-19T12:33:22.882Z",
+  "fetchedAt": "2026-11-20T13:08:28.108Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -553,18 +553,18 @@
       "id": "6acc331a9878872a9639eb1f",
       "date": "2026-11-20T08:00:00.000Z",
       "round": 3,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68b5d99c1348fa686c13b87b",
         "pid": 2410,
         "name": "מרכז קהילתי גולן קצרין צו פיוס",
-        "goals": null
+        "goals": 7
       },
       "away": {
         "id": "68ccd7081b7b720e589f9f0f",
         "pid": 5822,
         "name": "הפ' בני אעבלין",
-        "goals": null
+        "goals": 1
       }
     },
     {
