@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="גליל גולן" />
+<meta name="apple-mobile-web-app-title" content="גליל דרום ב׳" />
 <meta name="description" content="אתר הורים לא רשמי: לוח המשחקים של גליל גולן דרום, ילדים ב׳. המשחק הבא, תוצאות, טבלה ויומן." />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="he_IL" />
@@ -587,6 +587,8 @@ function gameTime(g){
   const mk=(t,src)=>{ const dt=israelDate(iso,t[0],t[1]); return dt?{date:dt,tbd:false,est:false,timeStr:`${String(t[0]).padStart(2,"0")}:${String(t[1]).padStart(2,"0")}`,iso,src}:null; };
   const ov=validTime(OVR?.games?.[g.id]?.time); if(ov){ const r=mk(ov,"admin"); if(r) return r; }
   if(!oneTbd) return {date:d,tbd:false,est:false,timeStr:`${p.hour}:${p.minute}`,iso:oneIso,src:"one"};
+  // 20/11/2026: the IFA time Home Assistant scrapes is kept apart (ifaTime), below ONE's real kickoff time
+  const oi=validTime(OVR?.games?.[g.id]?.ifaTime); if(oi){ const r=mk(oi,"ifa"); if(r) return r; }
   const it=validTime(g.ifa?.time); if(it){ const r=mk(it,"ifa"); if(r) return r; }
   return {date:israelDate(iso,12,0)||d,tbd:true,est:true,timeStr:"",iso,src:"none"};
 }
@@ -603,7 +605,7 @@ const played=g=>g.home.goals!==null&&g.away.goals!==null;
 function outcome(g,id){ if(!played(g)||!id||(g.home.id!==id&&g.away.id!==id)) return null; const h=g.home.id===id; const a=h?g.home.goals:g.away.goals,b=h?g.away.goals:g.home.goals; return a>b?"W":a<b?"L":"D"; }
 const OUT_US={W:"ניצחנו",D:"תיקו",L:"הפסדנו"}, OUT={W:"ניצחון",D:"תיקו",L:"הפסד"}, OUTC={W:"win",D:"draw",L:"loss"};
 const effTime=g=>{ try{ return gameTime(g).date.getTime(); }catch{ return new Date(g.date).getTime(); } };
-const teamGames=id=>DATA.games.filter(g=>g.home.id===id||g.away.id===id).sort((a,b)=>effTime(a)-effTime(b));
+const teamGames=id=>DATA.games.filter(g=>g.home.id===id||g.away.id===id||(g.manual&&id===ME?.id&&mine(g))).sort((a,b)=>effTime(a)-effTime(b));
 const findGame=id=>DATA.games.find(g=>g.id===id)||CUP.find(g=>g.id===id);
 const myGames=()=>teamGames(ME.id).concat(CUP).sort((a,b)=>effTime(a)-effTime(b));
 const roundLabel=g=>g.cup?`גביע · ${heb(g.roundName||"")}`:`מחזור ${g.round}`;
@@ -679,10 +681,10 @@ function renderHome(){
     const slamKey="gd-today-"+t.iso, slam=today&&!REDUCED&&!LS.get(slamKey); if(today) LS.set(slamKey,"1");
     const stamp=today?`<span class="stamp big accent ${slam?"slam":""}">היום משחקים!</span>`:`<span class="stamp ${home?"accent":"muted"}">${home?"בית":"חוץ"}</span>`;
     const icsBtn=`<a class="btn sq press" href="ics/${esc(next.id)}.ics" data-flash="נפתח" aria-label="הוספה ליומן">${ICONS.cal}</a>`;
-    const shareWide=`<button class="btn accent press" data-act="share" data-id="${next.id}">${ICONS.share}<span>שתפו את המשחק</span></button>`;
+    const shareWide=`<button class="btn accent press" data-act="share" data-id="${esc(next.id)}">${ICONS.share}<span>שתפו את המשחק</span></button>`;
     const acts=today&&v.waze
-      ? `<a class="btn accent press" href="${esc(v.waze)}" target="_blank" rel="noopener">${ICONS.pin}<span>נווטו למגרש</span></a><button class="btn sq press" data-act="share" data-id="${next.id}" aria-label="שיתוף">${ICONS.share}</button>${icsBtn}`
-      : `${shareWide}${icsBtn}${v.waze?`<a class="btn sq press" href="${esc(v.waze)}" target="_blank" rel="noopener" aria-label="ניווט למגרש">${ICONS.pin}</a>`:(next.cup?`<button class="btn sq press" data-act="game" data-id="${next.id}" aria-label="פרטי המשחק">${ICONS.info}</button>`:`<button class="btn sq press" data-act="opp" data-id="${opp.id}" aria-label="על היריבה">${ICONS.info}</button>`)}`;
+      ? `<a class="btn accent press" href="${esc(v.waze)}" target="_blank" rel="noopener">${ICONS.pin}<span>נווטו למגרש</span></a><button class="btn sq press" data-act="share" data-id="${esc(next.id)}" aria-label="שיתוף">${ICONS.share}</button>${icsBtn}`
+      : `${shareWide}${icsBtn}${v.waze?`<a class="btn sq press" href="${esc(v.waze)}" target="_blank" rel="noopener" aria-label="ניווט למגרש">${ICONS.pin}</a>`:(next.cup?`<button class="btn sq press" data-act="game" data-id="${esc(next.id)}" aria-label="פרטי המשחק">${ICONS.info}</button>`:`<button class="btn sq press" data-act="opp" data-id="${esc(opp.id)}" aria-label="על היריבה">${ICONS.info}</button>`)}`;
     html+=`<div class="hero">
       <div class="hero-top rise" style="--i:0"><span class="eyebrow"><b>${next.cup?"משחק גביע":"המשחק הבא"}</b>${next.cup?esc(heb(next.roundName||"")):`מחזור ${next.round}`}</span>${stamp}</div>
       <div class="opp rise" style="--i:1">${next.cup&&!oppRow?`<div class="mark rank" aria-label="משחק גביע"><small class="na">גביע</small></div>`:rankBox(oppRow)}<div class="who"><div class="pre">${home?"מארחים את":"נוסעים אל"}</div><div class="name fit" data-fit="56" data-min="34">${esc(shortName(opp.name))}</div></div></div>
@@ -703,7 +705,7 @@ function renderHome(){
   if(last){
     const o=outcome(last,ME.id), fresh=!REDUCED&&!LS.get("gd-seen-"+last.id);
     html+=`<div class="pad"><h2 class="h2 rise" style="--i:3">התוצאה האחרונה<small>${esc(heDate(gameTime(last).date,{day:"numeric",month:"long"}))} · ${isMe(last.home)?"בית":"חוץ"}</small></h2>
-      <div class="led rise ${fresh?"reveal":""}" style="--i:3" role="button" tabindex="0" data-act="game" data-id="${last.id}" data-o="${o}">
+      <div class="led rise ${fresh?"reveal":""}" style="--i:3" role="button" tabindex="0" data-act="game" data-id="${esc(last.id)}" data-o="${o}">
         <div class="stampWrap"><span class="stamp ${OUTC[o]}">${OUT_US[o]}</span></div>
         <div class="row"><div class="t fit ${isMe(last.home)?"me":""}" data-fit="26" data-min="18">${esc(tname(last.home))}</div><div class="sc ${o}">${scoreLtr(last)}</div><div class="t fit ${isMe(last.away)?"me":""}" data-fit="26" data-min="18">${esc(tname(last.away))}</div></div>
         <div class="meta">${esc(roundLabel(last))} · לחיצה לפרטי המשחק</div>
@@ -804,7 +806,6 @@ const PUSH_TYPES=[
   {k:"time",n:"שעה ומגרש",d:"כשנקבעים או משתנים"},
   {k:"reminder",n:"תזכורת",d:"יום לפני משחק"},
   {k:"cup",n:"גביע",d:"הגרלה חדשה"},
-  {k:"league",n:"סיכום מחזור",d:"כל התוצאות בליגה, הודעה אחת"},
   {k:"rank",n:"מקום בטבלה",d:"כשעולים או יורדים"},
   {k:"all",n:"כל משחק בליגה",d:"תוצאה של כל משחק, גם לא שלנו. כבוי כברירת מחדל",off:true},
 ];
@@ -934,7 +935,7 @@ function ticket(g,i=0,focus=ME.id){
   const stub=p?`${o?`<span class="res ${o}">${OUT[o]}</span>`:`<span class="res">סיום</span>`}<span class="r">${rl}</span>`
     :t.tbd?`<span class="tbd">מועד<br>משוער</span><span class="r">${rl}</span>`
     :`<span class="tm">${esc(t.timeStr)}</span><span class="r">${rl}</span>`;
-  return `<button class="tk press rise ${g===NEXT?"next":""}" style="--i:${Math.min(i,4)}" data-act="game" data-id="${g.id}">
+  return `<button class="tk press rise ${g===NEXT?"next":""}" style="--i:${Math.min(i,4)}" data-act="game" data-id="${esc(g.id)}">
     <div class="dt"><b>${esc(heDate(t.date,{day:"numeric"}))}</b><span>${esc(heDate(t.date,{month:"short"}))}<br>${esc(heDate(t.date,{weekday:"long"}).replace("יום ",""))}</span></div>
     <div class="mid">${ln(g.home,g.home.goals,g.away.goals)}${ln(g.away,g.away.goals,g.home.goals)}${isMine?`<div class="m">${g.cup?`<span class="tag cup">גביע</span>`:""}<span class="tag ${me}">${me==="home"?"בית":"חוץ"}</span>${v.venue?`<span class="iso">${esc(v.venue)}</span>`:""}</div>`:""}</div>
     <div class="stub">${stub}</div></button>`;
@@ -979,7 +980,7 @@ function cupAllHtml(){
   const nameOf=r=>heb(CUPALL.find(g=>g.round===r)?.roundName||`סיבוב ${r}`);
   if(state.cupRound===null||!rounds.includes(state.cupRound)){
     const nx=CUP.find(g=>!played(g)&&expiresAt(g)>Date.now()), last=[...CUP].reverse().find(played);
-    state.cupRound=nx?.round??last?.round??rounds[rounds.length-1];
+    state.cupRound=nx?.round??(last&&outcome(last,ME.id)!=="L"?last.round:null)??rounds[rounds.length-1];
   }
   const gs=CUPALL.filter(g=>g.round===state.cupRound).sort((a,b)=>effTime(a)-effTime(b)),done=gs.filter(played).length;
   const row=g=>{
@@ -987,7 +988,7 @@ function cupAllHtml(){
     const note=!p?"":g.unofficial?"לא רשמי":g.pk?`פנדלים ${g.pk[1]}:${g.pk[0]}`:(g.et&&g.et[0]!==g.et[1])?`הארכה ${g.et[1]}:${g.et[0]}`:"";
     const mid=p?`<span class="sc" dir="ltr">${g.away.goals}:${g.home.goals}${note?`<small dir="rtl">${note}</small>`:""}</span>`:`<span class="sc tb">${t.tbd?"—":esc(t.timeStr)}</span>`;
     const inner=`<span class="d">${esc(heDate(t.date,{weekday:"short"}).replace("יום ",""))}<br>${esc(heDate(t.date,{day:"numeric",month:"numeric"}))}</span><span class="t h ${p&&!home?"l":""} ${isMe(g.home)?"me":""}">${esc(tname(g.home))}</span>${mid}<span class="t a ${p&&!away?"l":""} ${isMe(g.away)?"me":""}">${esc(tname(g.away))}</span>`;
-    return me&&findGame(g.id)?`<button class="cg me press" data-act="game" data-id="${g.id}">${inner}</button>`:`<div class="cg">${inner}</div>`;
+    return me&&findGame(g.id)?`<button class="cg me press" data-act="game" data-id="${esc(g.id)}">${inner}</button>`:`<div class="cg">${inner}</div>`;
   };
   return `<h2 class="h2">כל משחקי הגביע<small>${gs.length} משחקים${done?` · ${done} הוכרעו`:""}</small></h2>
     <div class="rounds">${rounds.map(r=>`<button aria-selected="${r===state.cupRound}" data-cupround="${r}">${esc(nameOf(r))}</button>`).join("")}</div>
@@ -1000,7 +1001,7 @@ function renderTable(first){
     const pr=before?before.find(x=>x.id===r.id):null,moved=pr&&pr.games!==r.games;
     const mv=moved&&pr.rank>r.rank?ICONS.up:moved&&pr.rank<r.rank?ICONS.down:"";
     const me=r.id===ME.id;
-    return `<tr class="${me?"me":""}" role="button" tabindex="0" data-act="opp" data-id="${r.id}"><td class="rk"><div class="rkw"><span>${r.rank}</span>${mv}</div></td><td class="l"><span class="mark ${me?"me":""}">${esc(initials(r.name))}</span><span class="iso">${esc(me?CFG.team.displayName:shortName(r.name))}</span></td><td>${r.games}</td><td class="gd ltr">${r.gd>0?"+":""}${r.gd}</td><td class="pt">${r.points}</td></tr>`;
+    return `<tr class="${me?"me":""}" role="button" tabindex="0" data-act="opp" data-id="${esc(r.id)}"><td class="rk"><div class="rkw"><span>${r.rank}</span>${mv}</div></td><td class="l"><span class="mark ${me?"me":""}">${esc(initials(r.name))}</span><span class="iso">${esc(me?CFG.team.displayName:shortName(r.name))}</span></td><td>${r.games}</td><td class="gd ltr">${r.gd>0?"+":""}${r.gd}</td><td class="pt">${r.points}</td></tr>`;
   }).join("");
   const meRow=now.find(r=>r.id===ME.id),gap=meRow?now[0].points-meRow.points:0;
   $("#tblSub").textContent=meRow&&meRow.games?(meRow.rank===1?"אנחנו בראש הטבלה":gap===0?`מקום ${meRow.rank} · שווים בנקודות למקום הראשון`:`מקום ${meRow.rank} · ${gap} נק׳ מהמקום הראשון`):`${now.length} קבוצות, העונה מתחילה`;
@@ -1051,7 +1052,7 @@ function renderStats(){
       kpis+=`<div class="kpis"><div class="kpi ${pos<=3?"me":""}"><div class="v">${pos}</div><div class="k">בארץ בשערים בגביע</div><div class="s">${my.gf} שערים ב-${my.gp} משחקים, מתוך ${all.length} קבוצות</div></div><div class="kpi"><div class="v">${my.ga}</div><div class="k">ספיגות בגביע</div><div class="s">${fewer===0?`אף קבוצה עם ${my.gp} משחקים לא ספגה פחות`:`${fewer<=10?"רק ":""}${fewer} קבוצות עם ${my.gp} משחקים ספגו פחות`}</div></div></div>`;
       const top=byGf.slice(0,5); const inTop=pos<=5;
       lists+=`<div class="rankList"><h3>מלכות השערים בגביע<small>${all.length} קבוצות מכל הארץ</small></h3>${top.map((x,i)=>`<div class="r ${x.me?"me":""}"><span class="i">${i+1}</span><span class="n">${esc(x.me?CFG.team.displayName:shortName(x.name))}</span><span class="x">${x.gf}</span></div>`).join("")}${inTop?"":`<div class="gap">⋯</div><div class="r me"><span class="i">${pos}</span><span class="n">${esc(CFG.team.displayName)}</span><span class="x">${my.gf}</span></div>`}</div>`;
-      lines+=`<div class="statLine"><b>שיא הגביע.</b> ${esc(tname(bigCup.home))} ${bigCup.home.goals}:${bigCup.away.goals} ${esc(tname(bigCup.away))}, ${heb(bigCup.roundName||"")}.</div>`;
+      lines+=`<div class="statLine"><b>שיא הגביע.</b> ${esc(tname(bigCup.home))} ${bigCup.home.goals}:${bigCup.away.goals} ${esc(tname(bigCup.away))}, ${esc(heb(bigCup.roundName||""))}.</div>`;
     }
   }
   el.innerHTML=kpis+lists+lines+`<div class="tblNote">מחושב מכל התוצאות ב-ONE, ליגה וגביע. מתעדכן עם כל תוצאה חדשה.</div>`;
@@ -1119,10 +1120,10 @@ function gameSheet(id){
   const g=findGame(id); if(!g) return;
   if(mine(g)&&!played(g)&&DATA.teams.some(t=>t.id===(isMe(g.home)?g.away.id:g.home.id))) return teamSheet(isMe(g.home)?g.away.id:g.home.id);
   const t=gameTime(g);
-  const resultBtns=mine(g)&&played(g)?`<div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:16px"><button class="btn accent press" data-act="share-result" data-id="${g.id}">${ICONS.share}<span>שתפו את התוצאה</span></button>${!g.cup&&DATA.teams.some(x=>x.id===(isMe(g.home)?g.away.id:g.home.id))?`<button class="btn press" data-act="opp" data-id="${isMe(g.home)?g.away.id:g.home.id}"><span class="iso">על היריבה</span></button>`:""}</div>`:"";
+  const resultBtns=mine(g)&&played(g)?`<div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:16px"><button class="btn accent press" data-act="share-result" data-id="${esc(g.id)}">${ICONS.share}<span>שתפו את התוצאה</span></button>${!g.cup&&DATA.teams.some(x=>x.id===(isMe(g.home)?g.away.id:g.home.id))?`<button class="btn press" data-act="opp" data-id="${esc(isMe(g.home)?g.away.id:g.home.id)}"><span class="iso">על היריבה</span></button>`:""}</div>`:"";
   openSheet(`<div class="sheet-h"><div><h3 class="fit" data-fit="34" data-min="22"><bdi>${esc(shortName(g.home.name))}</bdi> נגד <bdi>${esc(shortName(g.away.name))}</bdi></h3><div class="sub">${esc(longDate(t.date))}${t.tbd?"":" · "+t.timeStr} · ${esc(roundLabel(g))}</div></div></div>
     ${played(g)?`<div class="led"><div class="row"><div class="t">${esc(shortName(g.home.name))}</div><div class="sc">${scoreLtr(g)}</div><div class="t">${esc(shortName(g.away.name))}</div></div></div>`:""}${resultBtns}
-    ${g.cup?`<p class="emptyLine" style="margin-top:12px">${esc(heb(DATA.cup?.name||"גביע"))}. היריבה משחקת בליגה אחרת, ולכן אין לנו את הטבלה שלה.</p>`:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button class="btn press" data-act="opp" data-id="${g.home.id}"><span class="iso">${esc(shortName(g.home.name))}</span></button><button class="btn press" data-act="opp" data-id="${g.away.id}"><span class="iso">${esc(shortName(g.away.name))}</span></button></div>`}`);
+    ${g.cup?`<p class="emptyLine" style="margin-top:12px">${esc(heb(DATA.cup?.name||"גביע"))}. היריבה משחקת בליגה אחרת, ולכן אין לנו את הטבלה שלה.</p>`:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button class="btn press" data-act="opp" data-id="${esc(g.home.id)}"><span class="iso">${esc(shortName(g.home.name))}</span></button><button class="btn press" data-act="opp" data-id="${esc(g.away.id)}"><span class="iso">${esc(shortName(g.away.name))}</span></button></div>`}`);
 }
 
 /* ---------- confetti (rare: once per win, from the stamp) ---------- */

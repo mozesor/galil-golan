@@ -30,22 +30,36 @@ jobs:
       - name: Fetch from ONE
         working-directory: scripts
         run: node fetch-data.js
+      # 20/11/2026: commit first, notify after, so a parent never gets a push for data the site does not show yet
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 20/11/2026: overrides.json is edited by people (admin page) and by Home Assistant. If it changed on GitHub
+          # since this run started, keep that newer copy instead of our pruned one (the prune runs again next time;
+          # the push to overrides.json triggers a new run anyway)
+          keep_remote_overrides() {
+            git fetch -q origin ${GITHUB_REF_NAME}
+            if ! git diff --quiet ${GITHUB_SHA} FETCH_HEAD -- overrides.json; then
+              echo "overrides.json changed meanwhile: keeping the newer copy"
+              git checkout FETCH_HEAD -- overrides.json
+            fi
+          }
+          keep_remote_overrides
+          git add data.json season.ics ics overrides.json
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "עדכון תוצאות"
+          # another run may have pushed meanwhile: replay our commit on top of it, our freshly generated files win
+          # (but never our overrides.json over a newer one, see above)
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin ${GITHUB_REF_NAME} && git push && exit 0
+            git rebase --abort 2>/dev/null || true
+            git reset -q --soft HEAD~1 && keep_remote_overrides && git add data.json season.ics ics overrides.json && git commit -q -m "עדכון תוצאות" || true
+            sleep 5
+          done
+          exit 1
       - name: Push notifications
         working-directory: scripts
         env:
           PUSH_SECRET: ${{ secrets.PUSH_SECRET }}
         run: node notify.js
-      - name: Commit if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json season.ics ics overrides.json
-          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
-          git commit -m "עדכון תוצאות"
-          # another run may have pushed meanwhile: replay our commit on top of it, our freshly generated files win
-          for i in 1 2 3; do
-            git pull --rebase -X theirs origin ${GITHUB_REF_NAME} && git push && exit 0
-            git rebase --abort 2>/dev/null || true
-            sleep 5
-          done
-          exit 1

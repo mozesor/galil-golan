@@ -203,8 +203,16 @@ def apply_ifa(games_ovr, one, r, label, out):
     """שעה/מגרש/תאריך מההתאחדות → overrides.games[<one id>]. מחזיר True אם השתנה משהו."""
     cur = games_ovr.get(one["id"]) or {}
     upd = {}
-    if r["time"] and r["time"] != (cur.get("time") or "") and r["time"] != one_local_time(one["date"]):
-        upd["time"] = r["time"]   # רק אם ONE עצמו עוד לא מציג את השעה הזו
+    # 20/11/2026: השעה מההתאחדות נשמרת ב-ifaTime (ולא ב-time, ששמור להזנה ידנית בדף הניהול), והאתר מעדיף עליה את
+    # השעה האמיתית של ONE. כש-ONE כבר מציג שעה, ifaTime נמחק. time ישן שזהה לשעה מההתאחדות נכתב בעבר על ידי הסקריפט הזה: מועבר.
+    one_t = one_local_time(one["date"])
+    if cur.get("time") and cur.get("time") == r["time"]:
+        upd["time"] = None
+    if one_t:
+        if cur.get("ifaTime"):
+            upd["ifaTime"] = None
+    elif r["time"] and r["time"] != (cur.get("ifaTime") or ""):
+        upd["ifaTime"] = r["time"]
     if r["venue"] and r["venue"] != (cur.get("venue") or ""):
         upd["venue"] = r["venue"]
     # תאריך: רק כשההתאחדות שונה מ-ONE (ONE מציג את התאריך המתוכנן עם 00:00 עד שמעדכנים)
@@ -217,24 +225,34 @@ def apply_ifa(games_ovr, one, r, label, out):
         return False
     cur.update(upd)
     games_ovr[one["id"]] = {k: v for k, v in cur.items() if v}
+    if not games_ovr[one["id"]]:
+        del games_ovr[one["id"]]
     out["updated"].append(label + " (ONE) " + json.dumps(upd, ensure_ascii=False))
     return True
+
+
+def _il(iso_utc):
+    """20/11/2026: שעון ישראל אמיתי (zoneinfo), במקום קירוב לפי חודש שטעה בסוף מרץ ובסוף אוקטובר."""
+    from datetime import datetime, timezone
+    dt = datetime.fromisoformat(iso_utc.replace("Z", "+00:00"))
+    try:
+        from zoneinfo import ZoneInfo
+        return dt.astimezone(ZoneInfo("Asia/Jerusalem"))
+    except Exception:
+        dt = dt.astimezone(timezone.utc)
+        return dt + timedelta(hours=2 if (dt.month < 3 or dt.month > 10) else 3)
 
 
 def one_local_date(iso_utc):
     """תאריך מקומי (ישראל) של timestamp מ-ONE. ONE כותב 22:00Z (חורף) / 21:00Z (קיץ) = חצות מקומית של היום הבא."""
     from datetime import datetime, timezone
-    dt = datetime.fromisoformat(iso_utc.replace("Z", "+00:00")).astimezone(timezone.utc)
-    off = 2 if (dt.month < 3 or dt.month > 10) else 3   # קירוב מספיק לתאריך (שעון חורף/קיץ)
-    return (dt + timedelta(hours=off)).date().isoformat()
+    return _il(iso_utc).date().isoformat()
 
 
 def one_local_time(iso_utc):
     """שעה מקומית HH:MM של timestamp מ-ONE, או "" כשאין שעה (00:00)."""
     from datetime import datetime, timezone
-    dt = datetime.fromisoformat(iso_utc.replace("Z", "+00:00")).astimezone(timezone.utc)
-    off = 2 if (dt.month < 3 or dt.month > 10) else 3
-    t = (dt + timedelta(hours=off)).strftime("%H:%M")
+    t = _il(iso_utc).strftime("%H:%M")
     return "" if t == "00:00" else t
 
 

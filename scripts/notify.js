@@ -12,13 +12,14 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 const TZ = "Asia/Jerusalem";
-const SERVER = process.env.PUSH_SERVER || (JSON.parse(require("fs").readFileSync(require("path").join(__dirname, "..", "config.json"), "utf8")).push?.server) || "https://galil-push.mozesor.workers.dev";
 const SECRET = process.env.PUSH_SECRET;
 
 const read = (f, fb) => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8")); } catch { return fb; } };
 const data = read("data.json", null), cfg = read("config.json", null), ovr = read("overrides.json", {});
+// 20/11/2026: no fallback to another site's worker; without this site's own server nothing is sent
+const SERVER = process.env.PUSH_SERVER || cfg?.push?.server || "";
 if (!data || !cfg) { console.log("notify: no data"); process.exit(0); }
-if (!SECRET) { console.log("notify: PUSH_SECRET missing, skipping"); process.exit(0); }
+if (!SECRET || !SERVER) { console.log("notify: PUSH_SECRET or push server missing, skipping"); process.exit(0); }
 
 const parts = (d) => { const f = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour12: false, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }); const o = {}; for (const p of f.formatToParts(d)) o[p.type] = p.value; if (o.hour === "24") o.hour = "00"; return o; };
 const isoOf = (d) => { const p = parts(d); return `${p.year}-${p.month}-${p.day}`; };
@@ -33,6 +34,7 @@ function gameTime(g) {
   const iso = isoOk(ovr?.games?.[g.id]?.date) ? ovr.games[g.id].date : oneIso;
   const ov = validTime(ovr?.games?.[g.id]?.time); if (ov) return { iso, time: ov };
   if (!oneTbd) return { iso: oneIso, time: `${p.hour}:${p.minute}` };
+  const oi = validTime(ovr?.games?.[g.id]?.ifaTime); if (oi) return { iso, time: oi }; // 20/11/2026: IFA time from Home Assistant
   const it = validTime(g.ifa?.time); if (it) return { iso, time: it };
   return { iso, time: null };
 }
@@ -45,10 +47,10 @@ const mine = data.games.filter((g) => isMe(g.home) || isMe(g.away)).map((g) => (
   .sort((a, b) => a.date.localeCompare(b.date));
 const today = isoOf(new Date()), tomorrow = addDays(today, 1), hourNow = +parts(new Date()).hour;
 const done = (g) => g.home.goals !== null && g.away.goals !== null;
-const roundDone = (n) => { const gs = data.games.filter((g) => g.round === n && !g.manual); return gs.length > 0 && gs.every(done); };
 const url = cfg.push?.url || cfg.site?.url || "https://mozesor.github.io/galil-golan/";
 const items = [];
 const heTeam = (n) => heb(shortName(n));
+const normKey = (n) => String(n).replace(/^(הפועל|הפ[׳']|מכבי|בית["״]?ר|עירוני)\s*/, "").replace(/[^\p{L}\p{N}]/gu, "").slice(0, 40);
 // a score in running Hebrew text: "X ניצחה 2:0 את Y" / "תיקו 1:1 בין X ל-Y" (a bare "X 2:0 Y" reads backwards in RTL)
 const scoreLine = (g) => { const h = heTeam(g.home.name), a = heTeam(g.away.name), hg = g.home.goals, ag = g.away.goals; if (hg === ag) return `תיקו ${hg}:${ag} בין ${h} ל${a}`; return hg > ag ? `${h} ניצחה ${hg}:${ag} את ${a}` : `${a} ניצחה ${ag}:${hg} את ${h}`; };
 
@@ -65,28 +67,22 @@ for (const g of mine) {
   }
   if (t.iso < today) continue;
   const venue = venueOf(g, home);
-  if (g.cup && t.iso >= today) items.push({ type: "cup", key: `cup:${heb(g.roundName || "")}:${opp}`, title: "הגרלת הגביע פורסמה", body: `${heb(g.roundName || "")}: ${home ? "בבית" : "בחוץ"} מול ${opp}, ${heDate(t.iso)}${t.time ? " בשעה " + t.time : ""}.`, url });
+  // 20/11/2026: the opponent in the key is normalised, so a cup game first added by hand (IFA spelling) and later
+  // taken over by ONE (its own spelling) is not announced twice
+  if (g.cup && t.iso >= today) items.push({ type: "cup", key: `cup:${heb(g.roundName || "")}:${normKey(opp)}`, title: "הגרלת הגביע פורסמה", body: `${heb(g.roundName || "")}: ${home ? "בבית" : "בחוץ"} מול ${opp}, ${heDate(t.iso)}${t.time ? " בשעה " + t.time : ""}.`, url });
   if (t.time && t.iso <= addDays(today, 10)) items.push({ type: "time", key: `time:${g.id}:${t.time}`, title: `נקבעה שעה למשחק מול ${opp}`, body: `${heDate(t.iso)} בשעה ${t.time}${venue ? ", " + heb(venue) : ""}. ${home ? "משחק בית" : "משחק חוץ"}.`, url });
   if (t.iso === tomorrow && hourNow >= 8 && hourNow < 22) items.push({ type: "reminder", key: `reminder:${g.id}:${t.iso}`, title: `מחר משחק מול ${opp}`, body: `${t.time ? "בשעה " + t.time : "השעה טרם פורסמה"}${venue ? ", " + heb(venue) : ""}. ${home ? "משחק בית" : "משחק חוץ"}. בהצלחה!`, url });
 }
 
-// league round digest: once every game of the round has a score (and the last of them was played recently)
-const byRound = new Map();
-for (const g of data.games) { if (g.manual) continue; if (!byRound.has(g.round)) byRound.set(g.round, []); byRound.get(g.round).push(g); }
-for (const [round, gs] of byRound) {
-  if (!round || gs.length < 2) continue;
-  const allDone = gs.every(done);
-  const last = gs.map((g) => isoOf(new Date(g.date))).sort().pop();
-  if (!allDone || last < addDays(today, -2)) continue;
-  const lines = gs.slice().sort((a, b) => a.date.localeCompare(b.date)).map(scoreLine);
-  const me = (data.standings || []).find((r) => isMe(r));
-  items.push({ type: "league", key: `league:${round}`, title: `סיכום מחזור ${round}`, body: lines.join("\n").slice(0, 900) + (me ? `\nאנחנו במקום ${me.rank} עם ${me.points} נק׳.` : ""), url: url + "#table" });
-}
-// table position changed today (fetch-data writes rankChange when the rank moves between two runs)
+// 20/11/2026: the league round digest ("סיכום מחזור") was removed: with many postponed games it went out weeks late.
+// table position changed (fetch-data writes rankChange when the rank moves between two runs). A round counts as done
+// when every game of it dated up to today has a score: a postponed game weeks away no longer blocks the push forever.
 const rc = data.rankChange;
-if (rc && rc.at && isoOf(new Date(rc.at)) === today && rc.from && rc.to && rc.from !== rc.to && (!rc.round || roundDone(rc.round))) {
+const roundDoneSoFar = (n) => { const gs = data.games.filter((g) => g.round === n && !g.manual && isoOf(new Date(g.date)) <= today); return gs.length > 0 && gs.every(done); };
+const rcDay = rc && rc.at ? isoOf(new Date(rc.at)) : "";
+if (rc && rcDay >= addDays(today, -1) && rc.from && rc.to && rc.from !== rc.to && (!rc.round || roundDoneSoFar(rc.round))) {
   const up = rc.to < rc.from;
-  items.push({ type: "rank", key: `rank:${today}:${rc.to}`, title: up ? `עלינו למקום ${rc.to} בטבלה` : `ירדנו למקום ${rc.to} בטבלה`, body: `ממקום ${rc.from} למקום ${rc.to}${rc.points != null ? `, ${rc.points} נק׳` : ""}${rc.round ? ` אחרי מחזור ${rc.round}` : ""}.`, url: url + "#table" });
+  items.push({ type: "rank", key: `rank:${rcDay}:${rc.to}`, title: up ? `עלינו למקום ${rc.to} בטבלה` : `ירדנו למקום ${rc.to} בטבלה`, body: `ממקום ${rc.from} למקום ${rc.to}${rc.points != null ? `, ${rc.points} נק׳` : ""}${rc.round ? ` אחרי מחזור ${rc.round}` : ""}.`, url: url + "#table" });
 }
 
 // every finished league game (not ours), as it ends: off by default in the site, parents opt in. Last, so they never crowd out our own items.

@@ -54,7 +54,12 @@ def one_round(cup_id, idx):
 
 def local_dt(iso_utc):
     """תאריך ושעה מקומיים (ישראל) מ-timestamp של ONE. חצות מקומית = אין שעה."""
-    d = datetime.fromisoformat(iso_utc.replace("Z", "+00:00")).astimezone(timezone(timedelta(hours=2)))
+    d = datetime.fromisoformat(iso_utc.replace("Z", "+00:00"))
+    try:  # 20/11/2026: שעון ישראל אמיתי (קיץ/חורף), לא +2 קבוע
+        from zoneinfo import ZoneInfo
+        d = d.astimezone(ZoneInfo("Asia/Jerusalem"))
+    except Exception:
+        d = d.astimezone(timezone(timedelta(hours=2)))
     if d.hour in (0, 1) and d.minute == 0:
         return d.strftime("%d/%m"), None
     return d.strftime("%d/%m"), d.strftime("%H:%M")

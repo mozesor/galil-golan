@@ -41,6 +41,8 @@ function gameTime(g, ovr) {
   const t = validTime(ovr?.games?.[g.id]?.time);
   if (t) return { date: israelDate(iso, t[0], t[1]), tbd: false, iso };
   if (!oneTbd) return { date: d, tbd: false, iso: oneIso };
+  const oi = validTime(ovr?.games?.[g.id]?.ifaTime); // 20/11/2026: IFA time from Home Assistant, below ONE's real time
+  if (oi) return { date: israelDate(iso, oi[0], oi[1]), tbd: false, iso };
   const it = validTime(g.ifa?.time);
   if (it) return { date: israelDate(iso, it[0], it[1]), tbd: false, iso };
   return { date: israelDate(iso, 12, 0), tbd: true, iso };
