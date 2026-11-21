@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 3
   },
-  "fetchedAt": "2026-11-20T13:13:23.780Z",
+  "fetchedAt": "2026-11-21T13:03:23.877Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -8279,13 +8279,14 @@
         "home": {
           "pid": 2849,
           "name": "הפועל כפס אור",
-          "goals": null
+          "goals": 2
         },
         "away": {
           "pid": 4186,
           "name": "מ.כ. נהלל יזרעאל",
-          "goals": null
-        }
+          "goals": 1
+        },
+        "unofficial": true
       },
       {
         "id": "6ae2ab77e10656c9d244d209",
