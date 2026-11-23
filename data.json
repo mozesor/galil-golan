@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 5
   },
-  "fetchedAt": "2026-11-22T12:28:26.184Z",
+  "fetchedAt": "2026-11-23T05:03:22.722Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -586,24 +586,6 @@
       }
     },
     {
-      "id": "6acc331a9878872a9639eb33",
-      "date": "2026-11-27T22:00:00.000Z",
-      "round": 5,
-      "finished": false,
-      "home": {
-        "id": "68ccd70a1b7b720e589fa019",
-        "pid": 6639,
-        "name": "הפועל מטה אשר 2",
-        "goals": null
-      },
-      "away": {
-        "id": "68b5d99c1348fa686c13b83a",
-        "pid": 8356,
-        "name": "הפועל עכו 2",
-        "goals": null
-      }
-    },
-    {
       "id": "6acc331a9878872a9639eb35",
       "date": "2026-11-27T22:00:00.000Z",
       "round": 5,
@@ -677,6 +659,24 @@
         "id": "68ccd70e1b7b720e589fa325",
         "pid": 5942,
         "name": "מ.ס. כפר קמא",
+        "goals": null
+      }
+    },
+    {
+      "id": "6acc331a9878872a9639eb33",
+      "date": "2026-11-28T13:00:00.000Z",
+      "round": 5,
+      "finished": false,
+      "home": {
+        "id": "68ccd70a1b7b720e589fa019",
+        "pid": 6639,
+        "name": "הפועל מטה אשר 2",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b83a",
+        "pid": 8356,
+        "name": "הפועל עכו 2",
         "goals": null
       }
     },
