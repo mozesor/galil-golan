@@ -11,7 +11,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 5
   },
-  "fetchedAt": "2026-11-23T05:03:22.722Z",
+  "fetchedAt": "2026-11-23T12:33:23.419Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -609,24 +609,6 @@
       }
     },
     {
-      "id": "6acc331a9878872a9639eb3a",
-      "date": "2026-11-27T22:00:00.000Z",
-      "round": 5,
-      "finished": false,
-      "home": {
-        "id": "68b5d99c1348fa686c13b831",
-        "pid": 8483,
-        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
-        "goals": null
-      },
-      "away": {
-        "id": "68b5d99c1348fa686c13b8c4",
-        "pid": 3232,
-        "name": "מ.כ קרית חיים שמשון צו פיוס",
-        "goals": null
-      }
-    },
-    {
       "id": "6acc331a9878872a9639eb3c",
       "date": "2026-11-27T22:00:00.000Z",
       "round": 5,
@@ -678,6 +660,47 @@
         "pid": 8356,
         "name": "הפועל עכו 2",
         "goals": null
+      }
+    },
+    {
+      "id": "6acc331a9878872a9639eb3a",
+      "date": "2026-12-02T17:30:00.000Z",
+      "round": 5,
+      "finished": false,
+      "home": {
+        "id": "68b5d99c1348fa686c13b831",
+        "pid": 8483,
+        "name": "מועדון הכדורגל מרום הגליל צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b8c4",
+        "pid": 3232,
+        "name": "מ.כ קרית חיים שמשון צו פיוס",
+        "goals": null
+      }
+    },
+    {
+      "id": "6acc331a9878872a9639eb4f",
+      "date": "2026-12-04T08:00:00.000Z",
+      "round": 6,
+      "finished": false,
+      "home": {
+        "id": "6ab9c8e2068ef07a1cafbb23",
+        "pid": 8657,
+        "name": "מ.כ.גליל גולן דרום צו פיוס",
+        "goals": null
+      },
+      "away": {
+        "id": "68b5d99c1348fa686c13b82d",
+        "pid": 6751,
+        "name": "הפועל עמק הירדן",
+        "goals": null
+      },
+      "ifa": {
+        "date": "2026-12-05",
+        "time": null,
+        "venue": null
       }
     },
     {
@@ -786,29 +809,6 @@
         "pid": 8483,
         "name": "מועדון הכדורגל מרום הגליל צו פיוס",
         "goals": null
-      }
-    },
-    {
-      "id": "6acc331a9878872a9639eb4f",
-      "date": "2026-12-04T22:00:00.000Z",
-      "round": 6,
-      "finished": false,
-      "home": {
-        "id": "6ab9c8e2068ef07a1cafbb23",
-        "pid": 8657,
-        "name": "מ.כ.גליל גולן דרום צו פיוס",
-        "goals": null
-      },
-      "away": {
-        "id": "68b5d99c1348fa686c13b82d",
-        "pid": 6751,
-        "name": "הפועל עמק הירדן",
-        "goals": null
-      },
-      "ifa": {
-        "date": "2026-12-05",
-        "time": null,
-        "venue": null
       }
     },
     {
