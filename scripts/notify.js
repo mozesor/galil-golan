@@ -25,7 +25,9 @@ const parts = (d) => { const f = new Intl.DateTimeFormat("en-GB", { timeZone: TZ
 const isoOf = (d) => { const p = parts(d); return `${p.year}-${p.month}-${p.day}`; };
 const heb = (s) => String(s || "").replace(/'/g, "׳").replace(/"/g, "״");
 const shortName = (n) => heb(String(n).replace(/^(מ\.כ\.?|מ\.ס\.?|ה\.|מועדון הכדורגל|מרכז קהילתי|איחוד)\s*/, "").replace(/\s*צו פיוס\s*$/, "").trim() || n);
-const isMe = (t) => t.name.includes(cfg.team.match) && !(cfg.team.exclude && t.name.includes(cfg.team.exclude));
+// 24/11/2026: the fixed team number first (data.me / config.team.pid), the name only as a fallback
+const ME_PID = data.me?.pid ?? (Number(cfg.team.pid) || null);
+const isMe = (t) => (ME_PID != null && t.pid === ME_PID) || (t.name.includes(cfg.team.match) && !(cfg.team.exclude && t.name.includes(cfg.team.exclude)));
 const validTime = (s) => { const m = /^(\d{1,2}):(\d{2})$/.exec(s || ""); return m && +m[1] < 24 && +m[2] < 60 ? `${m[1].padStart(2, "0")}:${m[2]}` : null; };
 function gameTime(g) {
   const p = parts(new Date(g.date)); const oneIso = `${p.year}-${p.month}-${p.day}`;

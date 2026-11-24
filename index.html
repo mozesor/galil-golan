@@ -598,7 +598,9 @@ const longDate=d=>heDate(d,{weekday:"long",day:"numeric",month:"long"});
 function shortName(n){ return heb(String(n).replace(/^(מ\.כ\.?|מ\.ס\.?|ה\.|מועדון הכדורגל|מרכז קהילתי|איחוד)\s*/,"").replace(/\s*צו פיוס\s*$/,"").trim()||n); }
 function initials(n){ const w=shortName(n).replace(/^(הפועל|הפ׳|מכבי|בית״ר|ביתר|בני|עירוני)\s+/,"").split(/\s+/).filter(x=>/[א-ת]/.test(x)); return (w[0]?.[0]||"?")+(w[1]?.[0]||""); }
 const nameIsMe=n=>!!n&&n.includes(CFG.team.match)&&!(CFG.team.exclude&&n.includes(CFG.team.exclude));
-const isMe=t=>t&&(t.id===ME.id||nameIsMe(t.name));
+// 24/11/2026: our team by id / fixed number first; the name is only a fallback
+const myPid=()=>DATA?.me?.pid??(Number(CFG?.team?.pid)||null);
+const isMe=t=>t&&(t.id===ME.id||(myPid()!=null&&t.pid===myPid())||nameIsMe(t.name));
 const tname=t=>isMe(t)?CFG.team.displayName:shortName(t.name);
 const mine=g=>isMe(g.home)||isMe(g.away);
 const played=g=>g.home.goals!==null&&g.away.goals!==null;
@@ -1271,7 +1273,8 @@ function updateStamp(){
   if(!stale) fetchChecked();
 }
 function init(d,c,o){
-  const m=d.teams.find(x=>x.name.includes(c.team.match)&&!(c.team.exclude&&x.name.includes(c.team.exclude))); if(!m) throw new Error("הקבוצה לא נמצאה בליגה: "+c.team.match);
+  const pid=d.me?.pid??(Number(c.team.pid)||null), byPid=()=>{ if(!pid) return null; for(const g of d.games) for(const t of [g.home,g.away]) if(t.pid===pid) return d.teams.find(x=>x.id===t.id); return null; };
+  const m=(d.me&&d.teams.find(x=>x.id===d.me.id))||byPid()||d.teams.find(x=>x.name.includes(c.team.match)&&!(c.team.exclude&&x.name.includes(c.team.exclude))); if(!m) throw new Error("הקבוצה לא נמצאה בליגה: "+c.team.match);
   DATA=d; CFG=c; OVR=o||{}; ME=m; CUP=(d.cup?.games||[]).map(g=>({...g,cup:true})); CUPALL=(d.cup?.all||[]).map(g=>({...g,cup:true}));
   $("#teamTitle").textContent=CFG.team.displayName; document.title=heb(CFG.site?.title||document.title);
   NEXT=computeNext(); renderHome(); if(state.view!=="home"){ renderView(state.view,!!bootView); bootView=false; } updateStamp();
@@ -1285,9 +1288,9 @@ async function load(){
   try{
     const [d,c,o]=await Promise.all([getJSON("data.json",9000),getJSON("config.json",9000),getJSON("overrides.json",9000).catch(()=>({}))]);
     lastFetch=Date.now(); document.body.classList.remove("stale");
-    LS.set("gd-snap",JSON.stringify({d,c,o}));
     const changed=!DATA||d.fetchedAt!==DATA.fetchedAt||JSON.stringify(o)!==JSON.stringify(OVR)||JSON.stringify(c)!==JSON.stringify(CFG);
-    if(changed) init(d,c,o); else updateStamp();
+    // 24/11/2026: the snapshot is saved only after init() accepted the data, so a broken file never replaces the last good copy
+    if(changed){ init(d,c,o); LS.set("gd-snap",JSON.stringify({d,c,o})); } else updateStamp();
     return changed?"new":"same";
   }catch(e){
     if(DATA){ document.body.classList.add("stale"); updateStamp(); return "fail"; }

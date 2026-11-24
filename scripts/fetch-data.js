@@ -177,9 +177,18 @@ async function main() {
   } catch (e) { console.warn("manual results in table:", String(e)); }
 
   // IFA: venue + kickoff time for our games (ONE does not publish venues)
-  const nameIsMe = (n) => !!n && n.includes(CONFIG.team.match) && !(CONFIG.team.exclude && n.includes(CONFIG.team.exclude));
-  const ours = (g) => nameIsMe(g.home.name) || nameIsMe(g.away.name);
-  const ourPid = list.find(ours) ? (nameIsMe(list.find(ours).home.name) ? list.find(ours).home.pid : list.find(ours).away.pid) : null;
+  const nameIsMe = (n) => { n = cleanName(n); return !!n && n.includes(CONFIG.team.match) && !(CONFIG.team.exclude && n.includes(CONFIG.team.exclude)); };
+  // 24/11/2026: our team is recognised by its fixed IFA number (config.team.pid, which ONE carries as the provider id).
+  // The name is only a fallback, so a rename on ONE (like "גליל-גולן" with a hyphen) can no longer lose the team.
+  const MY_PID = Number(CONFIG.team.pid) || null;
+  const isMeT = (t) => !!t && ((MY_PID && t.pid === MY_PID) || nameIsMe(t.name));
+  const ours = (g) => isMeT(g.home) || isMeT(g.away);
+  const ourGame = list.find(ours);
+  // safety net: no league game of ours means ONE renamed or moved the team. Stop here, so the site keeps the last good
+  // data.json and the failed run sends an email (and the Home Assistant "not updating" alert) instead of breaking the site
+  if (!ourGame) throw new Error(`our team (pid ${MY_PID}, name "${CONFIG.team.match}") was not found in the league: data.json left unchanged`);
+  const meSide = isMeT(ourGame.home) ? ourGame.home : ourGame.away;
+  const ourPid = MY_PID || meSide.pid;
   const ifaTeam = CONFIG.ifa?.teamId || ourPid;
   const season = base?.games?.[0]?.season_id || CONFIG.ifa?.seasonId || 28;
   try {
@@ -307,7 +316,8 @@ async function main() {
 
   try {
 
-    const mineRow = standings.find((r) => nameIsMe(r.name)), prevRow = (previous0?.standings || []).find((r) => nameIsMe(r.name));
+    const meRow = (rows) => (rows || []).find((r) => r.id === meSide.id) || (rows || []).find((r) => nameIsMe(r.name));
+    const mineRow = meRow(standings), prevRow = meRow(previous0?.standings);
 
     if (mineRow && prevRow && mineRow.games > 0 && prevRow.games > 0 && mineRow.rank !== prevRow.rank) rankChange = { from: prevRow.rank, to: mineRow.rank, points: mineRow.points, round: Math.max(0, ...list.filter((g) => g.home.goals !== null).map((g) => g.round)), at: new Date().toISOString() };
 
@@ -317,6 +327,8 @@ async function main() {
   const out = {
 
     rankChange,
+    // who we are, for the site, notify.js and build-ics.js (by id and number, not by name)
+    me: { id: meSide.id, pid: ourPid, name: meSide.name },
     league: {
       id: LEAGUE_ID,
       name: cleanName(league?.name) || CONFIG.leagueName || "",
