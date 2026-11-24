@@ -41,7 +41,9 @@ const games = (j) => (Array.isArray(j) ? j : Array.isArray(j?.games) ? j.games :
 function cleanName(s) {
   if (!s) return "";
   // ONE names carry stray quotes like  מ.כ קרית חיים "שמשון
-  return String(s).replace(/["״]/g, "").replace(/\s+/g, " ").trim();
+  // 24/11/2026: ONE started writing "גליל-גולן" with a hyphen; a hyphen between two words becomes a space, so the
+  // team still matches config.team.match (short abbreviations like "י-ם" have one letter on a side and are kept)
+  return String(s).replace(/["״]/g, "").replace(/([א-ת]{2})-(?=[א-ת]{2})/g, "$1 ").replace(/\s+/g, " ").trim();
 }
 
 function normTeam(side) {
