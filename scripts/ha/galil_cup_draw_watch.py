@@ -27,7 +27,7 @@ from html import unescape
 
 CUPS = [
     {"id": 1306, "ifa": 591, "name": "גביע ילדים ב׳", "ours": "גליל גולן", "teams": {8657: "דרום", 3674: "צפון"}},
-    {"id": 1304, "ifa": 592, "name": "גביע ילדים ג׳ (הפועל פ״ת)", "ours": "הפועל פ\"ת צפון", "teams": {6174: "הפועל פ\"ת"}},
+    {"id": 1304, "ifa": 592, "name": "גביע ילדים ג׳ (הפועל פ״ת)", "ours": "פתח תקווה צפון", "teams": {6174: "הפועל פ\"ת"}},
 ]
 RSS_URL = "https://www.one.co.il/rss"
 IFA = "https://www.football.org.il"
@@ -88,12 +88,14 @@ def check_one_rounds(state, out):
             if not games:
                 break
             if known is not None:
-                mine = [g for g in games if cup["ours"] in g["home"]["team"]["provider"]["name"] + g["away"]["team"]["provider"]["name"]]
+                # 24/11/2026: ONE writes "גליל-גולן" with a hyphen now; nm() turns it into a space before matching
+                nm = lambda s: re.sub(r"\s+", " ", (s or "").replace("-", " "))
+                mine = [g for g in games if cup["ours"] in nm(g["home"]["team"]["provider"]["name"]) + " " + nm(g["away"]["team"]["provider"]["name"])]
                 if mine:
                     g = mine[0]
                     h, a = g["home"]["team"]["provider"]["name"], g["away"]["team"]["provider"]["name"]
                     date, time = local_dt(g["date"])
-                    home = cup["ours"] in h
+                    home = cup["ours"] in nm(h)
                     ours = f'שלנו: {a if home else h} {"בבית" if home else "בחוץ"}, {date}' + (f" {time}" if time else "")
                 else:
                     ours = "הקבוצה שלנו לא ברשימה (אולי המשחק שלנו עוד לא נטען)"
