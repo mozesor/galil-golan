@@ -16,7 +16,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 5
   },
-  "fetchedAt": "2026-11-24T15:00:55.819Z",
+  "fetchedAt": "2026-11-24T20:35:30.440Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -8300,12 +8300,12 @@
         "home": {
           "pid": 5012,
           "name": "הפועל מטה אשר צו פיוס",
-          "goals": null
+          "goals": 2
         },
         "away": {
           "pid": 3791,
           "name": "שמשון תא מרכז",
-          "goals": null
+          "goals": 1
         }
       }
     ]
