@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//galil-golan-darom//he
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:גליל גולן דרום
+X-WR-TIMEZONE:Asia/Jerusalem
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:6af1b9c9b95b1a6147bae0aa@galil-golan-darom
+DTSTAMP:20260101T000000Z
+SUMMARY:⚽ גליל גולן דרום נגד הפועל עירוני כר
+ מיאל 2 (בית) | מועד משוער
+DTSTART;VALUE=DATE:20270313
+DTEND;VALUE=DATE:20270314
+LOCATION:צפת
+DESCRIPTION:מחזור 17\nמועד משוער: השעה טרם פורסמ
+ ה והיום עוד יכול לזוז. היומן יתעדכן לבד
+END:VEVENT
+END:VCALENDAR
