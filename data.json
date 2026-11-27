@@ -16,7 +16,7 @@
     "name": "ליגת ילדים ב' מפרץ",
     "currentRound": 5
   },
-  "fetchedAt": "2026-11-25T05:03:29.833Z",
+  "fetchedAt": "2026-11-27T14:38:26.022Z",
   "teams": [
     {
       "id": "68b5d99c1348fa686c13b83a",
@@ -576,36 +576,36 @@
       "id": "6acc331a9878872a9639eb41",
       "date": "2026-11-27T08:40:00.000Z",
       "round": 5,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68b5d99c1348fa686c13b80c",
         "pid": 7769,
         "name": "ביתר נהריה 2 צו פיוס",
-        "goals": null
+        "goals": 3
       },
       "away": {
         "id": "68b5d99c1348fa686c13b87b",
         "pid": 2410,
         "name": "מרכז קהילתי גולן קצרין צו פיוס",
-        "goals": null
+        "goals": 2
       }
     },
     {
       "id": "6acc331a9878872a9639eb35",
       "date": "2026-11-27T10:00:00.000Z",
       "round": 5,
-      "finished": false,
+      "finished": true,
       "home": {
         "id": "68b5d99c1348fa686c13b864",
         "pid": 4180,
         "name": "איחוד הפועל ביר אל מכסור",
-        "goals": null
+        "goals": 4
       },
       "away": {
         "id": "6ab9c8e2068ef07a1cafbb23",
         "pid": 8657,
         "name": "מ.כ.גליל גולן דרום צו פיוס",
-        "goals": null
+        "goals": 6
       },
       "ifa": {
         "date": "2026-11-28",
@@ -4485,17 +4485,30 @@
       "rank": 1,
       "id": "6ab9c8e2068ef07a1cafbb23",
       "name": "מ.כ.גליל גולן דרום צו פיוס",
-      "games": 4,
-      "wins": 3,
+      "games": 5,
+      "wins": 4,
       "draws": 1,
       "losses": 0,
-      "gf": 27,
-      "ga": 6,
-      "gd": 21,
-      "points": 10
+      "gf": 33,
+      "ga": 10,
+      "gd": 23,
+      "points": 13
     },
     {
       "rank": 2,
+      "id": "68b5d99c1348fa686c13b80c",
+      "name": "ביתר נהריה 2 צו פיוס",
+      "games": 5,
+      "wins": 3,
+      "draws": 1,
+      "losses": 1,
+      "gf": 27,
+      "ga": 12,
+      "gd": 15,
+      "points": 10
+    },
+    {
+      "rank": 3,
       "id": "68ccd70e1b7b720e589fa325",
       "name": "מ.ס. כפר קמא",
       "games": 3,
@@ -4508,29 +4521,16 @@
       "points": 9
     },
     {
-      "rank": 3,
-      "id": "68b5d99c1348fa686c13b80c",
-      "name": "ביתר נהריה 2 צו פיוס",
+      "rank": 4,
+      "id": "68b5d99c1348fa686c13b864",
+      "name": "איחוד הפועל ביר אל מכסור",
       "games": 4,
       "wins": 2,
       "draws": 1,
       "losses": 1,
-      "gf": 24,
-      "ga": 10,
-      "gd": 14,
-      "points": 7
-    },
-    {
-      "rank": 4,
-      "id": "68b5d99c1348fa686c13b864",
-      "name": "איחוד הפועל ביר אל מכסור",
-      "games": 3,
-      "wins": 2,
-      "draws": 1,
-      "losses": 0,
-      "gf": 12,
-      "ga": 3,
-      "gd": 9,
+      "gf": 16,
+      "ga": 9,
+      "gd": 7,
       "points": 7
     },
     {
@@ -4615,13 +4615,13 @@
       "rank": 11,
       "id": "68b5d99c1348fa686c13b87b",
       "name": "מרכז קהילתי גולן קצרין צו פיוס",
-      "games": 2,
+      "games": 3,
       "wins": 1,
       "draws": 0,
-      "losses": 1,
-      "gf": 7,
-      "ga": 3,
-      "gd": 4,
+      "losses": 2,
+      "gf": 9,
+      "ga": 6,
+      "gd": 3,
       "points": 3
     },
     {
